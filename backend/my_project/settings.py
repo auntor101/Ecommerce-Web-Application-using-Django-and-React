@@ -61,8 +61,13 @@ WSGI_APPLICATION = 'my_project.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MYSQL_DATABASE', 'your_db_name'),
+        'USER': os.getenv('MYSQL_USER', 'your_db_user'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'your_db_password'),
+        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
+        'PORT': os.getenv('MYSQL_PORT', '3306'),
+        # For Windows, install mysqlclient (recommended) or PyMySQL
     }
 }
 
