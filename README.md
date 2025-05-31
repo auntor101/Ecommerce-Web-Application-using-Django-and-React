@@ -21,7 +21,7 @@ A modern ecommerce platform built with Django (backend) and React (frontend).
 
 1. **Clone the repository:**
    ```sh
-   git clone <your-repo-url>
+   git clone <https://github.com/auntor101/Ecommerce-Web-Application-using-Django-and-React.git>
    cd Ecommerce-Web-Application-using-Django-and-React
    ```
 
