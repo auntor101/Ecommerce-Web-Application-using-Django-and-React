@@ -9,9 +9,7 @@ import { CHANGE_DELIVERY_STATUS_RESET } from '../constants'
 import SearchBarForOrdersPage from '../components/SearchBarForOrdersPage'
 import Message from '../components/Message'
 
-
 function OrdersListPage() {
-
     let history = useHistory()
     const dispatch = useDispatch()
     const placeholderValue = "Search orders by Customer Name, Address or by Ordered Item"
@@ -75,106 +73,355 @@ function OrdersListPage() {
         setCloneSearchTerm(term)
     };
 
+    // Calculate statistics
+    const totalOrders = orders.length
+    const deliveredOrders = orders.filter(order => order.is_delivered).length
+    const pendingOrders = totalOrders - deliveredOrders
+    const totalRevenue = orders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0)
 
     return (
-        <div>
-            {loadingOrders && <span style={{ display: "flex" }}>
-                <h5>Getting Orders</h5>
-                <span className="ml-2">
-                    <Spinner animation="border" />
-                </span>
-            </span>}
-            {userInfo.admin && <SearchBarForOrdersPage handleSearchTerm={handleSearchTerm} placeholderValue={placeholderValue} />}
-                {orders.length > 0 ?
-                <Table className="mt-2" striped bordered>
-                    <thead>
-                        <tr className="p-3 bg-info text-white text-center">
-                            <th>Order Id</th>
-                            <th>Customer Name</th>
-                            <th>Card Used</th>
-                            <th>Delivery Address</th>
-                            <th>Ordered Item</th>
-                            <th>Paid Status</th>
-                            <th>Paid On</th>
-                            <th>Total Amount</th>
-                            <th>Delivered Status</th>
-                            <th>Delivered On</th>
-                            {userInfo.admin &&
-                                <th>Delivery Status</th>
-                            }
-                        </tr>
-                    </thead>
+        <div className="fade-in" style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', paddingBottom: '2rem' }}>
+            {/* Admin Dashboard Header */}
+            <div 
+                style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '0 0 24px 24px',
+                    padding: '2rem',
+                    marginBottom: '2rem',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                }}
+            >
+                <div className="container">
+                    <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                        <h1 style={{
+                            margin: 0,
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                            fontSize: '2.5rem',
+                            fontWeight: '700'
+                        }}>
+                            <i className="fas fa-chart-line" style={{ marginRight: '15px', color: '#667eea' }}></i>
+                            Admin Dashboard
+                        </h1>
+                        <p style={{ color: '#6b7280', fontSize: '1.1rem', margin: '0.5rem 0 0' }}>
+                            Monitor and manage your orders efficiently
+                        </p>
+                    </div>
 
-                    {/* filter orders by name, address or ordered item */}
+                    {/* Statistics Cards */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+                        <div style={{
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            borderRadius: '20px',
+                            padding: '1.5rem',
+                            color: 'white',
+                            boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+                            transition: 'transform 0.3s ease'
+                        }} className="stat-card">
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div>
+                                    <p style={{ margin: 0, opacity: 0.9, fontSize: '0.9rem', fontWeight: '500' }}>Total Orders</p>
+                                    <h3 style={{ margin: '0.5rem 0 0', fontSize: '2rem', fontWeight: '700' }}>{totalOrders}</h3>
+                                </div>
+                                <i className="fas fa-shopping-cart" style={{ fontSize: '2.5rem', opacity: 0.8 }}></i>
+                            </div>
+                        </div>
 
-                    {orders.filter((item) => (
+                        <div style={{
+                            background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+                            borderRadius: '20px',
+                            padding: '1.5rem',
+                            color: 'white',
+                            boxShadow: '0 10px 30px rgba(17, 153, 142, 0.3)',
+                            transition: 'transform 0.3s ease'
+                        }} className="stat-card">
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div>
+                                    <p style={{ margin: 0, opacity: 0.9, fontSize: '0.9rem', fontWeight: '500' }}>Delivered</p>
+                                    <h3 style={{ margin: '0.5rem 0 0', fontSize: '2rem', fontWeight: '700' }}>{deliveredOrders}</h3>
+                                </div>
+                                <i className="fas fa-check-circle" style={{ fontSize: '2.5rem', opacity: 0.8 }}></i>
+                            </div>
+                        </div>
 
-                        item.name.toLowerCase().includes(cloneSearchTerm)
-                        ||
-                        item.ordered_item.toLowerCase().includes(cloneSearchTerm)
-                        ||
-                        item.address.toLowerCase().includes(cloneSearchTerm)
-                    )
+                        <div style={{
+                            background: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)',
+                            borderRadius: '20px',
+                            padding: '1.5rem',
+                            color: 'white',
+                            boxShadow: '0 10px 30px rgba(255, 65, 108, 0.3)',
+                            transition: 'transform 0.3s ease'
+                        }} className="stat-card">
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div>
+                                    <p style={{ margin: 0, opacity: 0.9, fontSize: '0.9rem', fontWeight: '500' }}>Pending</p>
+                                    <h3 style={{ margin: '0.5rem 0 0', fontSize: '2rem', fontWeight: '700' }}>{pendingOrders}</h3>
+                                </div>
+                                <i className="fas fa-clock" style={{ fontSize: '2.5rem', opacity: 0.8 }}></i>
+                            </div>
+                        </div>
 
-                    ).map((order, idx) => (
-                        <tbody key={idx}>
-                            <tr className="text-center">
-                                <td>
-                                    {order.id}
-                                </td>
-                                <td>{order.name}</td>
-                                <td>{order.card_number}</td>
-                                <td>{order.address}</td>
-                                <td>{order.ordered_item}</td>
-                                <td>{order.paid_status ?
-                                    <i className="fas fa-check-circle text-success"></i>
-                                    :
-                                    <i className="fas fa-times-circle text-danger"></i>
-                                }</td>
-                                <td>{dateCheck(order.paid_at)}</td>
-                                <td>{order.total_price} INR</td>
-                                <td>{order.is_delivered ?
-                                    <i className="fas fa-check-circle text-success"></i>
-                                    :
-                                    <i className="fas fa-times-circle text-danger"></i>
-                                }</td>
-                                <td>{order.delivered_at}</td>
-                                {userInfo.admin &&
-                                    <td>
-                                        {order.is_delivered ?
-                                            <button
-                                                className="btn btn-outline-danger btn-sm"
-                                                onClick={() => changeDeliveryStatusHandler(order.id, false)}
-                                            >
-                                                {deliveryStatusChangeSpinner
-                                                    &&
-                                                    idOfchangeDeliveryStatus === order.id
-                                                    ?
-                                                    <Spinner animation="border" />
-                                                    :
-                                                    "Mark as Undelivered"}
-                                            </button>
-                                            :
-                                            <button
-                                                className="btn btn-outline-primary btn-sm"
-                                                onClick={() => changeDeliveryStatusHandler(order.id, true)}
-                                            >
-                                                {deliveryStatusChangeSpinner
-                                                    &&
-                                                    idOfchangeDeliveryStatus === order.id
-                                                    ?
-                                                    <Spinner animation="border" />
-                                                    :
-                                                    "Mark as delivered"}
-                                            </button>
-                                        }
-                                    </td>
-                                }
-                            </tr>
-                        </tbody>
-                    ))}
-                </Table>
-                : <Message variant="info">No orders yet.</Message> }
+                        <div style={{
+                            background: 'linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%)',
+                            borderRadius: '20px',
+                            padding: '1.5rem',
+                            color: 'white',
+                            boxShadow: '0 10px 30px rgba(54, 209, 220, 0.3)',
+                            transition: 'transform 0.3s ease'
+                        }} className="stat-card">
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div>
+                                    <p style={{ margin: 0, opacity: 0.9, fontSize: '0.9rem', fontWeight: '500' }}>Revenue</p>
+                                    <h3 style={{ margin: '0.5rem 0 0', fontSize: '1.8rem', fontWeight: '700' }}>৳{totalRevenue.toLocaleString()}</h3>
+                                </div>
+                                <i className="fas fa-chart-pie" style={{ fontSize: '2.5rem', opacity: 0.8 }}></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="container">
+                {/* Loading State */}
+                {loadingOrders && (
+                    <div style={{ 
+                        display: "flex", 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        padding: '3rem',
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(20px)',
+                        borderRadius: '20px',
+                        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)'
+                    }}>
+                        <Spinner 
+                            animation="border" 
+                            style={{ 
+                                color: '#667eea',
+                                width: '3rem',
+                                height: '3rem',
+                                marginRight: '1rem'
+                            }}
+                        />
+                        <h5 style={{ margin: 0, fontWeight: '600', color: '#667eea' }}>Loading Orders...</h5>
+                    </div>
+                )}
+
+                {/* Search Bar */}
+                {userInfo?.admin && !loadingOrders && (
+                    <div style={{ marginBottom: '2rem' }}>
+                        <SearchBarForOrdersPage handleSearchTerm={handleSearchTerm} placeholderValue={placeholderValue} />
+                    </div>
+                )}
+
+                {/* Orders Table */}
+                {!loadingOrders && orders.length > 0 ? (
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(20px)',
+                        borderRadius: '20px',
+                        overflow: 'hidden',
+                        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)'
+                    }}>
+                        <div style={{ overflowX: 'auto' }}>
+                            <Table className="mb-0" style={{ background: 'transparent' }}>
+                                <thead>
+                                    <tr style={{ 
+                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                        color: 'white'
+                                    }}>
+                                        <th style={{ padding: '1.25rem', fontWeight: '600', border: 'none' }}>
+                                            <i className="fas fa-hashtag" style={{ marginRight: '8px' }}></i>
+                                            Order ID
+                                        </th>
+                                        <th style={{ padding: '1.25rem', fontWeight: '600', border: 'none' }}>
+                                            <i className="fas fa-user" style={{ marginRight: '8px' }}></i>
+                                            Customer
+                                        </th>
+                                        <th style={{ padding: '1.25rem', fontWeight: '600', border: 'none' }}>
+                                            <i className="fas fa-credit-card" style={{ marginRight: '8px' }}></i>
+                                            Card Used
+                                        </th>
+                                        <th style={{ padding: '1.25rem', fontWeight: '600', border: 'none' }}>
+                                            <i className="fas fa-map-marker-alt" style={{ marginRight: '8px' }}></i>
+                                            Address
+                                        </th>
+                                        <th style={{ padding: '1.25rem', fontWeight: '600', border: 'none' }}>
+                                            <i className="fas fa-box" style={{ marginRight: '8px' }}></i>
+                                            Item
+                                        </th>
+                                        <th style={{ padding: '1.25rem', fontWeight: '600', border: 'none' }}>
+                                            <i className="fas fa-money-bill" style={{ marginRight: '8px' }}></i>
+                                            Amount
+                                        </th>
+                                        <th style={{ padding: '1.25rem', fontWeight: '600', border: 'none' }}>
+                                            <i className="fas fa-truck" style={{ marginRight: '8px' }}></i>
+                                            Status
+                                        </th>
+                                        {userInfo?.admin && (
+                                            <th style={{ padding: '1.25rem', fontWeight: '600', border: 'none' }}>
+                                                <i className="fas fa-cogs" style={{ marginRight: '8px' }}></i>
+                                                Actions
+                                            </th>
+                                        )}
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {orders.filter((item) => (
+                                        item.name.toLowerCase().includes(cloneSearchTerm) ||
+                                        item.ordered_item.toLowerCase().includes(cloneSearchTerm) ||
+                                        item.address.toLowerCase().includes(cloneSearchTerm)
+                                    )).map((order, idx) => (
+                                        <tr key={idx} style={{ 
+                                            transition: 'all 0.3s ease',
+                                            borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
+                                        }} className="order-row">
+                                            <td style={{ padding: '1.25rem', fontWeight: '600', color: '#667eea' }}>
+                                                #{order.id}
+                                            </td>
+                                            <td style={{ padding: '1.25rem', fontWeight: '500' }}>
+                                                {order.name}
+                                            </td>
+                                            <td style={{ padding: '1.25rem', color: '#6b7280' }}>
+                                                {order.card_number}
+                                            </td>
+                                            <td style={{ padding: '1.25rem', color: '#6b7280', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                {order.address}
+                                            </td>
+                                            <td style={{ padding: '1.25rem', fontWeight: '500' }}>
+                                                {order.ordered_item}
+                                            </td>
+                                            <td style={{ padding: '1.25rem', fontWeight: '700', color: '#11998e' }}>
+                                                ৳{order.total_price}
+                                            </td>
+                                            <td style={{ padding: '1.25rem' }}>
+                                                {order.is_delivered ? (
+                                                    <span style={{
+                                                        background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+                                                        color: 'white',
+                                                        padding: '6px 12px',
+                                                        borderRadius: '12px',
+                                                        fontSize: '0.85rem',
+                                                        fontWeight: '600',
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center'
+                                                    }}>
+                                                        <i className="fas fa-check-circle" style={{ marginRight: '6px' }}></i>
+                                                        Delivered
+                                                    </span>
+                                                ) : (
+                                                    <span style={{
+                                                        background: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)',
+                                                        color: 'white',
+                                                        padding: '6px 12px',
+                                                        borderRadius: '12px',
+                                                        fontSize: '0.85rem',
+                                                        fontWeight: '600',
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center'
+                                                    }}>
+                                                        <i className="fas fa-clock" style={{ marginRight: '6px' }}></i>
+                                                        Pending
+                                                    </span>
+                                                )}
+                                            </td>
+                                            {userInfo?.admin && (
+                                                <td style={{ padding: '1.25rem' }}>
+                                                    {order.is_delivered ? (
+                                                        <button
+                                                            className="btn btn-sm"
+                                                            style={{
+                                                                background: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)',
+                                                                border: 'none',
+                                                                borderRadius: '8px',
+                                                                color: 'white',
+                                                                padding: '8px 16px',
+                                                                fontWeight: '600',
+                                                                fontSize: '0.85rem',
+                                                                transition: 'all 0.3s ease'
+                                                            }}
+                                                            onClick={() => changeDeliveryStatusHandler(order.id, false)}
+                                                        >
+                                                            {deliveryStatusChangeSpinner && idOfchangeDeliveryStatus === order.id ? (
+                                                                <Spinner animation="border" size="sm" />
+                                                            ) : (
+                                                                <>
+                                                                    <i className="fas fa-times" style={{ marginRight: '6px' }}></i>
+                                                                    Mark Undelivered
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            className="btn btn-sm"
+                                                            style={{
+                                                                background: 'linear-gradient(135d45deg, #11998e 0%, #38ef7d 100%)',
+                                                                border: 'none',
+                                                                borderRadius: '8px',
+                                                                color: 'white',
+                                                                padding: '8px 16px',
+                                                                fontWeight: '600',
+                                                                fontSize: '0.85rem',
+                                                                transition: 'all 0.3s ease'
+                                                            }}
+                                                            onClick={() => changeDeliveryStatusHandler(order.id, true)}
+                                                        >
+                                                            {deliveryStatusChangeSpinner && idOfchangeDeliveryStatus === order.id ? (
+                                                                <Spinner animation="border" size="sm" />
+                                                            ) : (
+                                                                <>
+                                                                    <i className="fas fa-check" style={{ marginRight: '6px' }}></i>
+                                                                    Mark Delivered
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            )}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </div>
+                    </div>
+                ) : !loadingOrders && (
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(20px)',
+                        borderRadius: '20px',
+                        padding: '3rem',
+                        textAlign: 'center',
+                        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)'
+                    }}>
+                        <Message variant="info">
+                            <i className="fas fa-inbox" style={{ fontSize: '3rem', color: '#36d1dc', marginBottom: '1rem', display: 'block' }}></i>
+                            No orders yet.
+                        </Message>
+                    </div>
+                )}
+            </div>
+
+            <style jsx>{`
+                .stat-card:hover {
+                    transform: translateY(-8px);
+                }
+                
+                .order-row:hover {
+                    background: rgba(102, 126, 234, 0.03);
+                    transform: scale(1.01);
+                }
+                
+                .btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+                }
+            `}</style>
         </div>
     )
 }
