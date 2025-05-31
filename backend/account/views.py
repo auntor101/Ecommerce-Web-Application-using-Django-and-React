@@ -17,7 +17,9 @@ from .serializers import (
     BillingAddressSerializer,
     AllOrdersListSerializer
 )
+import logging
 
+logger = logging.getLogger(__name__)
 
 # register user
 class UserRegisterView(APIView):
@@ -29,6 +31,7 @@ class UserRegisterView(APIView):
         email = data["email"]
 
         if username == "" or email == "":
+            logger.warning(f"Registration attempt with empty username or email from IP {request.META.get('REMOTE_ADDR')}")
             return Response({"detial": "username or email cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
 
         else:
@@ -37,9 +40,11 @@ class UserRegisterView(APIView):
 
             if check_username:
                 message = "A user with that username already exist!"
+                logger.warning(f"Registration attempt with existing username: {username} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response({"detail": message}, status=status.HTTP_403_FORBIDDEN)
             if check_email:
                 message = "A user with that email address already exist!"
+                logger.warning(f"Registration attempt with existing email: {email} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response({"detail": message}, status=status.HTTP_403_FORBIDDEN)
             else:
                 user = User.objects.create(
@@ -48,6 +53,7 @@ class UserRegisterView(APIView):
                     password=make_password(data["password"]),
                 )
                 serializer = UserRegisterTokenSerializer(user, many=False)
+                logger.info(f"User registered: {username} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response(serializer.data)
 
 # login user (customizing it so that we can see fields like username, email etc as a response 
@@ -103,8 +109,10 @@ class UserAccountUpdateView(APIView):
                 user.save()
                 serializer = UserSerializer(user, many=False)
                 message = {"details": "User Successfully Updated.", "user": serializer.data}
+                logger.info(f"User updated their account: {user.username} (id={user.id}) from IP {request.META.get('REMOTE_ADDR')}")
                 return Response(message, status=status.HTTP_200_OK)
             else:
+                logger.warning(f"Permission denied for user update: user id {request.user.id} tried to update user id {user.id} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response({"details": "Permission Denied."}, status.status.HTTP_403_FORBIDDEN)
         else:
             return Response({"details": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -124,10 +132,13 @@ class UserAccountDeleteView(APIView):
             if request.user.id == user.id:
                 if check_password(data["password"], user.password):
                     user.delete()
+                    logger.info(f"User deleted their account: {user.username} (id={user.id}) from IP {request.META.get('REMOTE_ADDR')}")
                     return Response({"details": "User successfully deleted."}, status=status.HTTP_204_NO_CONTENT)
                 else:
+                    logger.warning(f"Failed account deletion attempt due to wrong password for user: {user.username} (id={user.id}) from IP {request.META.get('REMOTE_ADDR')}")
                     return Response({"details": "Incorrect password."}, status=status.HTTP_401_UNAUTHORIZED)
             else:
+                logger.warning(f"Permission denied for account deletion: user id {request.user.id} tried to delete user id {user.id} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response({"details": "Permission Denied."}, status=status.HTTP_403_FORBIDDEN)
         except:
             return Response({"details": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -175,8 +186,10 @@ class CreateUserAddressView(APIView):
         serializer = BillingAddressSerializer(data=new_address, many=False)
         if serializer.is_valid():
             serializer.save()
+            logger.info(f"Billing address created for user id {request.user.id} from IP {request.META.get('REMOTE_ADDR')}")
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
+            logger.warning(f"Failed billing address creation for user id {request.user.id} from IP {request.META.get('REMOTE_ADDR')}: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -207,10 +220,13 @@ class UpdateUserAddressView(APIView):
                 serializer = BillingAddressSerializer(user_address, data=updated_address)
                 if serializer.is_valid():
                     serializer.save()
+                    logger.info(f"Billing address updated for user id {request.user.id} from IP {request.META.get('REMOTE_ADDR')}")
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 else:
+                    logger.warning(f"Failed billing address update for user id {request.user.id} from IP {request.META.get('REMOTE_ADDR')}: {serializer.errors}")
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
+                logger.warning(f"Permission denied for billing address update: user id {request.user.id} tried to update address id {pk} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response({"details": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
         except:
             return Response({"details": "Not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -226,8 +242,10 @@ class DeleteUserAddressView(APIView):
 
             if request.user.id == user_address.user.id:
                 user_address.delete()
+                logger.info(f"Billing address deleted for user id {request.user.id} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response({"details": "Address successfully deleted."}, status=status.HTTP_204_NO_CONTENT)
             else:
+                logger.warning(f"Permission denied for billing address deletion: user id {request.user.id} tried to delete address id {pk} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response({"details": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
         except:
             return Response({"details": "Not found."}, status=status.HTTP_404_NOT_FOUND)
