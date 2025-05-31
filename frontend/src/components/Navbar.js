@@ -5,6 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { logout } from '../actions/userActions'
 import { useHistory } from "react-router-dom";
 import SearchBarForProducts from './SearchBarForProducts'
+import CartIcon from './CartIcon'
 
 function NavBar() {
     let history = useHistory()
@@ -89,6 +90,10 @@ function NavBar() {
                                 <SearchBarForProducts />
                             </div>
                         </Nav>
+
+                        <div className="d-flex align-items-center">
+                            <CartIcon />
+                        </div>
 
                         {/* login-logout condition here */}
                         {userInfo ? (

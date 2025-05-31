@@ -23,6 +23,9 @@ import {
     getAllOrdersReducer,
 } from "./userReducers";
 
+import { cartReducer } from "./cartReducer";
+import { wishlistReducer } from "./wishlistReducers";
+
 const allReducers = combineReducers({
     productsListReducer,
     productDetailsReducer,
@@ -42,6 +45,8 @@ const allReducers = combineReducers({
     userDetailsReducer,
     userDetailsUpdateReducer,
     deleteUserAccountReducer,
+    cartReducer,
+    wishlistReducer,
 })
 
 export default allReducers

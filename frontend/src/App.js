@@ -18,6 +18,8 @@ import OrdersListPage from './pages/OrdersListPage'
 import ProductCreatePage from './pages/ProductCreatePage'
 import ProductUpdatePage from './pages/ProductUpdatePage'
 import NotFound from './pages/NotFoundPage'
+import CardPaymentPage from './pages/CardPaymentPage'
+import BkashPaymentPage from './pages/BkashPaymentPage'
 
 
 const App = () => {
@@ -42,6 +44,8 @@ const App = () => {
             <Route path="/all-addresses/" component={AllAddressesOfUserPage} exact />
             <Route path="/all-addresses/:id/" component={AddressUpdatePage} exact />
             <Route path="/all-orders/" component={OrdersListPage} exact />
+            <Route path="/payment/:type" component={CardPaymentPage} exact />
+            <Route path="/payment/bkash" component={BkashPaymentPage} exact />
             <Route path="" component={NotFound} exact />
           </Switch>
         </div>
