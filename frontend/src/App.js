@@ -18,16 +18,19 @@ import OrdersListPage from './pages/OrdersListPage'
 import ProductCreatePage from './pages/ProductCreatePage'
 import ProductUpdatePage from './pages/ProductUpdatePage'
 import NotFound from './pages/NotFoundPage'
-import CardPaymentPage from './pages/CardPaymentPage'
+// Import new payment pages
+import PaymentMethodSelection from './pages/PaymentMethodSelection'
 import BkashPaymentPage from './pages/BkashPaymentPage'
-
+import CardPaymentPage from './pages/CardPaymentPage'
+// Import cart drawer
+import CartDrawer from './components/CartDrawer'
 
 const App = () => {
-
   return (
     <div>
       <Router>
         <NavBar />
+        <CartDrawer />
         <div className="container mt-4">
           <Switch>
             <Route path="/" component={ProductListPage} exact />
@@ -36,6 +39,10 @@ const App = () => {
             <Route path="/product-update/:id/" component={ProductUpdatePage} exact />
             <Route path="/product/:id/checkout/" component={CheckoutPage} exact />
             <Route path="/payment-status" component={PaymentStatus} exact />
+            {/* New payment routes */}
+            <Route path="/payment-method" component={PaymentMethodSelection} exact />
+            <Route path="/payment/bkash" component={BkashPaymentPage} exact />
+            <Route path="/payment/:type" component={CardPaymentPage} exact />
             <Route path="/login" component={Login} exact />
             <Route path="/register" component={Register} exact />
             <Route path="/account" component={AccountPage} exact />
@@ -44,8 +51,6 @@ const App = () => {
             <Route path="/all-addresses/" component={AllAddressesOfUserPage} exact />
             <Route path="/all-addresses/:id/" component={AddressUpdatePage} exact />
             <Route path="/all-orders/" component={OrdersListPage} exact />
-            <Route path="/payment/:type" component={CardPaymentPage} exact />
-            <Route path="/payment/bkash" component={BkashPaymentPage} exact />
             <Route path="" component={NotFound} exact />
           </Switch>
         </div>

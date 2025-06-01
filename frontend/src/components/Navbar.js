@@ -5,6 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { logout } from '../actions/userActions'
 import { useHistory } from "react-router-dom";
 import SearchBarForProducts from './SearchBarForProducts'
+// Import CartIcon
 import CartIcon from './CartIcon'
 
 function NavBar() {
@@ -91,113 +92,115 @@ function NavBar() {
                             </div>
                         </Nav>
 
-                        <div className="d-flex align-items-center">
+                        {/* User Actions */}
+                        <div className="d-flex align-items-center gap-3">
+                            {/* Cart Icon */}
                             <CartIcon />
-                        </div>
 
-                        {/* login-logout condition here */}
-                        {userInfo ? (
-                            <div>
-                                <NavDropdown 
-                                    className="navbar-nav text-capitalize" 
-                                    title={
-                                        <span style={{ 
-                                            fontWeight: '600',
-                                            color: '#e2e8f0'
-                                        }}>
-                                            <i className="fas fa-user-circle" style={{ marginRight: '8px' }}></i>
-                                            {userInfo.username}
-                                        </span>
-                                    } 
-                                    id='username'
-                                    style={{
-                                        borderRadius: '12px'
-                                    }}
-                                >
-                                    <LinkContainer to="/account">
-                                        <NavDropdown.Item 
-                                            style={{ 
-                                                padding: '12px 20px',
-                                                fontWeight: '500',
-                                                transition: 'all 0.3s ease'
-                                            }}
-                                        >
-                                            <i className="fas fa-user" style={{ marginRight: '10px', color: '#667eea' }}></i>
-                                            Account Settings
-                                        </NavDropdown.Item>
-                                    </LinkContainer>
-                                    
-                                    <LinkContainer to="/all-addresses/">
-                                        <NavDropdown.Item 
-                                            style={{ 
-                                                padding: '12px 20px',
-                                                fontWeight: '500',
-                                                transition: 'all 0.3s ease'
-                                            }}
-                                        >
-                                            <i className="fas fa-map-marker-alt" style={{ marginRight: '10px', color: '#11998e' }}></i>
-                                            Address Settings
-                                        </NavDropdown.Item>
-                                    </LinkContainer>
-                                    
-                                    <LinkContainer to="/stripe-card-details/">
-                                        <NavDropdown.Item 
-                                            style={{ 
-                                                padding: '12px 20px',
-                                                fontWeight: '500',
-                                                transition: 'all 0.3s ease'
-                                            }}
-                                        >
-                                            <i className="fas fa-credit-card" style={{ marginRight: '10px', color: '#36d1dc' }}></i>
-                                            Card Settings
-                                        </NavDropdown.Item>
-                                    </LinkContainer>
-                                    
-                                    <LinkContainer to="/all-orders/">
-                                        <NavDropdown.Item 
-                                            style={{ 
-                                                padding: '12px 20px',
-                                                fontWeight: '500',
-                                                transition: 'all 0.3s ease'
-                                            }}
-                                        >
-                                            <i className="fas fa-shopping-bag" style={{ marginRight: '10px', color: '#764ba2' }}></i>
-                                            All Orders
-                                        </NavDropdown.Item>
-                                    </LinkContainer>
-                                    
-                                    <NavDropdown.Divider />
-                                    
-                                    <NavDropdown.Item 
-                                        onClick={logoutHandler}
-                                        style={{ 
-                                            padding: '12px 20px',
-                                            fontWeight: '500',
-                                            transition: 'all 0.3s ease',
-                                            color: '#ff416c'
+                            {/* login-logout condition here */}
+                            {userInfo ? (
+                                <div>
+                                    <NavDropdown 
+                                        className="navbar-nav text-capitalize" 
+                                        title={
+                                            <span style={{ 
+                                                fontWeight: '600',
+                                                color: '#e2e8f0'
+                                            }}>
+                                                <i className="fas fa-user-circle" style={{ marginRight: '8px' }}></i>
+                                                {userInfo.username}
+                                            </span>
+                                        } 
+                                        id='username'
+                                        style={{
+                                            borderRadius: '12px'
                                         }}
                                     >
-                                        <i className="fas fa-sign-out-alt" style={{ marginRight: '10px' }}></i>
-                                        Logout
-                                    </NavDropdown.Item>
-                                </NavDropdown>
-                            </div>
-                        ) : (
-                            <LinkContainer to="/login">
-                                <Nav.Link 
-                                    style={{ 
-                                        fontWeight: '500',
-                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                        borderRadius: '8px',
-                                        padding: '8px 16px',
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                    className="login-btn"
-                                >
-                                    <i className="fas fa-user"></i> Login
-                                </Nav.Link>
-                            </LinkContainer>
-                        )}
+                                        <LinkContainer to="/account">
+                                            <NavDropdown.Item 
+                                                style={{ 
+                                                    padding: '12px 20px',
+                                                    fontWeight: '500',
+                                                    transition: 'all 0.3s ease'
+                                                }}
+                                            >
+                                                <i className="fas fa-user" style={{ marginRight: '10px', color: '#667eea' }}></i>
+                                                Account Settings
+                                            </NavDropdown.Item>
+                                        </LinkContainer>
+                                        
+                                        <LinkContainer to="/all-addresses/">
+                                            <NavDropdown.Item 
+                                                style={{ 
+                                                    padding: '12px 20px',
+                                                    fontWeight: '500',
+                                                    transition: 'all 0.3s ease'
+                                                }}
+                                            >
+                                                <i className="fas fa-map-marker-alt" style={{ marginRight: '10px', color: '#11998e' }}></i>
+                                                Address Settings
+                                            </NavDropdown.Item>
+                                        </LinkContainer>
+                                        
+                                        <LinkContainer to="/stripe-card-details/">
+                                            <NavDropdown.Item 
+                                                style={{ 
+                                                    padding: '12px 20px',
+                                                    fontWeight: '500',
+                                                    transition: 'all 0.3s ease'
+                                                }}
+                                            >
+                                                <i className="fas fa-credit-card" style={{ marginRight: '10px', color: '#36d1dc' }}></i>
+                                                Card Settings
+                                            </NavDropdown.Item>
+                                        </LinkContainer>
+                                        
+                                        <LinkContainer to="/all-orders/">
+                                            <NavDropdown.Item 
+                                                style={{ 
+                                                    padding: '12px 20px',
+                                                    fontWeight: '500',
+                                                    transition: 'all 0.3s ease'
+                                                }}
+                                            >
+                                                <i className="fas fa-shopping-bag" style={{ marginRight: '10px', color: '#764ba2' }}></i>
+                                                All Orders
+                                            </NavDropdown.Item>
+                                        </LinkContainer>
+                                        
+                                        <NavDropdown.Divider />
+                                        
+                                        <NavDropdown.Item 
+                                            onClick={logoutHandler}
+                                            style={{ 
+                                                padding: '12px 20px',
+                                                fontWeight: '500',
+                                                transition: 'all 0.3s ease',
+                                                color: '#ff416c'
+                                            }}
+                                        >
+                                            <i className="fas fa-sign-out-alt" style={{ marginRight: '10px' }}></i>
+                                            Logout
+                                        </NavDropdown.Item>
+                                    </NavDropdown>
+                                </div>
+                            ) : (
+                                <LinkContainer to="/login">
+                                    <Nav.Link 
+                                        style={{ 
+                                            fontWeight: '500',
+                                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                            borderRadius: '8px',
+                                            padding: '8px 16px',
+                                            transition: 'all 0.3s ease'
+                                        }}
+                                        className="login-btn"
+                                    >
+                                        <i className="fas fa-user"></i> Login
+                                    </Nav.Link>
+                                </LinkContainer>
+                            )}
+                        </div>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>

@@ -11,8 +11,13 @@ const wishlistItemsFromStorage = localStorage.getItem('wishlistItems') ? JSON.pa
 
 let initialState = {
     userLoginReducer: { userInfo: userInfoFromStorage },
-    cartReducer: { cartItems: cartItemsFromStorage, isOpen: false },
-    wishlistReducer: { items: wishlistItemsFromStorage }
+    cartReducer: { 
+        cartItems: cartItemsFromStorage,
+        isOpen: false 
+    },
+    wishlistReducer: { 
+        items: wishlistItemsFromStorage 
+    }
 }
 
 const store = createStore(allReducers, initialState, composeWithDevTools(applyMiddleware(...middleware)))
