@@ -1,0 +1,66 @@
+[
+  {
+    "model": "product.category",
+    "pk": 1,
+    "fields": {
+      "name": "Electronics",
+      "description": "Electronic devices, gadgets, and accessories"
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 2,
+    "fields": {
+      "name": "Clothing",
+      "description": "Fashion clothing, shoes, and accessories for men and women"
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 3,
+    "fields": {
+      "name": "Home & Garden",
+      "description": "Home improvement, furniture, and garden supplies"
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 4,
+    "fields": {
+      "name": "Books",
+      "description": "Books, magazines, and educational materials"
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 5,
+    "fields": {
+      "name": "Sports & Fitness",
+      "description": "Sports equipment, fitness gear, and outdoor activities"
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 6,
+    "fields": {
+      "name": "Health & Beauty",
+      "description": "Health products, cosmetics, and personal care items"
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 7,
+    "fields": {
+      "name": "Toys & Games",
+      "description": "Toys, games, and entertainment for all ages"
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 8,
+    "fields": {
+      "name": "Automotive",
+      "description": "Car accessories, parts, and automotive tools"
+    }
+  }
+]

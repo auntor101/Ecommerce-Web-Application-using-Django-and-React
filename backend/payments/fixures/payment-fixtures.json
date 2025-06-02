@@ -1,0 +1,46 @@
+[
+  {
+    "model": "payments.paymentmethod",
+    "pk": 1,
+    "fields": {
+      "name": "bkash",
+      "display_name": "bKash",
+      "is_active": true,
+      "icon": "mobile-alt",
+      "description": "Pay with your bKash mobile wallet. Fast, secure, and convenient."
+    }
+  },
+  {
+    "model": "payments.paymentmethod",
+    "pk": 2,
+    "fields": {
+      "name": "visa",
+      "display_name": "Visa",
+      "is_active": true,
+      "icon": "credit-card",
+      "description": "Pay securely with your Visa credit or debit card."
+    }
+  },
+  {
+    "model": "payments.paymentmethod",
+    "pk": 3,
+    "fields": {
+      "name": "mastercard",
+      "display_name": "MasterCard",
+      "is_active": true,
+      "icon": "credit-card",
+      "description": "Pay securely with your MasterCard credit or debit card."
+    }
+  },
+  {
+    "model": "payments.paymentmethod",
+    "pk": 4,
+    "fields": {
+      "name": "cash",
+      "display_name": "Cash on Delivery",
+      "is_active": true,
+      "icon": "money-bill",
+      "description": "Pay with cash when your order is delivered to your doorstep."
+    }
+  }
+]
