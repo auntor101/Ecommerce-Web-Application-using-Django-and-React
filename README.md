@@ -10,7 +10,7 @@ A modern ecommerce platform built with Django (backend) and React (frontend).
 - Order management
 - Responsive, modern UI
 
-## Getting Started (Windows)
+## Getting Started
 
 ### Prerequisites
 - Python 3.8+
