@@ -142,19 +142,6 @@ function NavBar() {
                                             </NavDropdown.Item>
                                         </LinkContainer>
                                         
-                                        <LinkContainer to="/stripe-card-details/">
-                                            <NavDropdown.Item 
-                                                style={{ 
-                                                    padding: '12px 20px',
-                                                    fontWeight: '500',
-                                                    transition: 'all 0.3s ease'
-                                                }}
-                                            >
-                                                <i className="fas fa-credit-card" style={{ marginRight: '10px', color: '#36d1dc' }}></i>
-                                                Card Settings
-                                            </NavDropdown.Item>
-                                        </LinkContainer>
-                                        
                                         <LinkContainer to="/all-orders/">
                                             <NavDropdown.Item 
                                                 style={{ 
