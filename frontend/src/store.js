@@ -2,6 +2,9 @@ import {createStore, applyMiddleware} from 'redux'
 import { composeWithDevTools} from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 import allReducers from './reducers/index'
+import { cartReducer } from './reducers/cartReducers';
+import { wishlistReducer } from './reducers/wishlistReducers';
+import { cardPaymentReducer } from './reducers/cardReducers';
 
 const middleware = [thunk]
 
@@ -17,7 +20,10 @@ let initialState = {
     },
     wishlistReducer: { 
         items: wishlistItemsFromStorage 
-    }
+    },
+    cardPaymentReducer: {
+        // Initialize cardPaymentReducer state
+    },
 }
 
 const store = createStore(allReducers, initialState, composeWithDevTools(applyMiddleware(...middleware)))

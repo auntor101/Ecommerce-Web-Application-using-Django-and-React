@@ -1,5 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import ProductListPage from './pages/ProductsListPage'
 import ProductDetailsPage from './pages/ProductDetailsPage'
 import CheckoutPage from './pages/CheckoutPage'
@@ -18,7 +20,9 @@ import OrdersListPage from './pages/OrdersListPage'
 import ProductCreatePage from './pages/ProductCreatePage'
 import ProductUpdatePage from './pages/ProductUpdatePage'
 import NotFound from './pages/NotFoundPage'
-// Import new payment pages
+import PasswordResetPage from './pages/PasswordResetPage'
+import PasswordResetConfirmPage from './pages/PasswordResetConfirmPage'
+// Import payment pages
 import PaymentMethodSelection from './pages/PaymentMethodSelection'
 import BkashPaymentPage from './pages/BkashPaymentPage'
 import CardPaymentPage from './pages/CardPaymentPage'
@@ -31,6 +35,7 @@ const App = () => {
       <Router>
         <NavBar />
         <CartDrawer />
+        <ToastContainer position="top-right" autoClose={3000} />
         <div className="container mt-4">
           <Switch>
             <Route path="/" component={ProductListPage} exact />
@@ -39,19 +44,22 @@ const App = () => {
             <Route path="/product-update/:id/" component={ProductUpdatePage} exact />
             <Route path="/product/:id/checkout/" component={CheckoutPage} exact />
             <Route path="/payment-status" component={PaymentStatus} exact />
-            {/* New payment routes */}
+            {/* Payment routes */}
             <Route path="/payment-method" component={PaymentMethodSelection} exact />
             <Route path="/payment/bkash" component={BkashPaymentPage} exact />
             <Route path="/payment/:type" component={CardPaymentPage} exact />
+            {/* Auth routes */}
             <Route path="/login" component={Login} exact />
             <Route path="/register" component={Register} exact />
+            <Route path="/password-reset" component={PasswordResetPage} exact />
+            <Route path="/password-reset/:uid/:token" component={PasswordResetConfirmPage} exact />
             <Route path="/account" component={AccountPage} exact />
             <Route path="/account/update/" component={AccountUpdatePage} exact />
             <Route path="/account/delete/" component={DeleteUserAccountPage} exact />
             <Route path="/all-addresses/" component={AllAddressesOfUserPage} exact />
             <Route path="/all-addresses/:id/" component={AddressUpdatePage} exact />
             <Route path="/all-orders/" component={OrdersListPage} exact />
-            <Route path="" component={NotFound} exact />
+            <Route path="*" component={NotFound} />
           </Switch>
         </div>
       </Router>

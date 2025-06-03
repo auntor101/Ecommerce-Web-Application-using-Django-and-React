@@ -53,6 +53,7 @@ import {
 } from '../constants/index'
 
 import axios from 'axios'
+import { toast } from 'react-toastify';
 
 // Login
 export const login = (username, password) => async (dispatch) => {
@@ -525,3 +526,46 @@ export const getAllOrders = () => async (dispatch, getState) => {
         })
     }
 }
+
+export const requestPasswordReset = (email) => async (dispatch) => {
+    try {
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+        
+        await axios.post(
+            "/account/password-reset/",
+            { email },
+            config
+        );
+        
+        return true;
+    } catch (error) {
+        toast.error(error.response?.data?.detail || "Password reset request failed");
+        throw error;
+    }
+};
+
+export const resetPassword = (uid, token, password) => async (dispatch) => {
+    try {
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+        
+        await axios.post(
+            `/account/password-reset/${uid}/${token}/`,
+            { password },
+            config
+        );
+        
+        toast.success("Password has been reset successfully");
+        return true;
+    } catch (error) {
+        toast.error(error.response?.data?.detail || "Password reset failed");
+        throw error;
+    }
+};

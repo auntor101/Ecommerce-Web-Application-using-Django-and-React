@@ -461,17 +461,79 @@ h1 {
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    margin-top: 1rem;
-    padding: 1rem;
-    border-radius: 16px;
+    width: 100%;
+    padding: 0 15px;
+    margin: 1rem 0;
+    border-radius: 10px;
   }
   
+  .product-list {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px;
+  }
+  
+  .product-details {
+    flex-direction: column;
+  }
+  
+  .product-image {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .checkout-form {
+    width: 100%;
+  }
+
   .card {
-    border-radius: 16px !important;
+    margin: 0 !important;
+    transform: none !important;
   }
   
   .product-card-hover:hover {
-    transform: translateY(-6px) scale(1.01);
+    transform: translateY(-5px) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-list {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .navbar-nav {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .searchbox-css {
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .table td, .table th {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+  
+  .form-control {
+    padding: 8px;
   }
 }
 

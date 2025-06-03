@@ -23,9 +23,10 @@ import {
     getAllOrdersReducer,
 } from "./userReducers";
 
-// Import new reducers
+// Import reducers
 import { cartReducer } from "./cartReducers";
 import { wishlistReducer } from "./wishlistReducers";
+import { cardPaymentReducer } from "./cardReducers";
 
 const allReducers = combineReducers({
     productsListReducer,
@@ -46,9 +47,10 @@ const allReducers = combineReducers({
     userDetailsReducer,
     userDetailsUpdateReducer,
     deleteUserAccountReducer,
-    // Add new reducers
+    // Redux state
     cartReducer,
     wishlistReducer,
+    cardPaymentReducer
 })
 
 export default allReducers
