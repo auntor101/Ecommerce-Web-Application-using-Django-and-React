@@ -1,6 +1,6 @@
-# ShopEasy E-commerce Platform
+# Auntor Shopping Mall E-commerce Platform
 
-A modern, full-stack e-commerce web application built with Django (backend) and React (frontend). ShopEasy offers robust product management, secure authentication, advanced cart and wishlist features, and integrated payment processing (bKash, Visa, MasterCard, and Cash on Delivery).
+A modern, full-stack e-commerce web application built with Django (backend) and React (frontend). Auntor Shopping Mall offers robust product management, secure authentication, advanced cart and wishlist features, and integrated payment processing (bKash, Visa, MasterCard, and Cash on Delivery).
 
 ---
 
@@ -66,8 +66,8 @@ pip install -r requirements.txt
 ```bash
 # Start MySQL and login
 mysql -u root -p
-CREATE DATABASE shopeasy_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-GRANT ALL PRIVILEGES ON shopeasy_db.* TO 'your_user'@'localhost';
+CREATE DATABASE auntorshoppingmall_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+GRANT ALL PRIVILEGES ON auntorshoppingmall_db.* TO 'your_user'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
 ```
@@ -80,7 +80,7 @@ cp .env.example .env
 
 ### 4. Django Setup & Migrate
 ```bash
-python manage.py setup_shopeasy
+python manage.py setup_auntorshoppingmall
 python manage.py migrate
 ```
 
@@ -175,7 +175,7 @@ coverage html
 
 ## 🛠️ Management Commands
 
-- **Setup**: `python manage.py setup_shopeasy [--admin-username USER --admin-password PASS]`
+- **Setup**: `python manage.py setup_auntorshoppingmall [--admin-username USER --admin-password PASS]`
 - **Cleanup**: `python manage.py cleanup_data --days 30 --cleanup-carts --cleanup-logs`
 - **Dry Run**: `python manage.py cleanup_data --dry-run`
 - **Load Data**: `python manage.py loaddata initial_categories.json`
@@ -217,17 +217,4 @@ coverage html
 
 ---
 
-## 🤝 Contributing
-Pull requests are welcome! Please open an issue first to discuss changes.
 
----
-
-## 📞 Support
-- **Health Check**: `GET /api/health/`
-- **API Docs**: `GET /api/docs/`
-- **Logging**: All requests/errors are logged for debugging.
-
----
-
-## License
-MIT

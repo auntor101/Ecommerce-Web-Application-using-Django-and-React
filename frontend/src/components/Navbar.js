@@ -50,7 +50,7 @@ function NavBar() {
                             }}
                         >
                             <i className="mb-2 fas fa-home" style={{ marginRight: '10px' }}></i>
-                            ShopEasy
+                            Auntor Shopping Mall
                         </Navbar.Brand>
                     </LinkContainer>
                     

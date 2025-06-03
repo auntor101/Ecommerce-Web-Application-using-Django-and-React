@@ -8,7 +8,7 @@ import os
 
 
 class Command(BaseCommand):
-    help = 'Set up ShopEasy application with initial data'
+    help = 'Set up Auntor Shopping Mall application with initial data'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -25,8 +25,8 @@ class Command(BaseCommand):
         parser.add_argument(
             '--admin-email',
             type=str,
-            default='admin@shopeasy.com',
-            help='Admin email (default: admin@shopeasy.com)',
+            default='admin@auntorshoppingmall.com',
+            help='Admin email (default: admin@auntorshoppingmall.com)',
         )
         parser.add_argument(
             '--admin-password',
@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write(
-            self.style.SUCCESS('Setting up ShopEasy application...')
+            self.style.SUCCESS('Setting up Auntor Shopping Mall application...')
         )
 
         try:
@@ -74,7 +74,7 @@ class Command(BaseCommand):
 
                 self.stdout.write(
                     self.style.SUCCESS(
-                        '\n✅ ShopEasy setup completed successfully!'
+                        '\n✅ Auntor Shopping Mall setup completed successfully!'
                     )
                 )
                 self._print_summary(options)
@@ -188,7 +188,7 @@ class Command(BaseCommand):
             self.stdout.write(f"  Password: {options['admin_password']}")
             self.stdout.write(f"  Admin URL: http://localhost:8000/admin/")
         
-        self.stdout.write('\n🚀 Your ShopEasy application is ready!')
+        self.stdout.write('\n🚀 Your Auntor Shopping Mall application is ready!')
         self.stdout.write('   Start the server with: python manage.py runserver')
         self.stdout.write('   API Documentation: http://localhost:8000/api/docs/')
         self.stdout.write('='*50)

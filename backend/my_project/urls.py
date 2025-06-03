@@ -10,7 +10,7 @@ import json
 def api_health_check(request):
     return JsonResponse({
         'status': 'healthy',
-        'message': 'ShopEasy API is running',
+        'message': 'Auntor Shopping Mall API is running',
         'version': '2.0.0',
         'debug': settings.DEBUG
     })
@@ -18,7 +18,7 @@ def api_health_check(request):
 # API Documentation View
 def api_docs(request):
     docs = {
-        'title': 'ShopEasy API Documentation',
+        'title': 'Auntor Shopping Mall API Documentation',
         'version': '2.0.0',
         'base_url': f"{request.scheme}://{request.get_host()}/api/",
         'endpoints': {
@@ -104,6 +104,6 @@ handler404 = 'my_project.views.page_not_found'
 handler500 = 'my_project.views.server_error'
 
 # Admin site customization
-admin.site.site_header = 'ShopEasy Administration'
-admin.site.site_title = 'ShopEasy Admin'
-admin.site.index_title = 'Welcome to ShopEasy Administration'
+admin.site.site_header = 'Auntor Shopping Mall Administration'
+admin.site.site_title = 'Auntor Shopping Mall Admin'
+admin.site.index_title = 'Welcome to Auntor Shopping Mall Administration'
