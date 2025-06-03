@@ -31,14 +31,19 @@ class Command(BaseCommand):
         parser.add_argument(
             '--admin-password',
             type=str,
-            default='admin123',
-            help='Admin password (default: admin123)',
+            help='Admin password. Required if not skipping admin creation.',
         )
 
     def handle(self, *args, **options):
         self.stdout.write(
             self.style.SUCCESS('Setting up Auntor Shopping Mall application...')
         )
+
+        if not options['skip_admin'] and not options.get('admin_password'):
+            from django.core.management.base import CommandError
+            raise CommandError(
+                "Admin password is required. Please provide it using --admin-password."
+            )
 
         try:
             with transaction.atomic():

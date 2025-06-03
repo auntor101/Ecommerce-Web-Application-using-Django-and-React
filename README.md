@@ -40,7 +40,7 @@ A modern, full-stack e-commerce web application built with Django (backend) and 
 ---
 
 ## 📦 Prerequisites
-- Python 3.8+
+- Python 3.9+
 - MySQL 8.0+
 - Node.js & npm (for frontend)
 - pip (Python package manager)
@@ -213,7 +213,7 @@ coverage html
 
 ## 📊 Admin Panel
 - URL: `http://localhost:8000/admin/`
-- Default: `admin` / `admin123`
+- Default username: `admin` (password must be set during setup via `--admin-password`)
 
 ---
 
