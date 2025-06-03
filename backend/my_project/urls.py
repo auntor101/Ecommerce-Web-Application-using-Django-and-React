@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 # API Health Check View
 def api_health_check(request):
@@ -77,8 +78,14 @@ urlpatterns = [
     
     # API health and documentation
     path('api/health/', api_health_check, name='api-health'),
-    path('api/docs/', api_docs, name='api-docs'),
+    # path('api/docs/', api_docs, name='api-docs'), # Old basic docs, replaced by Spectacular
     
+    # DRF Spectacular API schema and UI
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Optional UI:
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+
     # API endpoints
     path('api/', include('product.urls')),
     path('payments/', include('payments.urls')),
@@ -98,10 +105,10 @@ if settings.DEBUG:
         ] + urlpatterns
 
 # Custom error handlers
-handler400 = 'my_project.views.bad_request'
-handler403 = 'my_project.views.permission_denied'
-handler404 = 'my_project.views.page_not_found'
-handler500 = 'my_project.views.server_error'
+handler400 = 'my_project.custom-error-views.bad_request'
+handler403 = 'my_project.custom-error-views.permission_denied'
+handler404 = 'my_project.custom-error-views.page_not_found'
+handler500 = 'my_project.custom-error-views.server_error'
 
 # Admin site customization
 admin.site.site_header = 'Auntor Shopping Mall Administration'

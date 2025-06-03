@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django_filters',
+    'drf_spectacular',
     
     # Development tools (only in DEBUG mode)
 ] + (['django_extensions', 'debug_toolbar'] if DEBUG else []) + [
@@ -135,6 +136,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ] + (['rest_framework.renderers.BrowsableAPIRenderer'] if DEBUG else []),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # Static files configuration
@@ -326,3 +328,11 @@ SUPPORTED_IMAGE_FORMATS = ['JPEG', 'JPG', 'PNG', 'WEBP']
 
 # Frontend URL for password reset links
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+
+# DRF Spectacular Settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Auntor Shopping Mall API',
+    'DESCRIPTION': 'API for the Auntor Shopping Mall E-commerce Platform',
+    'VERSION': '2.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
