@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 
 class Category(models.Model):
@@ -22,7 +23,15 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     stock = models.BooleanField(default=False)
-    image = models.ImageField(null=True, blank=True, upload_to='products/')
+    image = models.ImageField(
+        null=True, 
+        blank=True, 
+        upload_to='products/',
+        validators=[
+            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp']),
+            validate_image_size
+        ]
+    )
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -109,3 +118,8 @@ class Review(models.Model):
             if user_orders.exists():
                 self.is_verified = True
         super().save(*args, **kwargs)
+
+
+def validate_image_size(image):
+    if image.size > 5 * 1024 * 1024:
+        raise ValidationError("Maximum file size is 5MB")

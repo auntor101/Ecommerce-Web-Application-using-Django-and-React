@@ -81,6 +81,7 @@ DATABASES = {
             'sql_mode': 'traditional',
             'charset': 'utf8mb4',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'connect_timeout': 10,
         }
     }
 }
@@ -102,7 +103,7 @@ USE_TZ = True
 
 # JWT Configuration
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=300),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -112,6 +113,7 @@ SIMPLE_JWT = {
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
     'UPDATE_LAST_LOGIN': True,
+    'JTI_CLAIM': 'jti',
 }
 
 # REST Framework Configuration
@@ -210,9 +212,12 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'INFO',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': BASE_DIR / 'django.log',
+            'maxBytes': 10485760,
+            'backupCount': 3,
             'formatter': 'verbose',
+            'delay': True,
         },
         'console': {
             'class': 'logging.StreamHandler',
@@ -220,9 +225,12 @@ LOGGING = {
         },
         'error_file': {
             'level': 'ERROR',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': BASE_DIR / 'errors.log',
+            'maxBytes': 10485760,
+            'backupCount': 3,
             'formatter': 'verbose',
+            'delay': True,
         },
     },
     'loggers': {
@@ -315,3 +323,6 @@ MAX_CART_ITEMS = 50
 MAX_WISHLIST_ITEMS = 100
 PRODUCT_IMAGE_MAX_SIZE = 5 * 1024 * 1024  # 5MB
 SUPPORTED_IMAGE_FORMATS = ['JPEG', 'JPG', 'PNG', 'WEBP']
+
+# Frontend URL for password reset links
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
