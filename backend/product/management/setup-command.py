@@ -31,14 +31,19 @@ class Command(BaseCommand):
         parser.add_argument(
             '--admin-password',
             type=str,
-            default='admin123',
-            help='Admin password (default: admin123)',
+            help='Admin password. Required if not skipping admin creation.',
         )
 
     def handle(self, *args, **options):
         self.stdout.write(
             self.style.SUCCESS('Setting up Auntor Shopping Mall application...')
         )
+
+        if not options['skip_admin'] and not options.get('admin_password'):
+            from django.core.management.base import CommandError
+            raise CommandError(
+                "Admin password is required. Please provide it using --admin-password."
+            )
 
         try:
             with transaction.atomic():
@@ -89,18 +94,22 @@ class Command(BaseCommand):
         """Load initial fixtures for categories and payment methods"""
         try:
             # Load categories
-            call_command('loaddata', 'initial_categories.json', verbosity=0)
-            self.stdout.write('  ✓ Categories loaded')
+            # Note: Django's loaddata looks for app_label/fixtures/fixture_name.json
+            # This command is in the 'product' app. For 'category-fixtures.json'
+            # to be found from 'payments/fixtures/', ensure 'payments/fixtures/'
+            # is in settings.FIXTURE_DIRS or move the file to 'product/fixtures/'.
+            call_command('loaddata', 'category-fixtures.json', verbosity=0)
+            self.stdout.write('  ✓ Categories loaded from category-fixtures.json')
         except Exception as e:
-            self.stdout.write(f'  ⚠ Categories fixture failed: {e}')
+            self.stdout.write(f'  ⚠ Categories fixture (category-fixtures.json) failed: {e}')
             self._create_default_categories()
 
         try:
             # Load payment methods
-            call_command('loaddata', 'initial_payment_methods.json', verbosity=0)
-            self.stdout.write('  ✓ Payment methods loaded')
+            call_command('loaddata', 'payment-fixtures.json', verbosity=0)
+            self.stdout.write('  ✓ Payment methods loaded from payment-fixtures.json')
         except Exception as e:
-            self.stdout.write(f'  ⚠ Payment methods fixture failed: {e}')
+            self.stdout.write(f'  ⚠ Payment methods fixture (payment-fixtures.json) failed: {e}')
             self._create_default_payment_methods()
 
     def _create_default_categories(self):
@@ -159,18 +168,20 @@ class Command(BaseCommand):
         """Create necessary media directories"""
         from django.conf import settings
         
+        # products, users, documents are created by settings.py
+        # Only creating 'temp' here if it's specific to setup.
         media_dirs = [
-            'products',
-            'users',
-            'documents',
             'temp'
         ]
         
-        for dir_name in media_dirs:
-            dir_path = settings.MEDIA_ROOT / dir_name
-            dir_path.mkdir(parents=True, exist_ok=True)
-        
-        self.stdout.write('  ✓ Media directories created')
+        if media_dirs: # Only proceed if there are directories to create
+            self.stdout.write('Creating specific media directories for setup...')
+            for dir_name in media_dirs:
+                dir_path = settings.MEDIA_ROOT / dir_name
+                dir_path.mkdir(parents=True, exist_ok=True)
+            self.stdout.write('  ✓ Specific media directories created/ensured')
+        else:
+            self.stdout.write('  ✓ Media directories handled by settings.py, no specific setup needed here.')
 
     def _print_summary(self, options):
         """Print setup summary"""

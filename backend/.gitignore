@@ -1,2 +1,25 @@
+# Virtual environments
+venv/
+.venv/
 env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django specific
+db.sqlite3
+*.log
+staticfiles/
+media/
+
+# Environment variables
+.env*
+
+# IDE / Editor specific (optional, can be global)
+.vscode/
+.idea/
+*.DS_Store
 node_modules/
