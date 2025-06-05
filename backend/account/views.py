@@ -32,7 +32,7 @@ class UserRegisterView(APIView):
 
         if username == "" or email == "":
             logger.warning(f"Registration attempt with empty username or email from IP {request.META.get('REMOTE_ADDR')}")
-            return Response({"detial": "username or email cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "username or email cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
 
         else:
             check_username = User.objects.filter(username=username).count()
@@ -113,7 +113,7 @@ class UserAccountUpdateView(APIView):
                 return Response(message, status=status.HTTP_200_OK)
             else:
                 logger.warning(f"Permission denied for user update: user id {request.user.id} tried to update user id {user.id} from IP {request.META.get('REMOTE_ADDR')}")
-                return Response({"details": "Permission Denied."}, status.status.HTTP_403_FORBIDDEN)
+                return Response({"details": "Permission Denied."}, status=status.HTTP_403_FORBIDDEN)
         else:
             return Response({"details": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -147,6 +147,8 @@ class UserAccountDeleteView(APIView):
 # get billing address (details of user address, all addresses)
 class UserAddressesListView(APIView):
 
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request):
         user = request.user
         user_address = BillingAddress.objects.filter(user=user)
@@ -158,8 +160,17 @@ class UserAddressesListView(APIView):
 # get specific address only
 class UserAddressDetailsView(APIView):
 
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request, pk):
-        user_address = BillingAddress.objects.get(id=pk)
+        try:
+            user_address = BillingAddress.objects.get(id=pk)
+        except BillingAddress.DoesNotExist:
+            return Response({"details": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if user_address.user != request.user:
+            return Response({"details": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = BillingAddressSerializer(user_address, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -207,14 +218,14 @@ class UpdateUserAddressView(APIView):
             if request.user.id == user_address.user.id:
 
                 updated_address = {
-                    "name": data["name"] if data["name"] else user_address.name,
+                    "name": data.get("name", user_address.name),
                     "user": request.user.id,
-                    "phone_number": data["phone_number"] if data["phone_number"] else user_address.phone_number,
-                    "pin_code": data["pin_code"] if data["pin_code"] else user_address.pin_code,
-                    "house_no": data["house_no"] if data["house_no"] else user_address.house_no,
-                    "landmark": data["landmark"] if data["landmark"] else user_address.landmark,
-                    "city": data["city"] if data["city"] else user_address.city,
-                    "state": data["state"] if data["state"] else user_address.state,
+                    "phone_number": data.get("phone_number", user_address.phone_number),
+                    "pin_code": data.get("pin_code", user_address.pin_code),
+                    "house_no": data.get("house_no", user_address.house_no),
+                    "landmark": data.get("landmark", user_address.landmark),
+                    "city": data.get("city", user_address.city),
+                    "state": data.get("state", user_address.state),
                 }
 
                 serializer = BillingAddressSerializer(user_address, data=updated_address)
@@ -234,6 +245,8 @@ class UpdateUserAddressView(APIView):
 
 # delete address
 class DeleteUserAddressView(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
 
     def delete(self, request, pk):
         

@@ -28,8 +28,8 @@ class OrderModel(models.Model):
     paid_at = models.DateTimeField(null=True, blank=True)
     total_price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
     is_delivered = models.BooleanField(default=False)
-    delivered_at = models.CharField(max_length=200, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    delivered_at = models.DateTimeField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) 
     
     def __str__(self):
         return f"Order {self.id} - {self.name}" 

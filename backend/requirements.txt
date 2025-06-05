@@ -24,3 +24,4 @@ sqlparse==0.4.4
 toml==0.10.2
 urllib3==1.26.18
 python-dotenv==1.0.1
+mysqlclient==2.2.4

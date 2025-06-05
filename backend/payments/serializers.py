@@ -48,7 +48,13 @@ class BkashPaymentSerializer(serializers.ModelSerializer):
         pin = validated_data.pop('pin')  # In real implementation, this would be used for API call
         
         # Create Payment record
-        payment_method = PaymentMethod.objects.get(name='bkash')
+        payment_method, _ = PaymentMethod.objects.get_or_create(
+            name='bkash',
+            defaults={
+                'display_name': 'bKash',
+                'is_active': True
+            }
+        )
         payment = Payment.objects.create(
             user=request.user,
             payment_method=payment_method,
@@ -130,7 +136,13 @@ class CardPaymentSerializer(serializers.ModelSerializer):
         card_last_four = card_number[-4:]
         
         # Create Payment record
-        payment_method = PaymentMethod.objects.get(name=card_type)
+        payment_method, _ = PaymentMethod.objects.get_or_create(
+            name=card_type,
+            defaults={
+                'display_name': card_type.title(),
+                'is_active': True
+            }
+        )
         payment = Payment.objects.create(
             user=request.user,
             payment_method=payment_method,

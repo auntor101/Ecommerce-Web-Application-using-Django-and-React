@@ -5,6 +5,11 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 
 
+def validate_image_size(image):
+    if image.size > 5 * 1024 * 1024:
+        raise ValidationError("Maximum file size is 5MB")
+
+
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
@@ -118,8 +123,3 @@ class Review(models.Model):
             if user_orders.exists():
                 self.is_verified = True
         super().save(*args, **kwargs)
-
-
-def validate_image_size(image):
-    if image.size > 5 * 1024 * 1024:
-        raise ValidationError("Maximum file size is 5MB")
