@@ -21,9 +21,23 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# register user
 class UserRegisterView(APIView):
-    """To Register the User"""
+    """
+    User registration endpoint.
+
+    Creates a new user account with username, email, and password validation.
+    Returns JWT token upon successful registration.
+
+    Request Body:
+        username (str): Unique username for the account
+        email (str): Valid email address
+        password (str): User password
+
+    Returns:
+        201: User successfully created with token
+        400: Validation errors or missing fields
+        403: Username or email already exists
+    """
 
     def post(self, request, format=None):
         data = request.data # holds username and password (in dictionary)
@@ -35,6 +49,7 @@ class UserRegisterView(APIView):
             return Response({"detail": "username or email cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
 
         else:
+            # Check for existing username and email to prevent duplicates
             check_username = User.objects.filter(username=username).count()
             check_email =  User.objects.filter(email=email).count()
 
@@ -63,6 +78,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
+        # Include user details in token response for frontend state management
         serializer = UserRegisterTokenSerializer(self.user).data
 
         for k, v in serializer.items():
@@ -74,9 +90,21 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-# get user details
 class UserAccountDetailsView(APIView):
+    """
+    Retrieve user account details endpoint.
 
+    Returns user account information for authenticated users.
+    Users can only access their own account details.
+
+    Parameters:
+        pk (int): User ID
+
+    Returns:
+        200: User details successfully retrieved
+        404: User not found
+        401: Authentication required
+    """
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, pk):
@@ -89,9 +117,27 @@ class UserAccountDetailsView(APIView):
             return Response({"details": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-# update user account
 class UserAccountUpdateView(APIView):
+    """
+    Update user account information endpoint.
 
+    Allows authenticated users to update their username, email, and password.
+    Users can only update their own account information.
+
+    Parameters:
+        pk (int): User ID
+
+    Request Body:
+        username (str): New username
+        email (str): New email address
+        password (str, optional): New password (leave empty to keep current)
+
+    Returns:
+        200: Account successfully updated
+        400: Validation errors
+        403: Permission denied (not own account)
+        404: User not found
+    """
     permission_classes = [permissions.IsAuthenticated]
 
     def put(self, request, pk):
@@ -118,9 +164,25 @@ class UserAccountUpdateView(APIView):
             return Response({"details": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
-# delete user account
 class UserAccountDeleteView(APIView):
+    """
+    Delete user account endpoint.
 
+    Permanently deletes a user account after password verification.
+    Users can only delete their own account.
+
+    Parameters:
+        pk (int): User ID
+
+    Request Body:
+        password (str): Current password for verification
+
+    Returns:
+        204: Account successfully deleted
+        401: Incorrect password
+        403: Permission denied (not own account)
+        404: User not found
+    """
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
@@ -175,7 +237,6 @@ class UserAddressDetailsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# create billing address
 class CreateUserAddressView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
@@ -243,7 +304,6 @@ class UpdateUserAddressView(APIView):
             return Response({"details": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
-# delete address
 class DeleteUserAddressView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
@@ -273,6 +333,7 @@ class OrdersListView(APIView):
 
         user_staff_status = request.user.is_staff
         
+        # Admin users can see all orders, regular users see only their own
         if user_staff_status:
             all_users_orders = OrderModel.objects.all()
             serializer = AllOrdersListSerializer(all_users_orders, many=True)
@@ -282,7 +343,6 @@ class OrdersListView(APIView):
             serializer = AllOrdersListSerializer(all_orders, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-# change order delivered status
 class ChangeOrderStatus(APIView):
 
     permission_classes = [permissions.IsAdminUser]

@@ -73,7 +73,7 @@ function BkashPaymentPage({ location }) {
                                 type="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                placeholder="01XXXXXXXXX"
+                                placeholder="Mobile Number"
                                 required
                                 style={{
                                     width: '100%',

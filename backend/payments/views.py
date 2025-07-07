@@ -30,7 +30,7 @@ class BkashPaymentView(APIView):
         if serializer.is_valid():
             bkash_payment = serializer.save()
             
-            # Return payment details
+            # Prepare payment response data
             payment_serializer = PaymentDetailSerializer(bkash_payment.payment)
             
             return Response({
@@ -91,7 +91,7 @@ class ProcessPaymentView(APIView):
                 'success': False
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Route to appropriate payment processor
+        # Delegate to payment method specific processor
         if payment_method_name == 'bkash':
             return self._process_bkash_payment(request)
         elif payment_method_name in ['visa', 'mastercard']:
@@ -185,7 +185,7 @@ class PaymentStatusView(APIView):
             }, status=status.HTTP_404_NOT_FOUND)
 
 
-# Legacy mock payment view for backward compatibility
+# Development payment simulation endpoint
 class MockPaymentView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -196,7 +196,7 @@ class MockPaymentView(APIView):
         amount = data.get('amount', 0)
         paid_status = data.get('paid_status', True)
         
-        # Update order if order_id provided
+        # Link payment to existing order and update payment status
         if order_id:
             try:
                 order = OrderModel.objects.get(id=order_id)
@@ -208,28 +208,29 @@ class MockPaymentView(APIView):
                     'detail': 'Order not found.'
                 }, status=status.HTTP_404_NOT_FOUND)
         
-        # Create payment record
+        # Initialize payment record
         try:
             payment_method = PaymentMethod.objects.get(name=payment_method_name)
         except PaymentMethod.DoesNotExist:
-            # Create payment method if it doesn't exist
+            # Initialize payment method for new payment type
             payment_method = PaymentMethod.objects.create(
                 name=payment_method_name,
                 display_name=payment_method_name.title(),
                 is_active=True
             )
         
+        # Generate payment record with unique transaction ID
         payment = Payment.objects.create(
             user=request.user,
             payment_method=payment_method,
             amount=amount,
             status='completed' if paid_status else 'failed',
-            transaction_id=f"MOCK{datetime.now().strftime('%Y%m%d%H%M%S')}{uuid.uuid4().hex[:6].upper()}",
+            transaction_id=f"SIM{datetime.now().strftime('%Y%m%d%H%M%S')}{uuid.uuid4().hex[:6].upper()}",
             processed_at=datetime.now() if paid_status else None
         )
         
         return Response({
-            'message': f'Mock payment processed for {payment_method_name}',
+            'message': f'Payment simulation completed for {payment_method_name}',
             'paid_status': paid_status,
             'amount': amount,
             'transaction_id': payment.transaction_id

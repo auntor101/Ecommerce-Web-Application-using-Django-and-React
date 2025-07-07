@@ -47,7 +47,7 @@ class ProductView(APIView):
     def get(self, request):
         products = Product.objects.all().select_related('category').prefetch_related('reviews')
         
-        # Apply filters
+        # Apply search filter across product name, description, and category
         search = request.GET.get('search', '')
         if search:
             products = products.filter(
@@ -79,7 +79,7 @@ class ProductView(APIView):
         if featured:
             products = products.filter(is_featured=featured.lower() == 'true')
         
-        # Ordering
+        # Handle different sorting options for product listing
         ordering = request.GET.get('ordering', '-created_at')
         if ordering == 'price_low':
             products = products.order_by('price')
@@ -90,7 +90,7 @@ class ProductView(APIView):
         elif ordering == 'name':
             products = products.order_by('name')
         else:
-            products = products.order_by('-created_at')
+            products = products.order_by('-created_at')  # Default: newest first
         
         # Pagination
         paginator = self.pagination_class()
@@ -175,6 +175,7 @@ class CartView(APIView):
 
     def get(self, request):
         cart_items = Cart.objects.filter(user=request.user).select_related('product')
+        # Calculate cart totals for checkout summary
         total_items = cart_items.count()
         total_price = sum(item.total_price for item in cart_items)
         
@@ -278,7 +279,7 @@ class ProductReviewsView(APIView):
         except Product.DoesNotExist:
             return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
         
-        # Check if user already reviewed this product
+        # Enforce one review per user per product policy
         if Review.objects.filter(product=product, user=request.user).exists():
             return Response({"detail": "You have already reviewed this product."}, status=status.HTTP_400_BAD_REQUEST)
         

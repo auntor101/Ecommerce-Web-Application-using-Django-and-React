@@ -169,7 +169,7 @@ const ProductUpdatePage = ({ match }) => {
                         autoFocus={true}
                         type="text"
                         defaultValue={product.name}
-                        placeholder="product name"
+                        placeholder="Product Name"
                         onChange={(e) => setName(e.target.value)}
                     >
                     </Form.Control>
@@ -184,7 +184,7 @@ const ProductUpdatePage = ({ match }) => {
                     <Form.Control
                         type="text"
                         defaultValue={product.description}
-                        placeholder="product description"
+                        placeholder="Product Description"
                         onChange={(e) => setDescription(e.target.value)}
                     >
                     </Form.Control>
@@ -200,7 +200,7 @@ const ProductUpdatePage = ({ match }) => {
                         type="text"
                         pattern="[0-9]+(\.[0-9]{1,2})?%?"
                         defaultValue={product.price}
-                        placeholder="199.99"
+                        placeholder="Price"
                         step="0.01"
                         maxLength="8"
                         onChange={(e) => setPrice(e.target.value)}

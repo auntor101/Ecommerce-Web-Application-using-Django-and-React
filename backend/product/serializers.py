@@ -119,7 +119,7 @@ class WishlistItemSerializer(serializers.ModelSerializer):
         product_id = validated_data.pop('product_id')
         validated_data['product_id'] = product_id
         
-        # Create or get existing wishlist item
+        # Handle wishlist item management
         wishlist_item, created = Wishlist.objects.get_or_create(
             user=validated_data['user'],
             product_id=product_id

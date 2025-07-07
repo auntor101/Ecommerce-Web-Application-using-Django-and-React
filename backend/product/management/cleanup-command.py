@@ -38,6 +38,7 @@ class Command(BaseCommand):
             self.style.SUCCESS('Starting data cleanup...')
         )
 
+        # Calculate date threshold for old data removal
         cutoff_date = timezone.now() - timedelta(days=options['days'])
         dry_run = options['dry_run']
 
@@ -48,13 +49,15 @@ class Command(BaseCommand):
 
         try:
             with transaction.atomic():
+                # Clean up stale cart items that haven't been updated
                 if options['cleanup_carts']:
                     self._cleanup_old_carts(cutoff_date, dry_run)
                 
+                # Remove old payment logs to save space
                 if options['cleanup_logs']:
                     self._cleanup_old_logs(cutoff_date, dry_run)
                 
-                # General cleanup
+                # Remove orphaned records that reference deleted objects
                 self._cleanup_orphaned_data(dry_run)
                 
                 if not dry_run:

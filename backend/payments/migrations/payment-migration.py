@@ -1,4 +1,9 @@
-# Generated manually for enhanced payment system
+"""
+Payment system migration: Core payment functionality implementation.
+
+Establishes payment processing infrastructure including payment methods,
+transaction logging, and gateway-specific payment details for bKash and cards.
+"""
 
 from django.conf import settings
 from django.db import migrations, models

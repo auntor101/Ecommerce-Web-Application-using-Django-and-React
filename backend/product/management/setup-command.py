@@ -47,15 +47,15 @@ class Command(BaseCommand):
 
         try:
             with transaction.atomic():
-                # Run migrations
+                # Ensure database is up to date
                 self.stdout.write('Running database migrations...')
                 call_command('migrate', verbosity=0)
                 
-                # Load fixtures
+                # Load initial categories and payment methods
                 self.stdout.write('Loading initial data...')
                 self._load_fixtures()
                 
-                # Create admin user
+                # Set up admin user for system management
                 if not options['skip_admin']:
                     self._create_admin_user(
                         options['admin_username'],

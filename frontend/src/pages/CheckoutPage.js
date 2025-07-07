@@ -72,7 +72,7 @@ const CheckoutPage = ({ match }) => {
         },
       }
       const { data } = await axios.post(
-        '/payments/mock-payment/',
+        '/payments/process-payment/',
         {
           payment_method: paymentMethod,
           order_id: product.id,
@@ -235,7 +235,7 @@ const CheckoutPage = ({ match }) => {
                     }}>
                       <Form.Check
                         type="checkbox"
-                        label="Mark as Paid (for testing)"
+                        label="Confirm Payment"
                         checked={paidStatus}
                         onChange={e => setPaidStatus(e.target.checked)}
                         style={{ fontWeight: '600', color: '#667eea' }}

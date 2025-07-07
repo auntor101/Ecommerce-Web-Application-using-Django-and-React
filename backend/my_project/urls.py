@@ -78,7 +78,7 @@ urlpatterns = [
     
     # API health and documentation
     path('api/health/', api_health_check, name='api-health'),
-    # path('api/docs/', api_docs, name='api-docs'), # Old basic docs, replaced by Spectacular
+    # Legacy API documentation endpoint - superseded by Spectacular OpenAPI
     
     # DRF Spectacular API schema and UI
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

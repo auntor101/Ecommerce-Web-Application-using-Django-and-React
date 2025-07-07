@@ -172,7 +172,7 @@ function BkashPaymentPage({ location }) {
                                 type="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                placeholder="01XXXXXXXXX"
+                                placeholder="Mobile Number"
                                 required
                                 style={{
                                     width: '100%',
@@ -297,7 +297,7 @@ function CardPaymentPage({ location, match }) {
                                 type="text"
                                 value={cardData.number}
                                 onChange={(e) => handleInputChange('number', e.target.value)}
-                                placeholder="1234 5678 9012 3456"
+                                placeholder="Card Number"
                                 required
                                 style={{
                                     width: '100%',
@@ -358,7 +358,7 @@ function CardPaymentPage({ location, match }) {
                                 type="text"
                                 value={cardData.name}
                                 onChange={(e) => handleInputChange('name', e.target.value)}
-                                placeholder="John Doe"
+                                placeholder="Cardholder Name"
                                 required
                                 style={{
                                     width: '100%',

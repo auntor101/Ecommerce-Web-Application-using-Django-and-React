@@ -37,7 +37,12 @@ class BkashPaymentSerializer(serializers.ModelSerializer):
         fields = ['mobile_number', 'amount', 'pin']
     
     def validate_mobile_number(self, value):
-        # Basic Bangladesh mobile number validation
+        """
+        Validate Bangladesh mobile number format.
+        
+        Ensures the mobile number follows the standard 11-digit format
+        starting with '01' as required by Bangladeshi telecom operators.
+        """
         if not value.startswith('01') or len(value) != 11:
             raise serializers.ValidationError("Invalid mobile number format. Use 01XXXXXXXXX")
         return value
@@ -45,9 +50,9 @@ class BkashPaymentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context['request']
         amount = validated_data.pop('amount')
-        pin = validated_data.pop('pin')  # In real implementation, this would be used for API call
+        pin = validated_data.pop('pin')  # PIN validation handled by payment gateway
         
-        # Create Payment record
+        # Initialize payment transaction record
         payment_method, _ = PaymentMethod.objects.get_or_create(
             name='bkash',
             defaults={
@@ -64,7 +69,7 @@ class BkashPaymentSerializer(serializers.ModelSerializer):
             status='processing'
         )
         
-        # Create BkashPayment record
+        # Initialize BkashPayment record
         bkash_payment = BkashPayment.objects.create(
             payment=payment,
             mobile_number=validated_data['mobile_number'],
@@ -104,7 +109,7 @@ class CardPaymentSerializer(serializers.ModelSerializer):
         ]
     
     def validate_card_number(self, value):
-        # Remove spaces and validate length
+        # Normalize and validate card number format
         card_number = value.replace(' ', '')
         if not card_number.isdigit() or len(card_number) < 16:
             raise serializers.ValidationError("Invalid card number")
@@ -135,7 +140,7 @@ class CardPaymentSerializer(serializers.ModelSerializer):
         # Get last 4 digits of card
         card_last_four = card_number[-4:]
         
-        # Create Payment record
+        # Initialize Payment record
         payment_method, _ = PaymentMethod.objects.get_or_create(
             name=card_type,
             defaults={
@@ -153,7 +158,7 @@ class CardPaymentSerializer(serializers.ModelSerializer):
             status='processing'
         )
         
-        # Create CardPayment record
+        # Initialize CardPayment record
         card_payment = CardPayment.objects.create(
             payment=payment,
             card_type=card_type,

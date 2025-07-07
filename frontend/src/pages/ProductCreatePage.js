@@ -87,7 +87,7 @@ const ProductCreatePage = () => {
                         autoFocus={true}
                         type="text"
                         value={name}
-                        placeholder="product name"
+                        placeholder="Product Name"
                         onChange={(e) => setName(e.target.value)}
                     >
                     </Form.Control>
@@ -103,7 +103,7 @@ const ProductCreatePage = () => {
                         required
                         type="text"
                         value={description}
-                        placeholder="product description"
+                        placeholder="Product Description"
                         onChange={(e) => setDescription(e.target.value)}
                     >
                     </Form.Control>
@@ -120,7 +120,7 @@ const ProductCreatePage = () => {
                         type="text"
                         pattern="[0-9]+(\.[0-9]{1,2})?%?"
                         value={price}
-                        placeholder="199.99"
+                        placeholder="Price"
                         step="0.01"
                         maxLength="8"
                         onChange={(e) => setPrice(e.target.value)}

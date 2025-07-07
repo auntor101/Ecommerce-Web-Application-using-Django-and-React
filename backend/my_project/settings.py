@@ -110,12 +110,12 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# JWT Configuration
+# JWT Authentication settings for API security
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Short-lived for security
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Longer refresh period
+    'ROTATE_REFRESH_TOKENS': True,                   # Generate new refresh token on use
+    'BLACKLIST_AFTER_ROTATION': True,               # Invalidate old refresh tokens
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'AUTH_HEADER_TYPES': ('Bearer',),
@@ -156,11 +156,11 @@ STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Ensure media directories exist
+# Create required media directories for file uploads
 MEDIA_DIRS = ['products', 'users', 'documents']
 for dir_name in MEDIA_DIRS:
     dir_path = MEDIA_ROOT / dir_name
-    dir_path.mkdir(parents=True, exist_ok=True)
+    dir_path.mkdir(parents=True, exist_ok=True)  # Create if doesn't exist
 
 # Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -311,7 +311,7 @@ if not DEBUG:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Payment gateway configurations (add your actual credentials in .env)
+# Payment gateway API credentials - configure in .env for security
 PAYMENT_GATEWAYS = {
     'BKASH': {
         'APP_KEY': os.getenv('BKASH_APP_KEY', ''),
@@ -319,7 +319,7 @@ PAYMENT_GATEWAYS = {
         'USERNAME': os.getenv('BKASH_USERNAME', ''),
         'PASSWORD': os.getenv('BKASH_PASSWORD', ''),
         'BASE_URL': os.getenv('BKASH_BASE_URL', 'https://tokenized.sandbox.bka.sh/v1.2.0-beta'),
-        'SANDBOX': DEBUG,
+        'SANDBOX': DEBUG,  # Use sandbox in development
     },
     'STRIPE': {
         'PUBLISHABLE_KEY': os.getenv('STRIPE_PUBLISHABLE_KEY', ''),
@@ -328,11 +328,11 @@ PAYMENT_GATEWAYS = {
     }
 }
 
-# Custom settings
-MAX_CART_ITEMS = 50
-MAX_WISHLIST_ITEMS = 100
-PRODUCT_IMAGE_MAX_SIZE = 5 * 1024 * 1024  # 5MB
-SUPPORTED_IMAGE_FORMATS = ['JPEG', 'JPG', 'PNG', 'WEBP']
+# Business logic configuration limits
+MAX_CART_ITEMS = 50  # Prevent cart bloat and improve performance
+MAX_WISHLIST_ITEMS = 100  # Reasonable limit for user wishlists
+PRODUCT_IMAGE_MAX_SIZE = 5 * 1024 * 1024  # 5MB limit for product images
+SUPPORTED_IMAGE_FORMATS = ['JPEG', 'JPG', 'PNG', 'WEBP']  # Allowed image formats
 
 # Frontend URL for password reset links
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')

@@ -66,7 +66,7 @@ export const validationRules = {
     email: (value) => !/\S+@\S+\.\S+/.test(value) ? 'Invalid email address' : '',
     minLength: (min) => (value) => value.length < min ? `Minimum ${min} characters required` : '',
     maxLength: (max) => (value) => value.length > max ? `Maximum ${max} characters allowed` : '',
-    phone: (value) => !/^01[0-9]{9}$/.test(value) ? 'Invalid phone number (01XXXXXXXXX)' : '',
+    phone: (value) => !/^01[0-9]{9}$/.test(value) ? 'Invalid phone number format' : '',
     password: (value) => value.length < 6 ? 'Password must be at least 6 characters' : '',
     matchPassword: (confirmValue, values) => confirmValue !== values.password ? 'Passwords do not match' : '',
     number: (value) => isNaN(value) || value <= 0 ? 'Enter valid number' : '',

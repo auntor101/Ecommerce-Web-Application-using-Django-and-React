@@ -1,4 +1,9 @@
-# Generated manually for enhanced product features
+"""
+Product app migration: Enhanced product features implementation.
+
+Adds category, cart, wishlist, and review functionality to the product model.
+Includes proper field validations and database constraints.
+"""
 
 from django.conf import settings
 from django.db import migrations, models
