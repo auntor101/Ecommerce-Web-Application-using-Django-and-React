@@ -23,7 +23,7 @@ urlpatterns = [
     path('all-orders-list/', views.OrdersListView.as_view(), name="all-orders-list"),
     path('change-order-status/<int:pk>/', views.ChangeOrderStatus.as_view(), name="change-order-status"),
 
-    # password reset
-    path('password-reset/', views.password_reset_request, name='password_reset'),
-    path('password-reset/<str:uidb64>/<str:token>/', views.password_reset_confirm, name='password_reset_confirm'),
+    # password reset - TODO: implement these views
+    # path('password-reset/', views.password_reset_request, name='password_reset'),
+    # path('password-reset/<str:uidb64>/<str:token>/', views.password_reset_confirm, name='password_reset_confirm'),
 ]

@@ -29,8 +29,8 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     
-    # Development tools (only in DEBUG mode)
-] + (['django_extensions', 'debug_toolbar'] if DEBUG else []) + [
+    # Development tools (only in DEBUG mode) - commented out for testing
+] + ([] if DEBUG else []) + [
     
     # Local apps
     'product',
@@ -47,7 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-] + (['debug_toolbar.middleware.DebugToolbarMiddleware'] if DEBUG else [])
+] + ([] if DEBUG else [])
 
 ROOT_URLCONF = 'my_project.urls'
 
@@ -72,20 +72,28 @@ WSGI_APPLICATION = 'my_project.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE', 'auntorshoppingmall_db'),
-        'USER': os.getenv('MYSQL_USER', 'root'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),
-        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
-        'PORT': os.getenv('MYSQL_PORT', '3306'),
-        'OPTIONS': {
-            'sql_mode': 'traditional',
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'connect_timeout': 10,
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# MySQL configuration for production
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv('MYSQL_DATABASE', 'auntorshoppingmall_db'),
+#         'USER': os.getenv('MYSQL_USER', 'root'),
+#         'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),
+#         'HOST': os.getenv('MYSQL_HOST', 'localhost'),
+#         'PORT': os.getenv('MYSQL_PORT', '3306'),
+#         'OPTIONS': {
+#             'sql_mode': 'traditional',
+#             'charset': 'utf8mb4',
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#             'connect_timeout': 10,
+#         }
+#     }
+# }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
