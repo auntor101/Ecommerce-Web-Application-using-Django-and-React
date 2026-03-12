@@ -15,6 +15,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
+from django.core.mail import send_mail
 from .serializers import (
     UserSerializer, 
     UserRegisterTokenSerializer, 
@@ -315,7 +316,6 @@ class PasswordResetRequestView(APIView):
                     "reset_link": reset_link
                 }, status=status.HTTP_200_OK)
             else:
-                from django.core.mail import send_mail
                 send_mail(
                     subject="Password Reset Request",
                     message=f"Click the link to reset your password: {reset_link}",
@@ -323,7 +323,7 @@ class PasswordResetRequestView(APIView):
                     recipient_list=[email],
                     fail_silently=False,
                 )
-                return Response({"detail": "Password reset email sent."}, status=status.HTTP_200_OK)
+                return Response({"detail": "If an account with that email exists, a reset link has been sent."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             # Return success even if user doesn't exist (security best practice)
             return Response({"detail": "If an account with that email exists, a reset link has been sent."}, status=status.HTTP_200_OK)
