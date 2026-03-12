@@ -23,7 +23,7 @@ import {
     getAllOrdersReducer,
 } from "./userReducers";
 
-// Import reducers
+// Reducers
 import { cartReducer } from "./cartReducers";
 import { wishlistReducer } from "./wishlistReducers";
 import { cardPaymentReducer } from "./cardReducers";
@@ -47,7 +47,6 @@ const allReducers = combineReducers({
     userDetailsReducer,
     userDetailsUpdateReducer,
     deleteUserAccountReducer,
-    // Redux state
     cartReducer,
     wishlistReducer,
     cardPaymentReducer

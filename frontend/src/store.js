@@ -21,9 +21,7 @@ let initialState = {
     wishlistReducer: { 
         items: wishlistItemsFromStorage 
     },
-    cardPaymentReducer: {
-        // Initialize cardPaymentReducer state
-    },
+    cardPaymentReducer: {},
 }
 
 const store = createStore(allReducers, initialState, composeWithDevTools(applyMiddleware(...middleware)))

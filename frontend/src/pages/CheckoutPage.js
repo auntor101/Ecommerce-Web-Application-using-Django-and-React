@@ -72,7 +72,7 @@ const CheckoutPage = ({ match }) => {
         },
       }
       const { data } = await axios.post(
-        '/payments/process-payment/',
+        '/payments/process/',
         {
           payment_method: paymentMethod,
           order_id: product.id,

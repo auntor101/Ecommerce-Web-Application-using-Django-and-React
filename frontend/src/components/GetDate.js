@@ -1,15 +1,13 @@
-// Convert ISO date string (YYYY-MM-DD) to readable format
 export const dateCheck = (param) => {
-    // Extract date parts from ISO format (2021-01-12)
-    const dateValue = param.slice(8, 10);   // Day
-    const monthValue = param.slice(5, 7);   // Month
-    const yearValue = param.slice(0, 4);    // Year
+    const dateValue = param.slice(8, 10);
+    const monthValue = param.slice(5, 7);
+    const yearValue = param.slice(0, 4);
   
     switch (monthValue) {
       case "01":
         return `${dateValue} January ${yearValue}`;
       case "02":
-        return `${dateValue} Feburary ${yearValue}`;
+        return `${dateValue} February ${yearValue}`;
       case "03":
         return `${dateValue} March ${yearValue}`;
       case "04":
