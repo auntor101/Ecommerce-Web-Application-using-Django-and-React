@@ -2,16 +2,30 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+import pymysql
 
 # Load environment variables from .env if present
 load_dotenv()
+pymysql.install_as_MySQLdb()
 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+def env_bool(name, default=False):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.lower() in ('1', 'true', 'yes', 'on')
+
+
+def env_list(name, default=''):
+    return [item.strip() for item in os.getenv(name, default).split(',') if item.strip()]
+
+
+IS_VERCEL = env_bool('VERCEL', False)
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-change-in-production')
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+DEBUG = env_bool('DJANGO_DEBUG', True)
+ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', 'localhost,127.0.0.1,.vercel.app')
 
 # Application definition
 INSTALLED_APPS = [
@@ -68,22 +82,32 @@ TEMPLATES = [
 WSGI_APPLICATION = 'my_project.wsgi.application'
 
 # Database - MySQL
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE', 'auntorshoppingmall_db'),
-        'USER': os.getenv('MYSQL_USER', 'root'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),
-        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
-        'PORT': os.getenv('MYSQL_PORT', '3306'),
-        'OPTIONS': {
-            'sql_mode': 'traditional',
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'connect_timeout': 10,
+use_mysql = bool(os.getenv('MYSQL_HOST') or os.getenv('MYSQL_DATABASE'))
+
+if use_mysql:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('MYSQL_DATABASE', 'auntorshoppingmall_db'),
+            'USER': os.getenv('MYSQL_USER', 'root'),
+            'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),
+            'HOST': os.getenv('MYSQL_HOST', 'localhost'),
+            'PORT': os.getenv('MYSQL_PORT', '3306'),
+            'OPTIONS': {
+                'sql_mode': 'traditional',
+                'charset': 'utf8mb4',
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                'connect_timeout': 10,
+            }
         }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -148,9 +172,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Create media directories
 MEDIA_DIRS = ['products', 'users', 'documents']
-for dir_name in MEDIA_DIRS:
-    dir_path = MEDIA_ROOT / dir_name
-    dir_path.mkdir(parents=True, exist_ok=True)
+if not IS_VERCEL:
+    for dir_name in MEDIA_DIRS:
+        dir_path = MEDIA_ROOT / dir_name
+        dir_path.mkdir(parents=True, exist_ok=True)
 
 # Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -159,10 +184,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ]
+    CORS_ALLOWED_ORIGINS = env_list(
+        'CORS_ALLOWED_ORIGINS',
+        'http://localhost:3000,http://127.0.0.1:3000'
+    )
+
+CSRF_TRUSTED_ORIGINS = env_list(
+    'CSRF_TRUSTED_ORIGINS',
+    'http://localhost:3000,http://127.0.0.1:3000'
+)
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
@@ -209,52 +239,58 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR / 'django.log',
-            'maxBytes': 10485760,
-            'backupCount': 3,
-            'formatter': 'verbose',
-            'delay': True,
-        },
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
-        'error_file': {
-            'level': 'ERROR',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR / 'errors.log',
-            'maxBytes': 10485760,
-            'backupCount': 3,
-            'formatter': 'verbose',
-            'delay': True,
-        },
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'console'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
         },
         'product': {
-            'handlers': ['file', 'error_file'],
+            'handlers': ['console'],
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': True,
         },
         'payments': {
-            'handlers': ['file', 'error_file'],
+            'handlers': ['console'],
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': True,
         },
         'account': {
-            'handlers': ['file', 'error_file'],
+            'handlers': ['console'],
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': True,
         },
     },
 }
+
+if not IS_VERCEL:
+    LOGGING['handlers']['file'] = {
+        'level': 'INFO',
+        'class': 'logging.handlers.RotatingFileHandler',
+        'filename': BASE_DIR / 'django.log',
+        'maxBytes': 10485760,
+        'backupCount': 3,
+        'formatter': 'verbose',
+        'delay': True,
+    }
+    LOGGING['handlers']['error_file'] = {
+        'level': 'ERROR',
+        'class': 'logging.handlers.RotatingFileHandler',
+        'filename': BASE_DIR / 'errors.log',
+        'maxBytes': 10485760,
+        'backupCount': 3,
+        'formatter': 'verbose',
+        'delay': True,
+    }
+    LOGGING['loggers']['django']['handlers'] = ['file', 'console']
+    LOGGING['loggers']['product']['handlers'] = ['file', 'error_file']
+    LOGGING['loggers']['payments']['handlers'] = ['file', 'error_file']
+    LOGGING['loggers']['account']['handlers'] = ['file', 'error_file']
 
 # Cache configuration (for production)
 if not DEBUG:
