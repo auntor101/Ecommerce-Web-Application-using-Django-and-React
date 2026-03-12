@@ -9,7 +9,6 @@ load_dotenv()
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security - Get from environment variables
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-change-in-production')
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
@@ -23,13 +22,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    # Third party apps
+    # Third party
     'rest_framework',
     'corsheaders',
     'django_filters',
     'drf_spectacular',
     
-    # Development tools (only in DEBUG mode) - commented out for testing
 ] + ([] if DEBUG else []) + [
     
     # Local apps
@@ -69,31 +67,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'my_project.wsgi.application'
 
-# Database
+# Database - MySQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MYSQL_DATABASE', 'auntorshoppingmall_db'),
+        'USER': os.getenv('MYSQL_USER', 'root'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),
+        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
+        'PORT': os.getenv('MYSQL_PORT', '3306'),
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+            'charset': 'utf8mb4',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'connect_timeout': 10,
+        }
     }
 }
-
-# MySQL configuration for production
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': os.getenv('MYSQL_DATABASE', 'auntorshoppingmall_db'),
-#         'USER': os.getenv('MYSQL_USER', 'root'),
-#         'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),
-#         'HOST': os.getenv('MYSQL_HOST', 'localhost'),
-#         'PORT': os.getenv('MYSQL_PORT', '3306'),
-#         'OPTIONS': {
-#             'sql_mode': 'traditional',
-#             'charset': 'utf8mb4',
-#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#             'connect_timeout': 10,
-#         }
-#     }
-# }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -110,12 +100,12 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# JWT Authentication settings for API security
+# JWT Settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Short-lived for security
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Longer refresh period
-    'ROTATE_REFRESH_TOKENS': True,                   # Generate new refresh token on use
-    'BLACKLIST_AFTER_ROTATION': True,               # Invalidate old refresh tokens
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'AUTH_HEADER_TYPES': ('Bearer',),
@@ -147,32 +137,31 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# Static files configuration
+# Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 
-# Media files configuration
+# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Create required media directories for file uploads
+# Create media directories
 MEDIA_DIRS = ['products', 'users', 'documents']
 for dir_name in MEDIA_DIRS:
     dir_path = MEDIA_ROOT / dir_name
-    dir_path.mkdir(parents=True, exist_ok=True)  # Create if doesn't exist
+    dir_path.mkdir(parents=True, exist_ok=True)
 
 # Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS Configuration
+# CORS
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        # Add your frontend domain here
     ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -311,7 +300,7 @@ if not DEBUG:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Payment gateway API credentials - configure in .env for security
+# Payment gateway credentials
 PAYMENT_GATEWAYS = {
     'BKASH': {
         'APP_KEY': os.getenv('BKASH_APP_KEY', ''),
@@ -321,18 +310,12 @@ PAYMENT_GATEWAYS = {
         'BASE_URL': os.getenv('BKASH_BASE_URL', 'https://tokenized.sandbox.bka.sh/v1.2.0-beta'),
         'SANDBOX': DEBUG,  # Use sandbox in development
     },
-    'STRIPE': {
-        'PUBLISHABLE_KEY': os.getenv('STRIPE_PUBLISHABLE_KEY', ''),
-        'SECRET_KEY': os.getenv('STRIPE_SECRET_KEY', ''),
-        'WEBHOOK_SECRET': os.getenv('STRIPE_WEBHOOK_SECRET', ''),
-    }
 }
 
-# Business logic configuration limits
-MAX_CART_ITEMS = 50  # Prevent cart bloat and improve performance
-MAX_WISHLIST_ITEMS = 100  # Reasonable limit for user wishlists
-PRODUCT_IMAGE_MAX_SIZE = 5 * 1024 * 1024  # 5MB limit for product images
-SUPPORTED_IMAGE_FORMATS = ['JPEG', 'JPG', 'PNG', 'WEBP']  # Allowed image formats
+MAX_CART_ITEMS = 50
+MAX_WISHLIST_ITEMS = 100
+PRODUCT_IMAGE_MAX_SIZE = 5 * 1024 * 1024
+SUPPORTED_IMAGE_FORMATS = ['JPEG', 'JPG', 'PNG', 'WEBP']
 
 # Frontend URL for password reset links
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
