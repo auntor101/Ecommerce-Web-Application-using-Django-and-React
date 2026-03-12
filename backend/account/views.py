@@ -22,25 +22,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 class UserRegisterView(APIView):
-    """
-    User registration endpoint.
-
-    Creates a new user account with username, email, and password validation.
-    Returns JWT token upon successful registration.
-
-    Request Body:
-        username (str): Unique username for the account
-        email (str): Valid email address
-        password (str): User password
-
-    Returns:
-        201: User successfully created with token
-        400: Validation errors or missing fields
-        403: Username or email already exists
-    """
 
     def post(self, request, format=None):
-        data = request.data # holds username and password (in dictionary)
+        data = request.data
         username = data["username"]
         email = data["email"]
 
@@ -49,7 +33,6 @@ class UserRegisterView(APIView):
             return Response({"detail": "username or email cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
 
         else:
-            # Check for existing username and email to prevent duplicates
             check_username = User.objects.filter(username=username).count()
             check_email =  User.objects.filter(email=email).count()
 
@@ -71,14 +54,11 @@ class UserRegisterView(APIView):
                 logger.info(f"User registered: {username} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response(serializer.data)
 
-# login user (customizing it so that we can see fields like username, email etc as a response 
-# from server, otherwise it will only provide access and refresh token)
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        # Include user details in token response for frontend state management
         serializer = UserRegisterTokenSerializer(self.user).data
 
         for k, v in serializer.items():
@@ -91,20 +71,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class UserAccountDetailsView(APIView):
-    """
-    Retrieve user account details endpoint.
-
-    Returns user account information for authenticated users.
-    Users can only access their own account details.
-
-    Parameters:
-        pk (int): User ID
-
-    Returns:
-        200: User details successfully retrieved
-        404: User not found
-        401: Authentication required
-    """
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, pk):
@@ -112,101 +78,67 @@ class UserAccountDetailsView(APIView):
             user = User.objects.get(id=pk)
             serializer = UserSerializer(user, many=False)
             return Response(serializer.data, status=status.HTTP_200_OK)
-            
-        except:
+        except User.DoesNotExist:
             return Response({"details": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class UserAccountUpdateView(APIView):
-    """
-    Update user account information endpoint.
-
-    Allows authenticated users to update their username, email, and password.
-    Users can only update their own account information.
-
-    Parameters:
-        pk (int): User ID
-
-    Request Body:
-        username (str): New username
-        email (str): New email address
-        password (str, optional): New password (leave empty to keep current)
-
-    Returns:
-        200: Account successfully updated
-        400: Validation errors
-        403: Permission denied (not own account)
-        404: User not found
-    """
     permission_classes = [permissions.IsAuthenticated]
 
     def put(self, request, pk):
-        user = User.objects.get(id=pk)
+        try:
+            user = User.objects.get(id=pk)
+        except User.DoesNotExist:
+            return Response({"details": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
         data = request.data
 
-        if user:
-            if request.user.id == user.id:
-                user.username = data["username"]
-                user.email = data["email"]
+        if request.user.id != user.id:
+            logger.warning(f"Permission denied for user update: user id {request.user.id} tried to update user id {user.id} from IP {request.META.get('REMOTE_ADDR')}")
+            return Response({"details": "Permission Denied."}, status=status.HTTP_403_FORBIDDEN)
 
-                if data["password"] != "":
-                    user.password = make_password(data["password"])
+        username = data.get("username")
+        email = data.get("email")
+        if not username or not email:
+            return Response({"details": "Username and email are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-                user.save()
-                serializer = UserSerializer(user, many=False)
-                message = {"details": "User Successfully Updated.", "user": serializer.data}
-                logger.info(f"User updated their account: {user.username} (id={user.id}) from IP {request.META.get('REMOTE_ADDR')}")
-                return Response(message, status=status.HTTP_200_OK)
-            else:
-                logger.warning(f"Permission denied for user update: user id {request.user.id} tried to update user id {user.id} from IP {request.META.get('REMOTE_ADDR')}")
-                return Response({"details": "Permission Denied."}, status=status.HTTP_403_FORBIDDEN)
-        else:
-            return Response({"details": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        user.username = username
+        user.email = email
+
+        if data.get("password"):
+            user.password = make_password(data["password"])
+
+        user.save()
+        serializer = UserSerializer(user, many=False)
+        message = {"details": "User Successfully Updated.", "user": serializer.data}
+        logger.info(f"User updated their account: {user.username} (id={user.id}) from IP {request.META.get('REMOTE_ADDR')}")
+        return Response(message, status=status.HTTP_200_OK)
 
 
 class UserAccountDeleteView(APIView):
-    """
-    Delete user account endpoint.
-
-    Permanently deletes a user account after password verification.
-    Users can only delete their own account.
-
-    Parameters:
-        pk (int): User ID
-
-    Request Body:
-        password (str): Current password for verification
-
-    Returns:
-        204: Account successfully deleted
-        401: Incorrect password
-        403: Permission denied (not own account)
-        404: User not found
-    """
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-
         try:
             user = User.objects.get(id=pk)
-            data = request.data
-
-            if request.user.id == user.id:
-                if check_password(data["password"], user.password):
-                    user.delete()
-                    logger.info(f"User deleted their account: {user.username} (id={user.id}) from IP {request.META.get('REMOTE_ADDR')}")
-                    return Response({"details": "User successfully deleted."}, status=status.HTTP_204_NO_CONTENT)
-                else:
-                    logger.warning(f"Failed account deletion attempt due to wrong password for user: {user.username} (id={user.id}) from IP {request.META.get('REMOTE_ADDR')}")
-                    return Response({"details": "Incorrect password."}, status=status.HTTP_401_UNAUTHORIZED)
-            else:
-                logger.warning(f"Permission denied for account deletion: user id {request.user.id} tried to delete user id {user.id} from IP {request.META.get('REMOTE_ADDR')}")
-                return Response({"details": "Permission Denied."}, status=status.HTTP_403_FORBIDDEN)
-        except:
+        except User.DoesNotExist:
             return Response({"details": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        data = request.data
 
-# get billing address (details of user address, all addresses)
+        if request.user.id == user.id:
+            if check_password(data["password"], user.password):
+                user.delete()
+                logger.info(f"User deleted their account: {user.username} (id={user.id}) from IP {request.META.get('REMOTE_ADDR')}")
+                return Response({"details": "User successfully deleted."}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                logger.warning(f"Failed account deletion attempt due to wrong password for user: {user.username} (id={user.id}) from IP {request.META.get('REMOTE_ADDR')}")
+                return Response({"details": "Incorrect password."}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            logger.warning(f"Permission denied for account deletion: user id {request.user.id} tried to delete user id {user.id} from IP {request.META.get('REMOTE_ADDR')}")
+            return Response({"details": "Permission Denied."}, status=status.HTTP_403_FORBIDDEN)
+
+
 class UserAddressesListView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
@@ -219,7 +151,6 @@ class UserAddressesListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# get specific address only
 class UserAddressDetailsView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
@@ -265,7 +196,6 @@ class CreateUserAddressView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# edit billing address
 class UpdateUserAddressView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
@@ -300,7 +230,7 @@ class UpdateUserAddressView(APIView):
             else:
                 logger.warning(f"Permission denied for billing address update: user id {request.user.id} tried to update address id {pk} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response({"details": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
-        except:
+        except BillingAddress.DoesNotExist:
             return Response({"details": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -320,20 +250,17 @@ class DeleteUserAddressView(APIView):
             else:
                 logger.warning(f"Permission denied for billing address deletion: user id {request.user.id} tried to delete address id {pk} from IP {request.META.get('REMOTE_ADDR')}")
                 return Response({"details": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
-        except:
+        except BillingAddress.DoesNotExist:
             return Response({"details": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
-# all orders list
 class OrdersListView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-
         user_staff_status = request.user.is_staff
         
-        # Admin users can see all orders, regular users see only their own
         if user_staff_status:
             all_users_orders = OrderModel.objects.all()
             serializer = AllOrdersListSerializer(all_users_orders, many=True)
@@ -348,14 +275,15 @@ class ChangeOrderStatus(APIView):
     permission_classes = [permissions.IsAdminUser]
 
     def put(self, request, pk):
-        data = request.data       
-        order = OrderModel.objects.get(id=pk)
+        data = request.data
+        try:
+            order = OrderModel.objects.get(id=pk)
+        except OrderModel.DoesNotExist:
+            return Response({"details": "Order not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # only update this
         order.is_delivered = data["is_delivered"]
         order.delivered_at = data["delivered_at"]
         order.save()
-        
-        
+
         serializer = AllOrdersListSerializer(order, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)

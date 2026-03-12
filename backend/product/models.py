@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db.models import Avg
 
 
 def validate_image_size(image):
@@ -50,9 +51,9 @@ class Product(models.Model):
     
     @property
     def average_rating(self):
-        reviews = self.reviews.all()
-        if reviews:
-            return round(sum([review.rating for review in reviews]) / len(reviews), 1)
+        result = self.reviews.aggregate(avg_rating=Avg('rating'))
+        if result['avg_rating']:
+            return round(result['avg_rating'], 1)
         return 0
     
     @property

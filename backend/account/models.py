@@ -10,7 +10,7 @@ class BillingAddress(models.Model):
         max_length=15,
         validators=[RegexValidator(r'^\+?[0-9]{10,15}$', message="Enter a valid phone number")]
     )
-    pin_code = models.CharField(max_length=6, validators=[RegexValidator(r'^\d{0,9}$')], null=False, blank=False)
+    pin_code = models.CharField(max_length=6, validators=[RegexValidator(r'^\d{4,6}$', message="PIN code must be 4-6 digits")], null=False, blank=False)
     house_no = models.CharField(max_length=300, null=False, blank=False)
     landmark = models.CharField(max_length=120, null=False, blank=False)
     city = models.CharField(max_length=120, null=False, blank=False)
