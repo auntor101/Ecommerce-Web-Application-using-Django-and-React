@@ -2,7 +2,8 @@ from django.urls import path
 from payments.views import (
     PaymentMethodListView, BkashPaymentView, CardPaymentView, 
     ProcessPaymentView, PaymentListView, PaymentDetailView,
-    PaymentStatusView, MockPaymentView, AdminPaymentListView
+    PaymentStatusView, MockPaymentView, AdminPaymentListView,
+    CheckTokenView
 )
 
 urlpatterns = [
@@ -21,6 +22,9 @@ urlpatterns = [
     
     # Admin endpoints
     path('admin/all/', AdminPaymentListView.as_view(), name='admin-payments'),
+    
+    # Token validation endpoint
+    path('check-token/', CheckTokenView.as_view(), name='check-token'),
     
     # Legacy endpoint for backward compatibility
     path('mock-payment/', MockPaymentView.as_view(), name='mock-payment'),

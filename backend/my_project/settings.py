@@ -156,13 +156,16 @@ for dir_name in MEDIA_DIRS:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS
+CORS_ALLOWED_ORIGINS_ENV = os.getenv('CORS_ALLOWED_ORIGINS', '')
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
-    CORS_ALLOWED_ORIGINS = [
+    _default_origins = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ]
+    _extra_origins = [o.strip() for o in CORS_ALLOWED_ORIGINS_ENV.split(',') if o.strip()]
+    CORS_ALLOWED_ORIGINS = list(set(_default_origins + _extra_origins))
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [

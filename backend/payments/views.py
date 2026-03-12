@@ -231,3 +231,10 @@ class AdminPaymentListView(APIView):
         payments = Payment.objects.all().select_related('payment_method', 'user')
         serializer = PaymentSerializer(payments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CheckTokenView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response({"detail": "Token is valid."}, status=status.HTTP_200_OK)
