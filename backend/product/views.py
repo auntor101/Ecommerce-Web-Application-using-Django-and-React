@@ -47,7 +47,6 @@ class ProductView(APIView):
     def get(self, request):
         products = Product.objects.all().select_related('category').prefetch_related('reviews')
         
-        # Apply search filter across product name, description, and category
         search = request.GET.get('search', '')
         if search:
             products = products.filter(
@@ -79,7 +78,6 @@ class ProductView(APIView):
         if featured:
             products = products.filter(is_featured=featured.lower() == 'true')
         
-        # Handle different sorting options for product listing
         ordering = request.GET.get('ordering', '-created_at')
         if ordering == 'price_low':
             products = products.order_by('price')
@@ -175,7 +173,6 @@ class CartView(APIView):
 
     def get(self, request):
         cart_items = Cart.objects.filter(user=request.user).select_related('product')
-        # Calculate cart totals for checkout summary
         total_items = cart_items.count()
         total_price = sum(item.total_price for item in cart_items)
         

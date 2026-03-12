@@ -37,12 +37,6 @@ class BkashPaymentSerializer(serializers.ModelSerializer):
         fields = ['mobile_number', 'amount', 'pin']
     
     def validate_mobile_number(self, value):
-        """
-        Validate Bangladesh mobile number format.
-        
-        Ensures the mobile number follows the standard 11-digit format
-        starting with '01' as required by Bangladeshi telecom operators.
-        """
         if not value.startswith('01') or len(value) != 11:
             raise serializers.ValidationError("Invalid mobile number format. Use 01XXXXXXXXX")
         return value
@@ -50,9 +44,8 @@ class BkashPaymentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context['request']
         amount = validated_data.pop('amount')
-        pin = validated_data.pop('pin')  # PIN validation handled by payment gateway
+        pin = validated_data.pop('pin')
         
-        # Initialize payment transaction record
         payment_method, _ = PaymentMethod.objects.get_or_create(
             name='bkash',
             defaults={
@@ -69,20 +62,16 @@ class BkashPaymentSerializer(serializers.ModelSerializer):
             status='processing'
         )
         
-        # Initialize BkashPayment record
         bkash_payment = BkashPayment.objects.create(
             payment=payment,
             mobile_number=validated_data['mobile_number'],
             bkash_transaction_id=f"BKS{uuid.uuid4().hex[:8].upper()}"
         )
         
-        # Simulate processing (in real implementation, make API call to bKash)
-        # For now, mark as completed
         payment.status = 'completed'
         payment.processed_at = datetime.now()
         payment.save()
         
-        # Log payment status change
         PaymentLog.objects.create(
             payment=payment,
             status_from='processing',
@@ -109,14 +98,12 @@ class CardPaymentSerializer(serializers.ModelSerializer):
         ]
     
     def validate_card_number(self, value):
-        # Normalize and validate card number format
         card_number = value.replace(' ', '')
         if not card_number.isdigit() or len(card_number) < 16:
             raise serializers.ValidationError("Invalid card number")
         return card_number
     
     def validate_expiry_date(self, value):
-        # Validate MM/YY format
         if '/' not in value or len(value) != 5:
             raise serializers.ValidationError("Invalid expiry date format. Use MM/YY")
         
@@ -137,10 +124,8 @@ class CardPaymentSerializer(serializers.ModelSerializer):
         cvv = validated_data.pop('cvv')
         card_type = validated_data.pop('card_type')
         
-        # Get last 4 digits of card
         card_last_four = card_number[-4:]
         
-        # Initialize Payment record
         payment_method, _ = PaymentMethod.objects.get_or_create(
             name=card_type,
             defaults={
@@ -158,7 +143,6 @@ class CardPaymentSerializer(serializers.ModelSerializer):
             status='processing'
         )
         
-        # Initialize CardPayment record
         card_payment = CardPayment.objects.create(
             payment=payment,
             card_type=card_type,
@@ -167,13 +151,10 @@ class CardPaymentSerializer(serializers.ModelSerializer):
             authorization_code=f"AUTH{uuid.uuid4().hex[:8].upper()}"
         )
         
-        # Simulate processing (in real implementation, make API call to payment gateway)
-        # For now, mark as completed
         payment.status = 'completed'
         payment.processed_at = datetime.now()
         payment.save()
         
-        # Log payment status change
         PaymentLog.objects.create(
             payment=payment,
             status_from='processing',

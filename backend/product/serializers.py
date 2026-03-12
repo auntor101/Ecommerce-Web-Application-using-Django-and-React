@@ -81,7 +81,6 @@ class CartItemSerializer(serializers.ModelSerializer):
         product_id = validated_data.pop('product_id')
         validated_data['product_id'] = product_id
         
-        # Check if item already exists in cart
         cart_item, created = Cart.objects.get_or_create(
             user=validated_data['user'],
             product_id=product_id,
@@ -89,7 +88,6 @@ class CartItemSerializer(serializers.ModelSerializer):
         )
         
         if not created:
-            # If item exists, update quantity
             cart_item.quantity += validated_data.get('quantity', 1)
             cart_item.save()
         
@@ -119,7 +117,6 @@ class WishlistItemSerializer(serializers.ModelSerializer):
         product_id = validated_data.pop('product_id')
         validated_data['product_id'] = product_id
         
-        # Handle wishlist item management
         wishlist_item, created = Wishlist.objects.get_or_create(
             user=validated_data['user'],
             product_id=product_id

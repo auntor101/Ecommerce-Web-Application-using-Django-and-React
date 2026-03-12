@@ -14,7 +14,6 @@ from account.models import OrderModel
 
 
 class PaymentMethodListView(APIView):
-    """Get available payment methods"""
     
     def get(self, request):
         payment_methods = PaymentMethod.objects.filter(is_active=True)
@@ -30,7 +29,6 @@ class BkashPaymentView(APIView):
         if serializer.is_valid():
             bkash_payment = serializer.save()
             
-            # Prepare payment response data
             payment_serializer = PaymentDetailSerializer(bkash_payment.payment)
             
             return Response({
@@ -54,7 +52,6 @@ class CardPaymentView(APIView):
         if serializer.is_valid():
             card_payment = serializer.save()
             
-            # Return payment details
             payment_serializer = PaymentDetailSerializer(card_payment.payment)
             
             return Response({
@@ -71,7 +68,6 @@ class CardPaymentView(APIView):
 
 
 class ProcessPaymentView(APIView):
-    """Unified payment processing endpoint"""
     permission_classes = [permissions.IsAuthenticated]
     
     def post(self, request):
@@ -91,7 +87,6 @@ class ProcessPaymentView(APIView):
                 'success': False
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Delegate to payment method specific processor
         if payment_method_name == 'bkash':
             return self._process_bkash_payment(request)
         elif payment_method_name in ['visa', 'mastercard']:
@@ -143,7 +138,6 @@ class ProcessPaymentView(APIView):
 
 
 class PaymentListView(APIView):
-    """Get user's payment history"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -153,7 +147,6 @@ class PaymentListView(APIView):
 
 
 class PaymentDetailView(APIView):
-    """Get detailed payment information"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, payment_id):
@@ -171,7 +164,6 @@ class PaymentDetailView(APIView):
 
 
 class PaymentStatusView(APIView):
-    """Check payment status"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, transaction_id):
@@ -185,7 +177,6 @@ class PaymentStatusView(APIView):
             }, status=status.HTTP_404_NOT_FOUND)
 
 
-# Development payment simulation endpoint
 class MockPaymentView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -196,7 +187,6 @@ class MockPaymentView(APIView):
         amount = data.get('amount', 0)
         paid_status = data.get('paid_status', True)
         
-        # Link payment to existing order and update payment status
         if order_id:
             try:
                 order = OrderModel.objects.get(id=order_id)
@@ -208,18 +198,15 @@ class MockPaymentView(APIView):
                     'detail': 'Order not found.'
                 }, status=status.HTTP_404_NOT_FOUND)
         
-        # Initialize payment record
         try:
             payment_method = PaymentMethod.objects.get(name=payment_method_name)
         except PaymentMethod.DoesNotExist:
-            # Initialize payment method for new payment type
             payment_method = PaymentMethod.objects.create(
                 name=payment_method_name,
                 display_name=payment_method_name.title(),
                 is_active=True
             )
         
-        # Generate payment record with unique transaction ID
         payment = Payment.objects.create(
             user=request.user,
             payment_method=payment_method,
@@ -238,7 +225,6 @@ class MockPaymentView(APIView):
 
 
 class AdminPaymentListView(APIView):
-    """Admin view to see all payments"""
     permission_classes = [permissions.IsAdminUser]
     
     def get(self, request):
