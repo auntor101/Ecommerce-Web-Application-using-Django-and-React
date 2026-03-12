@@ -4,8 +4,6 @@ import {
     USER_LOGIN_FAIL,
     USER_LOGOUT,
 
-    CARD_CREATE_RESET,
-
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
     USER_REGISTER_FAIL,
@@ -79,7 +77,6 @@ export const login = (username, password) => async (dispatch) => {
             payload: data
         })
 
-        // Save user data to localStorage for persistence across browser sessions
         localStorage.setItem('userInfo', JSON.stringify(data))
 
     } catch (error) {
@@ -90,17 +87,10 @@ export const login = (username, password) => async (dispatch) => {
     }
 }
 
-// Clear user session and reset app state
 export const logout = () => (dispatch) => {
-    // Remove user data from localStorage
     localStorage.removeItem('userInfo')
-    // Reset Redux state to logged out
     dispatch({
         type: USER_LOGOUT
-    })
-    // Clear any card-related state
-    dispatch({
-        type: CARD_CREATE_RESET
     })
 }
 
@@ -140,7 +130,6 @@ export const register = (username, email, password) => async (dispatch) => {
     }
 }
 
-// Verify if user's JWT token is still valid to prevent session expiry issues
 export const checkTokenValidation = () => async (dispatch, getState) => {
     try {
 
@@ -148,7 +137,6 @@ export const checkTokenValidation = () => async (dispatch, getState) => {
             type: CHECK_TOKEN_VALID_REQUEST
         })
 
-        // Get current user token from Redux state
         const {
             userLoginReducer: { userInfo }
         } = getState()
@@ -160,7 +148,6 @@ export const checkTokenValidation = () => async (dispatch, getState) => {
             }
         }
 
-        // Verify token validity with backend
         const { data } = await axios.get("/payments/check-token/", config)
 
         dispatch({

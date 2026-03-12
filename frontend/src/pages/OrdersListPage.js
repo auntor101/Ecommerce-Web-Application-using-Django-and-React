@@ -6,7 +6,6 @@ import { Table, Spinner } from 'react-bootstrap'
 import { dateCheck } from '../components/GetDate'
 import { changeDeliveryStatus } from '../actions/productActions'
 import { CHANGE_DELIVERY_STATUS_RESET } from '../constants'
-import SearchBarForOrdersPage from '../components/SearchBarForOrdersPage'
 import Message from '../components/Message'
 
 function OrdersListPage() {
