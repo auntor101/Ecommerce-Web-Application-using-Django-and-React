@@ -11,6 +11,10 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView # for login page
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.conf import settings
 from .serializers import (
     UserSerializer, 
     UserRegisterTokenSerializer, 
@@ -287,3 +291,62 @@ class ChangeOrderStatus(APIView):
 
         serializer = AllOrdersListSerializer(order, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PasswordResetRequestView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email', '').strip()
+        if not email:
+            return Response({"detail": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+            reset_link = f"{frontend_url}/password-reset/{uid}/{token}"
+            logger.info(f"Password reset requested for user: {user.username} (id={user.id})")
+            # In production, send email. For now, return the link in response for development.
+            if settings.DEBUG:
+                return Response({
+                    "detail": "Password reset link generated.",
+                    "reset_link": reset_link
+                }, status=status.HTTP_200_OK)
+            else:
+                from django.core.mail import send_mail
+                send_mail(
+                    subject="Password Reset Request",
+                    message=f"Click the link to reset your password: {reset_link}",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+                return Response({"detail": "Password reset email sent."}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            # Return success even if user doesn't exist (security best practice)
+            return Response({"detail": "If an account with that email exists, a reset link has been sent."}, status=status.HTTP_200_OK)
+
+
+class PasswordResetConfirmView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, uid, token):
+        password = request.data.get('password', '').strip()
+        if not password:
+            return Response({"detail": "Password is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            uid_decoded = force_str(urlsafe_base64_decode(uid))
+            user = User.objects.get(pk=uid_decoded)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({"detail": "Invalid reset link."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not default_token_generator.check_token(user, token):
+            return Response({"detail": "Invalid or expired reset token."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.password = make_password(password)
+        user.save()
+        logger.info(f"Password reset completed for user: {user.username} (id={user.id})")
+        return Response({"detail": "Password has been reset successfully."}, status=status.HTTP_200_OK)

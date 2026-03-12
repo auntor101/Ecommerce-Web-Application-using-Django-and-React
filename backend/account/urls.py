@@ -22,4 +22,8 @@ urlpatterns = [
     # order
     path('all-orders-list/', views.OrdersListView.as_view(), name="all-orders-list"),
     path('change-order-status/<int:pk>/', views.ChangeOrderStatus.as_view(), name="change-order-status"),
+
+    # password reset
+    path('password-reset/', views.PasswordResetRequestView.as_view(), name="password-reset-request"),
+    path('password-reset/<str:uid>/<str:token>/', views.PasswordResetConfirmView.as_view(), name="password-reset-confirm"),
 ]
