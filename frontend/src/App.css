@@ -545,3 +545,27 @@ h1 {
     transform: rotate(360deg);
   }
 }
+
+/* Cart Drawer Modal - slides in from right */
+.cart-drawer-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 0;
+  max-width: 400px;
+  width: 100%;
+  height: 100%;
+  transform: none;
+}
+
+.cart-drawer-modal .modal-content {
+  height: 100vh;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-drawer-modal .modal-body {
+  flex: 1;
+  overflow-y: auto;
+}
