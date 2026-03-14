@@ -3,6 +3,15 @@
 .vscode
 .gitignore
 README.md
+
+# Python artifacts
+__pycache__
+*.pyc
+
+# Node artifacts
+node_modules
+
+# Backend files not needed for deployment
 backend/django.log
 backend/db.sqlite3
 backend/tests/
