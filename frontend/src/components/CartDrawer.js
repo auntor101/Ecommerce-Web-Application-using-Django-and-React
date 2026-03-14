@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Offcanvas, Button } from 'react-bootstrap'
+import { Modal, Button } from 'react-bootstrap'
 import { toggleCart, removeFromCart, updateCartQuantity } from '../actions/cartActions'
 import { Link } from 'react-router-dom'
 
@@ -12,26 +12,26 @@ function CartDrawer() {
     const getTotalItems = () => cartItems.reduce((acc, item) => acc + item.quantity, 0)
 
     return (
-        <Offcanvas 
-            show={isOpen} 
-            onHide={() => dispatch(toggleCart())} 
-            placement="end"
-            style={{ width: '400px' }}
+        <Modal
+            show={isOpen}
+            onHide={() => dispatch(toggleCart())}
+            dialogClassName="cart-drawer-modal"
+            style={{ paddingRight: 0 }}
         >
-            <Offcanvas.Header 
+            <Modal.Header 
                 closeButton 
                 style={{
                     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                     color: 'white'
                 }}
             >
-                <Offcanvas.Title style={{ fontWeight: '700' }}>
+                <Modal.Title style={{ fontWeight: '700' }}>
                     <i className="fas fa-shopping-cart" style={{ marginRight: '10px' }}></i>
                     Shopping Cart ({getTotalItems()})
-                </Offcanvas.Title>
-            </Offcanvas.Header>
+                </Modal.Title>
+            </Modal.Header>
             
-            <Offcanvas.Body style={{ padding: 0 }}>
+            <Modal.Body style={{ padding: 0 }}>
                 {cartItems.length === 0 ? (
                     <div style={{
                         textAlign: 'center',
@@ -155,8 +155,8 @@ function CartDrawer() {
                         </div>
                     </>
                 )}
-            </Offcanvas.Body>
-        </Offcanvas>
+            </Modal.Body>
+        </Modal>
     )
 }
 

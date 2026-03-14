@@ -1,2 +1,11 @@
-backend/
-requirements.txt
+# Ignore files not needed for Vercel deployment
+.git
+.vscode
+.gitignore
+README.md
+backend/django.log
+backend/db.sqlite3
+backend/tests/
+backend/static/
+backend/media/
+backend/.gitignore
