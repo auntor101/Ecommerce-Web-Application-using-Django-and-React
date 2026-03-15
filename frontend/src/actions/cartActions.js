@@ -1,29 +1,31 @@
-export const ADD_TO_CART = 'ADD_TO_CART'
-export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
-export const UPDATE_CART_QUANTITY = 'UPDATE_CART_QUANTITY'
-export const CLEAR_CART = 'CLEAR_CART'
-export const TOGGLE_CART = 'TOGGLE_CART'
+import {
+    CART_ADD_ITEM,
+    CART_REMOVE_ITEM,
+    CART_UPDATE_QUANTITY,
+    CART_CLEAR_ITEMS,
+    TOGGLE_CART
+} from '../constants/index'
 
 export const addToCart = (product, quantity = 1) => (dispatch, getState) => {
     dispatch({
-        type: ADD_TO_CART,
+        type: CART_ADD_ITEM,
         payload: { ...product, quantity }
     })
     localStorage.setItem('cartItems', JSON.stringify(getState().cartReducer.cartItems))
 }
 
 export const removeFromCart = (id) => (dispatch, getState) => {
-    dispatch({ type: REMOVE_FROM_CART, payload: id })
+    dispatch({ type: CART_REMOVE_ITEM, payload: id })
     localStorage.setItem('cartItems', JSON.stringify(getState().cartReducer.cartItems))
 }
 
 export const updateCartQuantity = (id, quantity) => (dispatch, getState) => {
-    dispatch({ type: UPDATE_CART_QUANTITY, payload: { id, quantity } })
+    dispatch({ type: CART_UPDATE_QUANTITY, payload: { id, quantity } })
     localStorage.setItem('cartItems', JSON.stringify(getState().cartReducer.cartItems))
 }
 
 export const clearCart = () => (dispatch, getState) => {
-    dispatch({ type: CLEAR_CART })
+    dispatch({ type: CART_CLEAR_ITEMS })
     localStorage.setItem('cartItems', JSON.stringify([]))
 }
 
