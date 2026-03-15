@@ -27,6 +27,14 @@ import {
 
 import axios from 'axios'
 
+const getApiErrorMessage = (error, fallbackMessage) => {
+    if (!axios.defaults.baseURL && error.response?.status === 404) {
+        return 'Backend API is not available for this frontend deployment. Set REACT_APP_API_URL in Vercel to your backend URL.'
+    }
+
+    return error.response && error.response.data.detail ? error.response.data.detail : fallbackMessage
+}
+
 
 // products list
 export const getProductsList = () => async (dispatch) => {
@@ -38,6 +46,10 @@ export const getProductsList = () => async (dispatch) => {
         // call api
         const { data } = await axios.get("/api/products/")
 
+        if (!Array.isArray(data)) {
+            throw new Error('Products API returned an unexpected response shape.')
+        }
+
         dispatch({
             type: PRODUCTS_LIST_SUCCESS,
             payload: data
@@ -45,7 +57,7 @@ export const getProductsList = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: PRODUCTS_LIST_FAIL,
-            payload: error.message
+            payload: getApiErrorMessage(error, error.message)
         })
     }
 }
@@ -61,6 +73,10 @@ export const getProductDetails = (id) => async (dispatch) => {
         // call api
         const { data } = await axios.get(`/api/product/${id}/`)
 
+        if (!data || Array.isArray(data) || typeof data !== 'object') {
+            throw new Error('Product details API returned an unexpected response shape.')
+        }
+
         dispatch({
             type: PRODUCT_DETAILS_SUCCESS,
             payload: data
@@ -68,7 +84,7 @@ export const getProductDetails = (id) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: PRODUCT_DETAILS_FAIL,
-            payload: error.message
+            payload: getApiErrorMessage(error, error.message)
         })
     }
 }
