@@ -26,6 +26,8 @@ import {
 } from '../constants/index'
 
 import axios from 'axios'
+import { isFrontendOnlyMode, frontendOnlyMessage } from '../utils/appMode'
+import { mockProducts, getMockProductById } from '../utils/mockProducts'
 
 const getApiErrorMessage = (error, fallbackMessage) => {
     if (!axios.defaults.baseURL && error.response?.status === 404) {
@@ -42,6 +44,14 @@ export const getProductsList = () => async (dispatch) => {
         dispatch({
             type: PRODUCTS_LIST_REQUEST
         })
+
+        if (isFrontendOnlyMode) {
+            dispatch({
+                type: PRODUCTS_LIST_SUCCESS,
+                payload: mockProducts
+            })
+            return
+        }
 
         // call api
         const { data } = await axios.get("/api/products/")
@@ -70,6 +80,20 @@ export const getProductDetails = (id) => async (dispatch) => {
             type: PRODUCT_DETAILS_REQUEST
         })
 
+        if (isFrontendOnlyMode) {
+            const product = getMockProductById(id)
+
+            if (!product) {
+                throw new Error('Product not found in frontend demo mode.')
+            }
+
+            dispatch({
+                type: PRODUCT_DETAILS_SUCCESS,
+                payload: product
+            })
+            return
+        }
+
         // call api
         const { data } = await axios.get(`/api/product/${id}/`)
 
@@ -97,6 +121,10 @@ export const createProduct = (product) => async (dispatch, getState) => {
         dispatch({
             type: CREATE_PRODUCT_REQUEST
         })
+
+        if (isFrontendOnlyMode) {
+            throw new Error(frontendOnlyMessage)
+        }
 
         // login reducer
         const {
@@ -136,6 +164,10 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
             type: DELETE_PRODUCT_REQUEST
         })
 
+        if (isFrontendOnlyMode) {
+            throw new Error(frontendOnlyMessage)
+        }
+
         // login reducer
         const {
             userLoginReducer: { userInfo },
@@ -174,6 +206,10 @@ export const updateProduct = (id, product) => async (dispatch, getState) => {
         dispatch({
             type: UPDATE_PRODUCT_REQUEST
         })
+
+        if (isFrontendOnlyMode) {
+            throw new Error(frontendOnlyMessage)
+        }
 
         // login reducer
         const {
@@ -215,6 +251,10 @@ export const changeDeliveryStatus = (id, product) => async (dispatch, getState) 
         dispatch({
             type: CHANGE_DELIVERY_STATUS_REQUEST
         })
+
+        if (isFrontendOnlyMode) {
+            throw new Error(frontendOnlyMessage)
+        }
 
         // login reducer
         const {

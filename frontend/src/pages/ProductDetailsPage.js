@@ -5,6 +5,7 @@ import Message from '../components/Message'
 import { Spinner, Row, Col, Container, Card, Button, Modal } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { CREATE_PRODUCT_RESET, DELETE_PRODUCT_RESET, UPDATE_PRODUCT_RESET } from '../constants'
+import { isFrontendOnlyMode, frontendOnlyMessage } from '../utils/appMode'
 
 function ProductDetailsPage({ history, match }) {
     const dispatch = useDispatch()
@@ -325,8 +326,14 @@ function ProductDetailsPage({ history, match }) {
                                                 <i className="fas fa-shopping-cart" style={{ marginRight: '10px', color: '#11998e' }}></i>
                                                 Ready to Purchase?
                                             </h4>
+
+                                            {isFrontendOnlyMode && (
+                                                <div style={{ marginBottom: '1rem' }}>
+                                                    <Message variant='info'>{frontendOnlyMessage}</Message>
+                                                </div>
+                                            )}
                                             
-                                            {product.stock ? (
+                                            {product.stock && !isFrontendOnlyMode ? (
                                                 <Link to={`${product.id}/checkout/`} style={{ textDecoration: 'none' }}>
                                                     <button style={{
                                                         width: '100%',
@@ -348,6 +355,22 @@ function ProductDetailsPage({ history, match }) {
                                                         Proceed to Payment
                                                     </button>
                                                 </Link>
+                                            ) : product.stock ? (
+                                                <button style={{
+                                                    width: '100%',
+                                                    background: 'linear-gradient(135deg, #4a5568 0%, #2d3748 100%)',
+                                                    border: 'none',
+                                                    borderRadius: '16px',
+                                                    color: 'white',
+                                                    padding: '20px',
+                                                    fontSize: '1.1rem',
+                                                    fontWeight: '700',
+                                                    cursor: 'not-allowed',
+                                                    opacity: 0.85
+                                                }} disabled>
+                                                    <i className="fas fa-store-slash" style={{ marginRight: '12px', fontSize: '1.2rem' }}></i>
+                                                    Backend Checkout Disabled
+                                                </button>
                                             ) : (
                                                 <div style={{
                                                     background: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)',

@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import SearchBarForProducts from './SearchBarForProducts'
 // Import CartIcon
 import CartIcon from './CartIcon'
+import { isFrontendOnlyMode } from '../utils/appMode'
 
 function NavBar() {
     let history = useHistory()
@@ -97,6 +98,20 @@ function NavBar() {
                             {/* Cart Icon */}
                             <CartIcon />
 
+                            {isFrontendOnlyMode && (
+                                <span style={{
+                                    background: 'rgba(255, 255, 255, 0.12)',
+                                    color: '#f7fafc',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    padding: '8px 12px',
+                                    borderRadius: '999px',
+                                    fontSize: '0.85rem',
+                                    fontWeight: '600'
+                                }}>
+                                    Frontend Demo
+                                </span>
+                            )}
+
                             {/* login-logout condition here */}
                             {userInfo ? (
                                 <div>
@@ -171,6 +186,17 @@ function NavBar() {
                                         </NavDropdown.Item>
                                     </NavDropdown>
                                 </div>
+                            ) : isFrontendOnlyMode ? (
+                                <span style={{
+                                    fontWeight: '500',
+                                    background: 'linear-gradient(135deg, #4a5568 0%, #2d3748 100%)',
+                                    borderRadius: '8px',
+                                    padding: '8px 16px',
+                                    color: '#edf2f7'
+                                }}>
+                                    <i className="fas fa-desktop" style={{ marginRight: '8px' }}></i>
+                                    Preview Only
+                                </span>
                             ) : (
                                 <LinkContainer to="/login">
                                     <Nav.Link 

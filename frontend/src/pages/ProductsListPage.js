@@ -6,6 +6,7 @@ import { Spinner, Row, Col } from 'react-bootstrap'
 import Product from '../components/Product'
 import { useHistory } from "react-router-dom";
 import { CREATE_PRODUCT_RESET } from '../constants'
+import { isFrontendOnlyMode, frontendOnlyMessage } from '../utils/appMode'
 
 function ProductsListPage() {
     let history = useHistory()
@@ -116,6 +117,12 @@ function ProductsListPage() {
             </div>
 
             <div className="container">
+                {isFrontendOnlyMode && (
+                    <div style={{ marginBottom: '2rem' }}>
+                        <Message variant='info'>{frontendOnlyMessage}</Message>
+                    </div>
+                )}
+
                 {/* Error Message */}
                 {error && (
                     <div style={{ marginBottom: '2rem' }}>
