@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { resetPassword } from '../actions/userActions';
-import { toast } from 'react-toastify';
+
 import { Link, useParams } from 'react-router-dom';
 
 const PasswordResetConfirmPage = () => {

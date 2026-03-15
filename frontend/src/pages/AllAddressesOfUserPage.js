@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Card, Modal, Button, Spinner } from 'react-bootstrap'
+import { Modal, Button, Spinner } from 'react-bootstrap'
 import { deleteUserAddress, getAllAddress, checkTokenValidation, logout } from '../actions/userActions'
 import { DELETE_USER_ADDRESS_RESET, GET_SINGLE_ADDRESS_RESET } from '../constants'
 import { useHistory } from 'react-router-dom'

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import { Row, Col, Container, Card, Button, Form, Alert } from 'react-bootstrap'
+import { useHistory } from 'react-router-dom'
+import { Row, Col, Button, Form, Alert } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductDetails } from '../actions/productActions'
 import Message from '../components/Message'
@@ -19,7 +19,7 @@ const CheckoutPage = ({ match }) => {
   let history = useHistory()
   const dispatch = useDispatch()
   const [addressSelected, setAddressSelected] = useState(false)
-  const [selectedAddressId, setSelectedAddressId] = useState(0)
+  const [, setSelectedAddressId] = useState(0)
   const [paymentMethod, setPaymentMethod] = useState('bkash')
   const [paidStatus, setPaidStatus] = useState(false)
   const [showPaidAlert, setShowPaidAlert] = useState(false)
