@@ -7,6 +7,7 @@ import { dateCheck } from '../components/GetDate'
 import { changeDeliveryStatus } from '../actions/productActions'
 import { CHANGE_DELIVERY_STATUS_RESET } from '../constants'
 import Message from '../components/Message'
+import SearchBarForOrdersPage from '../components/SearchBarForOrdersPage'
 
 function OrdersListPage() {
     let history = useHistory()

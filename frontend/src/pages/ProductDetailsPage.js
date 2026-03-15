@@ -4,7 +4,7 @@ import { deleteProduct, getProductDetails } from '../actions/productActions'
 import Message from '../components/Message'
 import { Spinner, Row, Col, Container, Card, Button, Modal } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { CREATE_PRODUCT_RESET, DELETE_PRODUCT_RESET, UPDATE_PRODUCT_RESET, CARD_CREATE_RESET } from '../constants'
+import { CREATE_PRODUCT_RESET, DELETE_PRODUCT_RESET, UPDATE_PRODUCT_RESET } from '../constants'
 
 function ProductDetailsPage({ history, match }) {
     const dispatch = useDispatch()
@@ -28,7 +28,6 @@ function ProductDetailsPage({ history, match }) {
         dispatch(getProductDetails(match.params.id))
         dispatch({ type: UPDATE_PRODUCT_RESET })
         dispatch({ type: CREATE_PRODUCT_RESET })
-        dispatch({ type: CARD_CREATE_RESET })
     }, [dispatch, match])
 
     const confirmDelete = () => {
