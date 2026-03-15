@@ -4,11 +4,21 @@ import thunk from 'redux-thunk'
 import allReducers from './reducers/index'
 
 
+const readStoredJSON = (key, fallbackValue) => {
+    try {
+        const rawValue = localStorage.getItem(key)
+        return rawValue ? JSON.parse(rawValue) : fallbackValue
+    } catch (error) {
+        localStorage.removeItem(key)
+        return fallbackValue
+    }
+}
+
 const middleware = [thunk]
 
-const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
-const cartItemsFromStorage = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : []
-const wishlistItemsFromStorage = localStorage.getItem('wishlistItems') ? JSON.parse(localStorage.getItem('wishlistItems')) : []
+const userInfoFromStorage = readStoredJSON('userInfo', null)
+const cartItemsFromStorage = readStoredJSON('cartItems', [])
+const wishlistItemsFromStorage = readStoredJSON('wishlistItems', [])
 
 let initialState = {
     userLoginReducer: { userInfo: userInfoFromStorage },

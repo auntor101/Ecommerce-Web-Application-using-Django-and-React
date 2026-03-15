@@ -8,8 +8,17 @@ import {
     TOGGLE_CART
 } from '../constants/index'
 
-const cartItemsFromStorage = localStorage.getItem('cartItems') 
-    ? JSON.parse(localStorage.getItem('cartItems')) : []
+const readStoredCartItems = () => {
+    try {
+        const rawValue = localStorage.getItem('cartItems')
+        return rawValue ? JSON.parse(rawValue) : []
+    } catch (error) {
+        localStorage.removeItem('cartItems')
+        return []
+    }
+}
+
+const cartItemsFromStorage = readStoredCartItems()
 
 const initialState = {
     cartItems: cartItemsFromStorage,

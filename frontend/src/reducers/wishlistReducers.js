@@ -3,8 +3,17 @@ import {
     REMOVE_FROM_WISHLIST
 } from '../actions/wishlistActions'
 
-const wishlistItemsFromStorage = localStorage.getItem('wishlistItems') 
-    ? JSON.parse(localStorage.getItem('wishlistItems')) : []
+const readStoredWishlistItems = () => {
+    try {
+        const rawValue = localStorage.getItem('wishlistItems')
+        return rawValue ? JSON.parse(rawValue) : []
+    } catch (error) {
+        localStorage.removeItem('wishlistItems')
+        return []
+    }
+}
+
+const wishlistItemsFromStorage = readStoredWishlistItems()
 
 const initialState = {
     items: wishlistItemsFromStorage
