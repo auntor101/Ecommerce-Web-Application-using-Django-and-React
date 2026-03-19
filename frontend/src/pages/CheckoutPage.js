@@ -13,6 +13,7 @@ const paymentMethods = [
   { label: 'bKash', value: 'bkash', icon: 'mobile-alt' },
   { label: 'Visa', value: 'visa', icon: 'credit-card' },
   { label: 'MasterCard', value: 'mastercard', icon: 'credit-card' },
+  { label: 'Cash on Delivery', value: 'cash', icon: 'money-bill-wave' },
 ]
 
 const CheckoutPage = ({ match }) => {
@@ -156,7 +157,7 @@ const CheckoutPage = ({ match }) => {
                     disabled={!addressSelected || paidStatus}
                     style={{ width: '100%', padding: '0.75rem' }}
                   >
-                    {paidStatus ? 'âœ“ Payment Complete' : `Pay $${Number(product.price).toFixed(2)}`}
+                  {paidStatus ? '\u2713 Payment Complete' : `Pay \u09f3${Number(product.price).toLocaleString()}`}
                   </Button>
                 </Form>
 
@@ -190,12 +191,12 @@ const CheckoutPage = ({ match }) => {
                     <div style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{product.name}</div>
                     <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Qty: 1</div>
                   </div>
-                  <span style={{ color: 'var(--gold)', fontWeight: 700 }}>${Number(product.price).toFixed(2)}</span>
+                  <span style={{ color: 'var(--gold)', fontWeight: 700 }}>&#2547;{Number(product.price).toLocaleString()}</span>
                 </div>
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Total</span>
                   <span style={{ color: 'var(--gold)', fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 700 }}>
-                    ${Number(product.price).toFixed(2)}
+                    &#2547;{Number(product.price).toLocaleString()}
                   </span>
                 </div>
               </div>

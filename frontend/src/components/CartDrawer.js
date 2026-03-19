@@ -1,162 +1,108 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Offcanvas, Button } from 'react-bootstrap'
+import { createPortal } from 'react-dom'
 import { toggleCart, removeFromCart, updateCartQuantity } from '../actions/cartActions'
 import { Link } from 'react-router-dom'
 
 function CartDrawer() {
     const dispatch = useDispatch()
     const { cartItems, isOpen } = useSelector(state => state.cartReducer)
-    
-    const getTotalPrice = () => cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0)
-    const getTotalItems = () => cartItems.reduce((acc, item) => acc + item.quantity, 0)
+    const total = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0)
+    const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0)
 
-    return (
-        <Offcanvas 
-            show={isOpen} 
-            onHide={() => dispatch(toggleCart())} 
-            placement="end"
-            style={{ width: '400px' }}
-        >
-            <Offcanvas.Header 
-                closeButton 
-                style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: 'white'
-                }}
-            >
-                <Offcanvas.Title style={{ fontWeight: '700' }}>
-                    <i className="fas fa-shopping-cart" style={{ marginRight: '10px' }}></i>
-                    Shopping Cart ({getTotalItems()})
-                </Offcanvas.Title>
-            </Offcanvas.Header>
-            
-            <Offcanvas.Body style={{ padding: 0 }}>
-                {cartItems.length === 0 ? (
-                    <div style={{
-                        textAlign: 'center',
-                        padding: '3rem 2rem',
-                        color: '#6b7280'
-                    }}>
-                        <i className="fas fa-shopping-cart" style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.3 }}></i>
-                        <h5>Your cart is empty</h5>
-                        <p>Add some products to get started!</p>
-                    </div>
-                ) : (
-                    <>
-                        <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }}>
-                            {cartItems.map(item => (
-                                <div key={item.id} style={{
-                                    display: 'flex',
-                                    padding: '1rem',
-                                    borderBottom: '1px solid #e2e8f0',
-                                    gap: '1rem'
-                                }}>
-                                    <img 
-                                        src={item.image} 
+    if (!isOpen) return null
+
+    const fallback = (name, id) => `https://picsum.photos/seed/${encodeURIComponent(name || id)}/80/80`
+
+    return createPortal(
+        <>
+            <div className="cart-drawer-overlay" onClick={() => dispatch(toggleCart())} />
+            <div className="cart-drawer">
+                <div className="cart-drawer-header">
+                    <h2 className="cart-drawer-title">
+                        <i className="fas fa-shopping-bag" style={{ color: 'var(--gold)' }} />
+                        Cart
+                        {totalItems > 0 && (
+                            <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+                                ({totalItems} {totalItems === 1 ? 'item' : 'items'})
+                            </span>
+                        )}
+                    </h2>
+                    <button className="cart-drawer-close" onClick={() => dispatch(toggleCart())} aria-label="Close cart">
+                        &times;
+                    </button>
+                </div>
+
+                <div className="cart-drawer-body">
+                    {cartItems.length === 0 ? (
+                        <div className="cart-empty">
+                            <i className="fas fa-shopping-bag" style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--border-gold)' }} />
+                            <p style={{ margin: 0, fontSize: '0.9rem' }}>Your cart is empty</p>
+                        </div>
+                    ) : (
+                        cartItems.map(item => {
+                            const imgSrc = item.image || fallback(item.name, item.id)
+                            return (
+                                <div key={item.id} className="cart-item">
+                                    <img
+                                        src={imgSrc}
+                                        onError={e => { e.target.src = fallback(item.name, item.id) }}
                                         alt={item.name}
-                                        style={{
-                                            width: '60px',
-                                            height: '60px',
-                                            objectFit: 'cover',
-                                            borderRadius: '8px'
-                                        }}
+                                        className="cart-item-img"
                                     />
-                                    <div style={{ flex: 1 }}>
-                                        <h6 style={{ fontWeight: '600', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-                                            {item.name}
-                                        </h6>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                <button
-                                                    onClick={() => dispatch(updateCartQuantity(item.id, item.quantity - 1))}
-                                                    disabled={item.quantity <= 1}
-                                                    style={{
-                                                        width: '24px',
-                                                        height: '24px',
-                                                        border: '1px solid #667eea',
-                                                        background: 'white',
-                                                        borderRadius: '4px',
-                                                        color: '#667eea',
-                                                        fontSize: '0.8rem'
-                                                    }}
-                                                >
-                                                    -
-                                                </button>
-                                                <span style={{ fontWeight: '600', minWidth: '20px', textAlign: 'center' }}>
-                                                    {item.quantity}
-                                                </span>
-                                                <button
-                                                    onClick={() => dispatch(updateCartQuantity(item.id, item.quantity + 1))}
-                                                    style={{
-                                                        width: '24px',
-                                                        height: '24px',
-                                                        border: '1px solid #667eea',
-                                                        background: 'white',
-                                                        borderRadius: '4px',
-                                                        color: '#667eea',
-                                                        fontSize: '0.8rem'
-                                                    }}
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-                                            <span style={{ fontWeight: '700', color: '#667eea' }}>
-                                                ৳{(item.price * item.quantity).toLocaleString()}
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div className="cart-item-name">{item.name}</div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.3rem' }}>
+                                            <button
+                                                className="cart-qty-btn"
+                                                onClick={() => dispatch(updateCartQuantity(item.id, item.quantity - 1))}
+                                                disabled={item.quantity <= 1}
+                                            >-</button>
+                                            <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-primary)', minWidth: 18, textAlign: 'center' }}>
+                                                {item.quantity}
+                                            </span>
+                                            <button
+                                                className="cart-qty-btn"
+                                                onClick={() => dispatch(updateCartQuantity(item.id, item.quantity + 1))}
+                                            >+</button>
+                                            <span style={{ marginLeft: 'auto', color: 'var(--gold)', fontWeight: 600, fontSize: '0.9rem' }}>
+                                                &#2547;{(item.price * item.quantity).toLocaleString()}
                                             </span>
                                         </div>
                                         <button
+                                            className="cart-item-remove"
                                             onClick={() => dispatch(removeFromCart(item.id))}
-                                            style={{
-                                                background: 'none',
-                                                border: 'none',
-                                                color: '#ff416c',
-                                                fontSize: '0.8rem',
-                                                marginTop: '0.5rem',
-                                                cursor: 'pointer'
-                                            }}
                                         >
-                                            <i className="fas fa-trash" style={{ marginRight: '4px' }}></i>
-                                            Remove
+                                            <i className="fas fa-trash" style={{ marginRight: 4 }} /> Remove
                                         </button>
                                     </div>
                                 </div>
-                            ))}
+                            )
+                        })
+                    )}
+                </div>
+
+                {cartItems.length > 0 && (
+                    <div className="cart-drawer-footer">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Total</span>
+                            <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--gold)' }}>
+                                &#2547;{total.toLocaleString()}
+                            </span>
                         </div>
-                        
-                        <div style={{
-                            padding: '1.5rem',
-                            borderTop: '1px solid #e2e8f0',
-                            background: '#f8fafc'
-                        }}>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                marginBottom: '1rem',
-                                fontSize: '1.2rem',
-                                fontWeight: '700'
-                            }}>
-                                <span>Total:</span>
-                                <span style={{ color: '#667eea' }}>৳{getTotalPrice().toLocaleString()}</span>
-                            </div>
-                            <Link to="/checkout" onClick={() => dispatch(toggleCart())}>
-                                <Button style={{
-                                    width: '100%',
-                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                    border: 'none',
-                                    borderRadius: '12px',
-                                    padding: '12px',
-                                    fontWeight: '600'
-                                }}>
-                                    <i className="fas fa-credit-card" style={{ marginRight: '8px' }}></i>
-                                    Proceed to Checkout
-                                </Button>
-                            </Link>
-                        </div>
-                    </>
+                        <Link to="/" onClick={() => dispatch(toggleCart())}>
+                            <button className="btn-atelier" style={{ width: '100%' }}>
+                                <i className="fas fa-credit-card" style={{ marginRight: 8 }} /> Proceed to Checkout
+                            </button>
+                        </Link>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textAlign: 'center', marginTop: '0.75rem', marginBottom: 0 }}>
+                            Select a product on the listing to buy
+                        </p>
+                    </div>
                 )}
-            </Offcanvas.Body>
-        </Offcanvas>
+            </div>
+        </>,
+        document.body
     )
 }
 

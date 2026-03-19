@@ -43,7 +43,7 @@ function ProductsListPage() {
                     </h1>
                     {!searchTerm && (
                         <p className="page-hero-subtitle">
-                            Thoughtfully sourced products across electronics, clothing, home goods and books.
+                            Fresh groceries, household essentials, personal care and electronics — delivered across Bangladesh.
                         </p>
                     )}
                 </div>

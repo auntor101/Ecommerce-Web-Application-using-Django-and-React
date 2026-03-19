@@ -83,7 +83,7 @@ function OrdersListPage() {
                         { label: 'Total Orders', value: totalOrders, icon: 'fa-shopping-bag' },
                         { label: 'Delivered', value: deliveredOrders, icon: 'fa-check' },
                         { label: 'Pending', value: totalOrders - deliveredOrders, icon: 'fa-clock' },
-                        { label: 'Revenue', value: `$${totalRevenue.toFixed(0)}`, icon: 'fa-dollar-sign' },
+                        { label: 'Revenue', value: `\u09f3${Math.round(totalRevenue).toLocaleString()}`, icon: 'fa-taka-sign' },
                     ].map(s => (
                         <div key={s.label} className="content-card" style={{ textAlign: 'center', padding: '1.5rem 1rem' }}>
                             <i className={`fas ${s.icon}`} style={{ color: 'var(--gold)', fontSize: '1.3rem', marginBottom: '0.5rem', display: 'block' }} />
@@ -126,7 +126,7 @@ function OrdersListPage() {
                                         <td>{order.name}</td>
                                         <td>{order.ordered_item}</td>
                                         <td style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{order.address}</td>
-                                        <td style={{ color: 'var(--success)', fontWeight: 600 }}>${parseFloat(order.total_price || 0).toFixed(2)}</td>
+                                        <td style={{ color: 'var(--success)', fontWeight: 600 }}>&#2547;{parseFloat(order.total_price || 0).toLocaleString()}</td>
                                         <td>
                                             <span className={order.is_delivered ? 'status-delivered' : 'status-pending'}>
                                                 {order.is_delivered ? 'Delivered' : 'Pending'}

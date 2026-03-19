@@ -107,7 +107,7 @@ function ProductDetailsPage({ history, match }) {
                                 </span>
 
                                 <div className="product-detail-price">
-                                    ${Number(product.price).toFixed(2)}
+                                    &#2547;{Number(product.price).toLocaleString()}
                                 </div>
 
                                 {product.description && (
@@ -126,7 +126,7 @@ function ProductDetailsPage({ history, match }) {
                                         >
                                             <i className="fas fa-cart-plus me-2" />Add to Cart
                                         </button>
-                                        <Link to={`/checkout/${product.id}/`} style={{ flex: 1 }}>
+                                        <Link to={`/product/${product.id}/checkout/`} style={{ flex: 1 }}>
                                             <button className="btn-atelier-outline" style={{ width: '100%' }}>
                                                 <i className="fas fa-credit-card me-2" />Buy Now
                                             </button>

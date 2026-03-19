@@ -25,8 +25,8 @@ function Product({ product }) {
                 <div className="product-card-title">{product.name}</div>
                 <div className="product-card-footer">
                     <div className="product-card-price">
-                        <span className="product-card-price-symbol">$</span>
-                        {Number(product.price).toFixed(2)}
+                        <span className="product-card-price-symbol">&#2547;</span>
+                        {Number(product.price).toLocaleString()}
                     </div>
                     <span className="product-card-cta">View <span>â†’</span></span>
                 </div>
