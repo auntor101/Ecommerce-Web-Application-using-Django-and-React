@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteProduct, getProductDetails } from '../actions/productActions'
 import { addToCart } from '../actions/cartActions'
