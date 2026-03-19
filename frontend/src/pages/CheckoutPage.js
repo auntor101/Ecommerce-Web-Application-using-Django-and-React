@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+﻿import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Row, Col, Button, Form, Alert } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,13 +27,10 @@ const CheckoutPage = ({ match }) => {
   const [paymentError, setPaymentError] = useState("")
 
   const handleAddressId = (id) => {
-    if (id) {
-      setAddressSelected(true)
-    }
+    if (id) setAddressSelected(true)
     setSelectedAddressId(id)
   }
 
-  // Selectors
   const checkTokenValidationReducer = useSelector(state => state.checkTokenValidationReducer)
   const { error: tokenError } = checkTokenValidationReducer
 
@@ -66,21 +63,14 @@ const CheckoutPage = ({ match }) => {
     if (!product) return
     try {
       const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userInfo.token}`,
-        },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${userInfo.token}` },
       }
-      const { data } = await axios.post(
-        '/payments/process/',
-        {
-          payment_method: paymentMethod,
-          order_id: product.id,
-          amount: product.price,
-          paid_status: true,
-        },
-        config
-      )
+      const { data } = await axios.post('/payments/process/', {
+        payment_method: paymentMethod,
+        order_id: product.id,
+        amount: product.price,
+        paid_status: true,
+      }, config)
       setPaidStatus(true)
       setShowPaidAlert(true)
       setPaymentMessage(data.message)
@@ -90,254 +80,129 @@ const CheckoutPage = ({ match }) => {
     }
   }
 
-  return (
-    <div className="fade-in" style={{ 
-      minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-      paddingBottom: '2rem'
-    }}>
-      {/* Header */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(20px)',
-        borderRadius: '0 0 24px 24px',
-        padding: '2rem 0',
-        marginBottom: '2rem',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(255, 255, 255, 0.2)'
-      }}>
-        <div className="container text-center">
-          <h1 style={{
-            margin: 0,
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            fontSize: '2.5rem',
-            fontWeight: '700'
-          }}>
-            <i className="fas fa-shopping-cart" style={{ marginRight: '15px', color: '#667eea' }}></i>
-            Secure Checkout
-          </h1>
-          <p style={{ color: '#6b7280', fontSize: '1.1rem', margin: '0.5rem 0 0' }}>
-            Complete your purchase safely and securely
-          </p>
-        </div>
-      </div>
+  const fallbackImg = product
+    ? `https://picsum.photos/seed/${encodeURIComponent(product.name || product.id)}/80/80`
+    : 'https://picsum.photos/seed/checkout/80/80'
 
-      <div className="container">
-        {error && <div style={{ marginBottom: '2rem' }}><Message variant='danger'>{error}</Message></div>}
+  return (
+    <div className="page-wrapper fade-in">
+      <div className="container" style={{ paddingTop: '2.5rem' }}>
+        {/* Page header */}
+        <div style={{ marginBottom: '2.5rem' }}>
+          <div className="section-eyebrow">Checkout</div>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.4rem', color: 'var(--text-primary)', margin: 0 }}>
+            Secure Payment
+          </h1>
+        </div>
+
+        {error && <Message variant='danger'>{error}</Message>}
         {paymentError && <Alert variant="danger">{paymentError}</Alert>}
-        
+
         {loading && (
-          <div style={{ 
-            display: "flex", 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            padding: '4rem',
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: '20px',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)'
-          }}>
-            <Spinner animation="border" style={{ color: '#667eea', width: '3rem', height: '3rem', marginRight: '1rem' }}/>
-            <h5 style={{ margin: 0, fontWeight: '600', color: '#667eea' }}>Loading Checkout...</h5>
+          <div style={{ textAlign: 'center', padding: '4rem' }}>
+            <Spinner animation="border" style={{ color: 'var(--gold)' }} />
           </div>
         )}
 
         {!loading && product && (
           <Row>
-            {/* Shipping Address */}
+            {/* Shipping */}
             <Col lg={7} className="mb-4">
-              <div style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '20px',
-                padding: '2rem',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
-              }}>
-                <h3 style={{ 
-                  marginBottom: '1.5rem',
-                  color: '#2d3748',
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}>
-                  <i className="fas fa-map-marker-alt" style={{ marginRight: '12px', color: '#667eea' }}></i>
-                  Shipping Address
-                </h3>
+              <div className="content-card">
+                <div className="content-card-header">
+                  <h4 style={{ margin: 0, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                    Shipping Address
+                  </h4>
+                </div>
                 <UserAddressComponent handleAddressId={handleAddressId} />
               </div>
             </Col>
 
-            {/* Payment Section */}
+            {/* Payment */}
             <Col lg={5}>
-              <div style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '20px',
-                padding: '2rem',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                marginBottom: '2rem'
-              }}>
-                <h3 style={{ 
-                  marginBottom: '1.5rem',
-                  color: '#2d3748',
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}>
-                  <i className="fas fa-credit-card" style={{ marginRight: '12px', color: '#11998e' }}></i>
-                  Payment Details
-                </h3>
+              <div className="content-card" style={{ marginBottom: '1.5rem' }}>
+                <div className="content-card-header">
+                  <h4 style={{ margin: 0, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                    Payment
+                  </h4>
+                </div>
 
                 <Form onSubmit={handlePayment}>
-                  <Form.Group controlId="paymentMethod" style={{ marginBottom: '1.5rem' }}>
-                    <Form.Label style={{ fontWeight: '600', color: '#2d3748', marginBottom: '1rem' }}>
-                      Payment Method
-                    </Form.Label>
-                    {paymentMethods.map(method => (
-                      <div key={method.value} style={{
-                        border: paymentMethod === method.value ? '2px solid #11998e' : '2px solid #e2e8f0',
-                        borderRadius: '12px',
-                        padding: '1rem',
-                        marginBottom: '0.75rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        background: paymentMethod === method.value ? 'rgba(17, 153, 142, 0.05)' : 'white'
-                      }} onClick={() => setPaymentMethod(method.value)}>
-                        <Form.Check
-                          type="radio"
-                          name="paymentMethod"
-                          value={method.value}
-                          checked={paymentMethod === method.value}
-                          onChange={() => setPaymentMethod(method.value)}
-                          label={
-                            <span style={{ display: 'flex', alignItems: 'center', fontWeight: '600' }}>
-                              <i className={`fas fa-${method.icon}`} style={{ marginRight: '10px', color: '#11998e' }}></i>
-                              {method.label}
-                            </span>
-                          }
-                          style={{ margin: 0 }}
-                        />
-                      </div>
-                    ))}
-                  </Form.Group>
-
-                  <Form.Group controlId="paidStatus" style={{ marginBottom: '2rem' }}>
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
-                      border: '1px solid rgba(102, 126, 234, 0.2)',
-                      borderRadius: '12px',
-                      padding: '1rem'
-                    }}>
-                      <Form.Check
-                        type="checkbox"
-                        label="Confirm Payment"
-                        checked={paidStatus}
-                        onChange={e => setPaidStatus(e.target.checked)}
-                        style={{ fontWeight: '600', color: '#667eea' }}
-                      />
+                  <Form.Label style={{ marginBottom: '0.75rem' }}>Payment Method</Form.Label>
+                  {paymentMethods.map(method => (
+                    <div
+                      key={method.value}
+                      className={`payment-option ${paymentMethod === method.value ? 'selected' : ''}`}
+                      onClick={() => setPaymentMethod(method.value)}
+                    >
+                      <i className={`fas fa-${method.icon}`} style={{ color: 'var(--gold)', width: '18px' }} />
+                      <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>{method.label}</span>
                     </div>
-                  </Form.Group>
+                  ))}
+
+                  <div style={{ margin: '1.5rem 0' }}>
+                    <Form.Check
+                      type="checkbox"
+                      label="Confirm & authorise payment"
+                      checked={paidStatus}
+                      onChange={e => setPaidStatus(e.target.checked)}
+                      style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}
+                    />
+                  </div>
 
                   <Button
+                    variant="primary"
                     type="submit"
                     disabled={!addressSelected || paidStatus}
-                    style={{
-                      width: '100%',
-                      background: paidStatus ? 
-                        'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' : 
-                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      border: 'none',
-                      borderRadius: '12px',
-                      padding: '16px',
-                      fontSize: '1.1rem',
-                      fontWeight: '600',
-                      transition: 'all 0.3s ease',
-                      boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
-                      opacity: !addressSelected && !paidStatus ? 0.6 : 1,
-                      cursor: !addressSelected && !paidStatus ? 'not-allowed' : 'pointer'
-                    }}
-                    className="payment-btn"
+                    style={{ width: '100%', padding: '0.75rem' }}
                   >
-                    <i className={`fas fa-${paidStatus ? 'check-circle' : 'credit-card'}`} style={{ marginRight: '10px' }}></i>
-                    {paidStatus ? 'Payment Complete' : `Pay ৳${product.price}`}
+                    {paidStatus ? 'âœ“ Payment Complete' : `Pay $${Number(product.price).toFixed(2)}`}
                   </Button>
                 </Form>
 
                 {showPaidAlert && (
-                  <Alert variant="success" style={{ marginTop: '1rem', borderRadius: '12px' }}>
-                    <i className="fas fa-check-circle" style={{ marginRight: '8px' }}></i>
+                  <Alert variant="success" style={{ marginTop: '1rem' }}>
                     {paymentMessage || "Payment processed successfully!"}
                   </Alert>
                 )}
-
                 {addressSelected && (
-                  <div style={{
-                    marginTop: '1.5rem',
-                    padding: '1rem',
-                    background: 'linear-gradient(135deg, rgba(17, 153, 142, 0.05) 0%, rgba(56, 239, 125, 0.05) 100%)',
-                    border: '1px solid rgba(17, 153, 142, 0.2)',
-                    borderRadius: '12px'
-                  }}>
-                    <span style={{ color: '#11998e', fontWeight: '600', display: 'flex', alignItems: 'center' }}>
-                      <i className="fas fa-check-circle" style={{ marginRight: '8px' }}></i>
-                      Delivery address confirmed
-                    </span>
-                  </div>
+                  <p style={{ color: 'var(--success)', fontSize: '0.82rem', marginTop: '0.75rem', marginBottom: 0 }}>
+                    âœ“ Delivery address confirmed
+                  </p>
                 )}
               </div>
 
               {/* Order Summary */}
-              <div style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '20px',
-                padding: '2rem',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
-              }}>
-                <h4 style={{ marginBottom: '1.5rem', fontWeight: '700', color: '#2d3748' }}>
-                  <i className="fas fa-receipt" style={{ marginRight: '10px', color: '#36d1dc' }}></i>
-                  Order Summary
-                </h4>
-                
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-                  <img src={product.image} alt={product.name} style={{ 
-                    width: '60px', 
-                    height: '60px', 
-                    borderRadius: '8px', 
-                    objectFit: 'cover',
-                    marginRight: '1rem'
-                  }}/>
-                  <div style={{ flex: 1 }}>
-                    <h6 style={{ margin: 0, fontWeight: '600', color: '#2d3748' }}>{product.name}</h6>
-                    <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem' }}>Qty: 1</p>
-                  </div>
-                  <span style={{ fontWeight: '700', color: '#667eea', fontSize: '1.2rem' }}>৳{product.price}</span>
+              <div className="content-card">
+                <div className="content-card-header">
+                  <h5 style={{ margin: 0, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                    Order Summary
+                  </h5>
                 </div>
-                
-                <hr style={{ margin: '1.5rem 0', border: 'none', height: '1px', background: 'rgba(0,0,0,0.1)' }}/>
-                
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '1.2rem', fontWeight: '700', color: '#2d3748' }}>Total:</span>
-                  <span style={{ fontSize: '1.5rem', fontWeight: '800', color: '#667eea' }}>৳{product.price}</span>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem' }}>
+                  <img
+                    src={product.image || fallbackImg}
+                    onError={e => { e.target.src = fallbackImg }}
+                    alt={product.name}
+                    style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 'var(--radius)' }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{product.name}</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Qty: 1</div>
+                  </div>
+                  <span style={{ color: 'var(--gold)', fontWeight: 700 }}>${Number(product.price).toFixed(2)}</span>
+                </div>
+                <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Total</span>
+                  <span style={{ color: 'var(--gold)', fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 700 }}>
+                    ${Number(product.price).toFixed(2)}
+                  </span>
                 </div>
               </div>
             </Col>
           </Row>
         )}
       </div>
-
-      <style jsx>{`
-        .payment-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6) !important;
-        }
-      `}</style>
     </div>
   )
 }

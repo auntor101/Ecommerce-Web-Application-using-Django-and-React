@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
+import { Form, Button, Col } from 'react-bootstrap'
 import { login } from '../actions/userActions'
 import Message from '../components/Message';
 
@@ -26,65 +26,61 @@ function LoginPage({ history }) {
     }
 
     return (
-        <div className="fade-in" style={{ 
-            minHeight: '100vh', 
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '2rem 0'
-        }}>
+        <div className="auth-page">
             <div className="container">
-                <Row className='justify-content-center'>
-                    <Col xs={12} md={6} lg={5}>
-                        <div style={{
-                            background: 'rgba(255, 255, 255, 0.95)',
-                            backdropFilter: 'blur(20px)',
-                            borderRadius: '24px',
-                            padding: '3rem',
-                            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)',
-                            border: '1px solid rgba(255, 255, 255, 0.2)'
-                        }}>
+                <div className="row justify-content-center">
+                    <Col xs={12} md={7} lg={5}>
+                        <div className="auth-card">
                             {/* Header */}
-                            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                                <div style={{
-                                    width: '80px',
-                                    height: '80px',
-                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                    borderRadius: '50%',
-                                    margin: '0 auto 1.5rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)'
-                                }}>
-                                    <i className="fas fa-user" style={{ fontSize: '2rem', color: 'white' }}></i>
-                                </div>
-                                
-                                <h1 style={{
-                                    fontSize: '2.5rem',
-                                    fontWeight: '700',
-                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text',
-                                    margin: 0
-                                }}>
-                                    Welcome Back
-                                </h1>
-                                <p style={{ color: '#6b7280', margin: '0.5rem 0 0', fontSize: '1.1rem' }}>
-                                    Sign in to continue shopping
-                                </p>
+                            <div style={{ marginBottom: '2rem' }}>
+                                <div className="section-eyebrow">Welcome back</div>
+                                <h1 className="auth-title">Sign In</h1>
+                                <p className="auth-subtitle">Continue to Auntor Shopping Mall</p>
                             </div>
 
-                            {/* Error Message */}
-                            {error && (
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <Message variant='danger'>{error}</Message>
-                                </div>
-                            )}
+                            {error && <Message variant='danger'>{error}</Message>}
 
-                            {/* Login Form */}
                             <Form onSubmit={submitHandler}>
+                                <Form.Group controlId='username' className="mb-3">
+                                    <Form.Label>Username</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+
+                                <Form.Group controlId='password' className="mb-4">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Enter your password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+
+                                <Button variant="primary" type="submit" style={{ width: '100%', padding: '0.75rem' }}>
+                                    Sign In
+                                </Button>
+                            </Form>
+
+                            <div className="auth-link-row">
+                                Don't have an account?{' '}
+                                <Link to="/register">Create one</Link>
+                            </div>
+                        </div>
+                    </Col>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default LoginPage
                                 <Form.Group controlId='username' style={{ marginBottom: '1.5rem' }}>
                                     <Form.Label style={{ 
                                         fontWeight: '600', 

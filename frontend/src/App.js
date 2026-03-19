@@ -34,7 +34,7 @@ const App = () => {
         <NavBar />
         <CartDrawer />
         <ToastContainer position="top-right" autoClose={3000} />
-        <div className="container mt-4">
+        <div className="main-content">
           <Switch>
             <Route path="/" component={ProductListPage} exact />
             <Route path="/new-product/" component={ProductCreatePage} exact />
