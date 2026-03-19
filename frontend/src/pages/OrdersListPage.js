@@ -86,7 +86,7 @@ function OrdersListPage() {
                         { label: 'Revenue', value: `\u09f3${Math.round(totalRevenue).toLocaleString()}`, icon: 'fa-taka-sign' },
                     ].map(s => (
                         <div key={s.label} className="content-card" style={{ textAlign: 'center', padding: '1.5rem 1rem' }}>
-                            <i className={`fas ${s.icon}`} style={{ color: 'var(--gold)', fontSize: '1.3rem', marginBottom: '0.5rem', display: 'block' }} />
+                            <i className={`fas ${s.icon}`} style={{ color: 'var(--accent)', fontSize: '1.3rem', marginBottom: '0.5rem', display: 'block' }} />
                             <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>{s.value}</div>
                             <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '0.3rem' }}>{s.label}</div>
                         </div>
@@ -95,7 +95,7 @@ function OrdersListPage() {
 
                 {loadingOrders && (
                     <div style={{ textAlign: 'center', padding: '3rem' }}>
-                        <Spinner animation="border" style={{ color: 'var(--gold)' }} />
+                        <Spinner animation="border" style={{ color: 'var(--accent)' }} />
                     </div>
                 )}
 
@@ -122,7 +122,7 @@ function OrdersListPage() {
                             <tbody>
                                 {filtered.map((order, idx) => (
                                     <tr key={idx}>
-                                        <td style={{ color: 'var(--gold)', fontWeight: 600 }}>#{order.id}</td>
+                                        <td style={{ color: 'var(--accent)', fontWeight: 600 }}>#{order.id}</td>
                                         <td>{order.name}</td>
                                         <td>{order.ordered_item}</td>
                                         <td style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{order.address}</td>
@@ -135,7 +135,7 @@ function OrdersListPage() {
                                         {userInfo?.admin && (
                                             <td>
                                                 {deliveryStatusChangeSpinner && idOfchangeDeliveryStatus === order.id ? (
-                                                    <Spinner animation="border" size="sm" style={{ color: 'var(--gold)' }} />
+                                                    <Spinner animation="border" size="sm" style={{ color: 'var(--accent)' }} />
                                                 ) : order.is_delivered ? (
                                                     <button
                                                         className="btn btn-sm btn-danger"

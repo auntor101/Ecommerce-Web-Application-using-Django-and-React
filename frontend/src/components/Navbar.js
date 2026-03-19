@@ -6,6 +6,7 @@ import { logout } from '../actions/userActions'
 import { useHistory } from "react-router-dom"
 import SearchBarForProducts from './SearchBarForProducts'
 import CartIcon from './CartIcon'
+import ThemeToggle from './ThemeToggle'
 import { isFrontendOnlyMode } from '../utils/appMode'
 
 function NavBar() {
@@ -23,11 +24,11 @@ function NavBar() {
 
     return (
         <header className="slide-in">
-            <Navbar expand="lg" variant="dark" collapseOnSelect>
+            <Navbar expand="lg" collapseOnSelect>
                 <Container fluid style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.5rem' }}>
                     <LinkContainer to="/">
                         <Navbar.Brand>
-                            <span className="brand-dot" />
+                            <i className="fas fa-leaf" style={{ fontSize: '1.1rem' }} />
                             Auntor
                         </Navbar.Brand>
                     </LinkContainer>
@@ -37,7 +38,13 @@ function NavBar() {
                     <Navbar.Collapse id="main-nav">
                         <Nav className="mr-auto align-items-lg-center">
                             <LinkContainer to="/">
-                                <Nav.Link className="nav-link-atelier">Collection</Nav.Link>
+                                <Nav.Link className="nav-link-atelier">All Products</Nav.Link>
+                            </LinkContainer>
+                            <LinkContainer to="/?searchTerm=grocery">
+                                <Nav.Link className="nav-link-atelier">Groceries</Nav.Link>
+                            </LinkContainer>
+                            <LinkContainer to="/?searchTerm=electronics">
+                                <Nav.Link className="nav-link-atelier">Electronics</Nav.Link>
                             </LinkContainer>
                             {userInfo && userInfo.admin && (
                                 <LinkContainer to="/new-product/">
@@ -46,8 +53,9 @@ function NavBar() {
                             )}
                         </Nav>
 
-                        <div className="d-flex align-items-center" style={{ gap: '1rem' }}>
+                        <div className="d-flex align-items-center" style={{ gap: '0.75rem' }}>
                             <SearchBarForProducts />
+                            <ThemeToggle />
                             <CartIcon />
                             {isFrontendOnlyMode && (
                                 <span className="preview-badge">Preview</span>
@@ -57,11 +65,10 @@ function NavBar() {
                                     title={
                                         <span style={{
                                             color: 'var(--text-secondary)',
-                                            fontSize: '0.78rem',
+                                            fontSize: '0.82rem',
                                             fontWeight: '500',
-                                            letterSpacing: '0.1em',
-                                            textTransform: 'uppercase'
                                         }}>
+                                            <i className="fas fa-user-circle" style={{ marginRight: 5 }} />
                                             {userInfo.username}
                                         </span>
                                     }
@@ -69,20 +76,26 @@ function NavBar() {
                                     alignRight
                                 >
                                     <LinkContainer to="/account">
-                                        <NavDropdown.Item>Account</NavDropdown.Item>
+                                        <NavDropdown.Item>
+                                            <i className="fas fa-user me-2" />Account
+                                        </NavDropdown.Item>
                                     </LinkContainer>
                                     <LinkContainer to="/all-addresses/">
-                                        <NavDropdown.Item>Addresses</NavDropdown.Item>
+                                        <NavDropdown.Item>
+                                            <i className="fas fa-map-marker-alt me-2" />Addresses
+                                        </NavDropdown.Item>
                                     </LinkContainer>
                                     <LinkContainer to="/all-orders/">
-                                        <NavDropdown.Item>Orders</NavDropdown.Item>
+                                        <NavDropdown.Item>
+                                            <i className="fas fa-box me-2" />Orders
+                                        </NavDropdown.Item>
                                     </LinkContainer>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item
                                         onClick={logoutHandler}
                                         style={{ color: 'var(--danger)' }}
                                     >
-                                        Sign Out
+                                        <i className="fas fa-sign-out-alt me-2" />Sign Out
                                     </NavDropdown.Item>
                                 </NavDropdown>
                             ) : (
@@ -91,25 +104,7 @@ function NavBar() {
                                         <Nav.Link className="nav-link-atelier">Sign In</Nav.Link>
                                     </LinkContainer>
                                     <LinkContainer to="/register">
-                                        <span
-                                            style={{
-                                                display: 'inline-block',
-                                                padding: '7px 16px',
-                                                background: 'var(--gold)',
-                                                color: '#0e0d0b',
-                                                borderRadius: 'var(--radius)',
-                                                fontSize: '0.76rem',
-                                                fontWeight: '600',
-                                                letterSpacing: '0.08em',
-                                                textTransform: 'uppercase',
-                                                cursor: 'pointer',
-                                                transition: 'background var(--transition)',
-                                            }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'var(--gold-light)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'var(--gold)'}
-                                        >
-                                            Join
-                                        </span>
+                                        <span className="join-btn">Join</span>
                                     </LinkContainer>
                                 </div>
                             )}

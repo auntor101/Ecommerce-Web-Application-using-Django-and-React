@@ -26,6 +26,7 @@ import BkashPaymentPage from './pages/BkashPaymentPage'
 import CardPaymentPage from './pages/CardPaymentPage'
 // Import cart drawer
 import CartDrawer from './components/CartDrawer'
+import Footer from './components/Footer'
 
 const App = () => {
   return (
@@ -60,6 +61,7 @@ const App = () => {
             <Route path="*" component={NotFound} />
           </Switch>
         </div>
+        <Footer />
       </Router>
     </div >
   )

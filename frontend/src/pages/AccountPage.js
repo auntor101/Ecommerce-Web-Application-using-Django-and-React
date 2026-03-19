@@ -42,7 +42,7 @@ function AccountPage() {
 
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '4rem' }}>
-                        <Spinner animation="border" style={{ color: 'var(--gold)' }} />
+                        <Spinner animation="border" style={{ color: 'var(--accent)' }} />
                     </div>
                 ) : (
                     <>
@@ -88,14 +88,14 @@ function AccountPage() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                 <Link to="/orders" style={{ textDecoration: 'none' }}>
                                     <button className="btn w-100" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '0.85rem', borderRadius: 'var(--radius-md)', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'border-color 0.2s' }}>
-                                        <i className="fas fa-shopping-bag" style={{ color: 'var(--gold)', width: 20 }} />
+                                        <i className="fas fa-shopping-bag" style={{ color: 'var(--accent)', width: 20 }} />
                                         My Orders
                                     </button>
                                 </Link>
                                 {userInfo?.admin && (
                                     <Link to="/admin/products" style={{ textDecoration: 'none' }}>
                                         <button className="btn w-100" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '0.85rem', borderRadius: 'var(--radius-md)', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                            <i className="fas fa-boxes" style={{ color: 'var(--gold)', width: 20 }} />
+                                            <i className="fas fa-boxes" style={{ color: 'var(--accent)', width: 20 }} />
                                             Manage Products
                                         </button>
                                     </Link>

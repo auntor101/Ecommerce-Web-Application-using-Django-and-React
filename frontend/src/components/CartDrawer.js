@@ -20,7 +20,7 @@ function CartDrawer() {
             <div className="cart-drawer">
                 <div className="cart-drawer-header">
                     <h2 className="cart-drawer-title">
-                        <i className="fas fa-shopping-bag" style={{ color: 'var(--gold)' }} />
+                        <i className="fas fa-shopping-bag" style={{ color: 'var(--accent)' }} />
                         Cart
                         {totalItems > 0 && (
                             <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontWeight: 400 }}>
@@ -36,7 +36,7 @@ function CartDrawer() {
                 <div className="cart-drawer-body">
                     {cartItems.length === 0 ? (
                         <div className="cart-empty">
-                            <i className="fas fa-shopping-bag" style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--border-gold)' }} />
+                            <i className="fas fa-shopping-bag" style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--text-muted)' }} />
                             <p style={{ margin: 0, fontSize: '0.9rem' }}>Your cart is empty</p>
                         </div>
                     ) : (
@@ -65,7 +65,7 @@ function CartDrawer() {
                                                 className="cart-qty-btn"
                                                 onClick={() => dispatch(updateCartQuantity(item.id, item.quantity + 1))}
                                             >+</button>
-                                            <span style={{ marginLeft: 'auto', color: 'var(--gold)', fontWeight: 600, fontSize: '0.9rem' }}>
+                                            <span style={{ marginLeft: 'auto', color: 'var(--accent)', fontWeight: 600, fontSize: '0.9rem' }}>
                                                 &#2547;{(item.price * item.quantity).toLocaleString()}
                                             </span>
                                         </div>
@@ -86,7 +86,7 @@ function CartDrawer() {
                     <div className="cart-drawer-footer">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Total</span>
-                            <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--gold)' }}>
+                            <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent)' }}>
                                 &#2547;{total.toLocaleString()}
                             </span>
                         </div>
