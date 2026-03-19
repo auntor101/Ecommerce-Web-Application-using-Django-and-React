@@ -24,6 +24,51 @@ class Category(models.Model):
         return self.name
 
 
+class SiteSettings(models.Model):
+    site_name = models.CharField(max_length=120, default='Auntor Shopping Mall')
+    hero_eyebrow = models.CharField(max_length=120, default='Fresh & Local')
+    hero_title = models.CharField(max_length=255, default='Quality Groceries & Essentials Delivered to Your Door')
+    hero_subtitle = models.TextField(default='Shop fresh produce, pantry staples, electronics, and household essentials across Bangladesh.')
+    support_email = models.EmailField(default='help@auntor.com.bd')
+    support_phone = models.CharField(max_length=40, default='+880 1XXX-XXXXXX')
+    footer_address = models.CharField(max_length=255, default='Dhaka, Bangladesh')
+    hero_background_image = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to='site/',
+        validators=[
+            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp']),
+            validate_image_size,
+        ],
+    )
+    promo_background_image = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to='site/',
+        validators=[
+            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp']),
+            validate_image_size,
+        ],
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Site Settings'
+        verbose_name_plural = 'Site Settings'
+
+    def __str__(self):
+        return self.site_name
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        settings_obj, _ = cls.objects.get_or_create(pk=1)
+        return settings_obj
+
+
 class Product(models.Model):
     name = models.CharField(max_length=200, blank=False, null=False)
     description = models.TextField(blank=True)

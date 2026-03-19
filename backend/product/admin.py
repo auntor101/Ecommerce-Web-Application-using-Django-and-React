@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Category, Cart, Wishlist, Review
+from .models import Product, Category, Cart, Wishlist, Review, SiteSettings
 
 
 @admin.register(Category)
@@ -41,6 +41,34 @@ class ProductAdmin(admin.ModelAdmin):
         }),
     )
     ordering = ['-created_at']
+
+
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    list_display = ['site_name', 'support_email', 'support_phone', 'updated_at']
+    readonly_fields = ['updated_at']
+
+    fieldsets = (
+        ('Brand', {
+            'fields': ('site_name', 'hero_eyebrow', 'hero_title', 'hero_subtitle')
+        }),
+        ('Support', {
+            'fields': ('support_email', 'support_phone', 'footer_address')
+        }),
+        ('Images', {
+            'fields': ('hero_background_image', 'promo_background_image')
+        }),
+        ('Timestamps', {
+            'fields': ('updated_at',),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def has_add_permission(self, request):
+        return not SiteSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Cart)

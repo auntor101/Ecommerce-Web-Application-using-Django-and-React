@@ -9,7 +9,7 @@ import CartIcon from './CartIcon'
 import ThemeToggle from './ThemeToggle'
 import { isFrontendOnlyMode } from '../utils/appMode'
 
-function NavBar() {
+function NavBar({ siteSettings }) {
     let history = useHistory()
     const dispatch = useDispatch()
 
@@ -29,7 +29,7 @@ function NavBar() {
                     <LinkContainer to="/">
                         <Navbar.Brand>
                             <i className="fas fa-leaf" style={{ fontSize: '1.1rem' }} />
-                            Auntor
+                            {siteSettings?.site_name || 'Auntor Shopping Mall'}
                         </Navbar.Brand>
                     </LinkContainer>
 
@@ -90,6 +90,13 @@ function NavBar() {
                                             <i className="fas fa-box me-2" />Orders
                                         </NavDropdown.Item>
                                     </LinkContainer>
+                                    {userInfo.admin && (
+                                        <LinkContainer to="/admin/site-settings/">
+                                            <NavDropdown.Item>
+                                                <i className="fas fa-sliders-h me-2" />Site Settings
+                                            </NavDropdown.Item>
+                                        </LinkContainer>
+                                    )}
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item
                                         onClick={logoutHandler}

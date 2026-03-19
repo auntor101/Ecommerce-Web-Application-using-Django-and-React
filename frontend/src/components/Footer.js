@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function Footer() {
+function Footer({ siteSettings }) {
     const year = new Date().getFullYear()
 
     return (
@@ -11,7 +11,7 @@ function Footer() {
                     <div>
                         <div className="footer-brand">
                             <i className="fas fa-leaf" style={{ marginRight: 6 }} />
-                            Auntor
+                            {siteSettings?.site_name || 'Auntor Shopping Mall'}
                         </div>
                         <p className="footer-desc">
                             Fresh groceries, household essentials, and quality products delivered
@@ -37,15 +37,15 @@ function Footer() {
 
                     <div>
                         <div className="footer-heading">Support</div>
-                        <span className="footer-link">help@auntor.com.bd</span>
-                        <span className="footer-link">+880 1XXX-XXXXXX</span>
-                        <span className="footer-link">Dhaka, Bangladesh</span>
+                        <span className="footer-link">{siteSettings?.support_email || 'help@auntor.com.bd'}</span>
+                        <span className="footer-link">{siteSettings?.support_phone || '+880 1XXX-XXXXXX'}</span>
+                        <span className="footer-link">{siteSettings?.footer_address || 'Dhaka, Bangladesh'}</span>
                     </div>
                 </div>
 
                 <div className="footer-bottom">
                     <span className="footer-copy">
-                        &copy; {year} Auntor Shopping Mall. All rights reserved.
+                        &copy; {year} {siteSettings?.site_name || 'Auntor Shopping Mall'}. All rights reserved.
                     </span>
                     <div className="footer-locale">
                         <i className="fas fa-globe" />

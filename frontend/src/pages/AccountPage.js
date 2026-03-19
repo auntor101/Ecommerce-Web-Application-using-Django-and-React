@@ -86,17 +86,25 @@ function AccountPage() {
                         {/* Actions card */}
                         <div className="content-card">
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                                <Link to="/orders" style={{ textDecoration: 'none' }}>
+                                <Link to="/all-orders/" style={{ textDecoration: 'none' }}>
                                     <button className="btn w-100" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '0.85rem', borderRadius: 'var(--radius-md)', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'border-color 0.2s' }}>
                                         <i className="fas fa-shopping-bag" style={{ color: 'var(--accent)', width: 20 }} />
                                         My Orders
                                     </button>
                                 </Link>
                                 {userInfo?.admin && (
-                                    <Link to="/admin/products" style={{ textDecoration: 'none' }}>
+                                    <Link to="/new-product/" style={{ textDecoration: 'none' }}>
                                         <button className="btn w-100" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '0.85rem', borderRadius: 'var(--radius-md)', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                             <i className="fas fa-boxes" style={{ color: 'var(--accent)', width: 20 }} />
-                                            Manage Products
+                                            Add Product
+                                        </button>
+                                    </Link>
+                                )}
+                                {userInfo?.admin && (
+                                    <Link to="/admin/site-settings/" style={{ textDecoration: 'none' }}>
+                                        <button className="btn w-100" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '0.85rem', borderRadius: 'var(--radius-md)', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                            <i className="fas fa-image" style={{ color: 'var(--accent)', width: 20 }} />
+                                            Site Settings & Background Images
                                         </button>
                                     </Link>
                                 )}

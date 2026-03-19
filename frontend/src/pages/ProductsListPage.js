@@ -7,8 +7,9 @@ import Product from '../components/Product'
 import { useHistory, Link } from "react-router-dom"
 import { CREATE_PRODUCT_RESET } from '../constants'
 import { isFrontendOnlyMode, frontendOnlyMessage } from '../utils/appMode'
+import { defaultSiteSettings } from '../utils/defaultSiteSettings'
 
-function ProductsListPage() {
+function ProductsListPage({ siteSettings = defaultSiteSettings }) {
     let history = useHistory()
     const params = new URLSearchParams(history.location.search)
     const searchTerm = params.get('searchTerm') || ''
@@ -27,25 +28,52 @@ function ProductsListPage() {
     )
 
     const isHome = !searchTerm
+    const heroStyle = siteSettings.hero_background_image
+        ? {
+            marginTop: '1.5rem',
+            backgroundImage: `linear-gradient(rgba(27, 67, 50, 0.78), rgba(27, 67, 50, 0.78)), url(${siteSettings.hero_background_image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+        }
+        : { marginTop: '1.5rem' }
 
     return (
         <div className="fade-in">
             <div className="container">
                 {/* Hero Section — only on homepage */}
                 {isHome && (
-                    <div className="hero-section" style={{ marginTop: '1.5rem' }}>
-                        <div className="hero-eyebrow">Fresh &amp; Local</div>
+                    <div className="hero-section" style={heroStyle}>
+                        <div className="hero-eyebrow">{siteSettings.hero_eyebrow}</div>
                         <h1 className="hero-title">
-                            Quality Groceries &amp; Essentials Delivered to Your Door
+                            {siteSettings.hero_title}
                         </h1>
                         <p className="hero-subtitle">
-                            Shop fresh produce, pantry staples, electronics, and household essentials
-                            — all sourced and delivered across Bangladesh.
+                            {siteSettings.hero_subtitle}
                         </p>
                         <Link to="/" className="hero-cta">
                             <i className="fas fa-shopping-basket" />
                             Shop Now
                         </Link>
+                    </div>
+                )}
+
+                {isHome && siteSettings.promo_background_image && (
+                    <div
+                        className="content-card"
+                        style={{
+                            marginBottom: '2rem',
+                            border: 'none',
+                            color: '#fff',
+                            backgroundImage: `linear-gradient(rgba(45, 106, 79, 0.72), rgba(45, 106, 79, 0.72)), url(${siteSettings.promo_background_image})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                        }}
+                    >
+                        <div className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.75)' }}>Seasonal Banner</div>
+                        <h2 className="section-title" style={{ color: '#fff' }}>{siteSettings.site_name}</h2>
+                        <p style={{ margin: '0.75rem 0 0', maxWidth: '540px', color: 'rgba(255,255,255,0.88)' }}>
+                            This banner image is controlled from the admin site settings page.
+                        </p>
                     </div>
                 )}
 

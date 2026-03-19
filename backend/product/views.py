@@ -8,11 +8,11 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as django_filters
 
-from .models import Product, Category, Cart, Wishlist, Review
+from .models import Product, Category, Cart, Wishlist, Review, SiteSettings
 from .serializers import (
     ProductSerializer, ProductCreateUpdateSerializer, CategorySerializer,
     CartItemSerializer, WishlistItemSerializer, ReviewSerializer,
-    CartSummarySerializer
+    CartSummarySerializer, SiteSettingsSerializer
 )
 
 
@@ -165,6 +165,32 @@ class CategoryCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SiteSettingsView(APIView):
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return [permissions.IsAdminUser()]
+        return [permissions.AllowAny()]
+
+    def get_object(self):
+        return SiteSettings.load()
+
+    def get(self, request):
+        serializer = SiteSettingsSerializer(self.get_object(), context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        serializer = SiteSettingsSerializer(
+            self.get_object(),
+            data=request.data,
+            partial=True,
+            context={'request': request},
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Cart Views

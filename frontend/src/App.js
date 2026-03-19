@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
+import axios from 'axios'
 import 'react-toastify/dist/ReactToastify.css'
 import ProductListPage from './pages/ProductsListPage'
 import ProductDetailsPage from './pages/ProductDetailsPage'
@@ -17,6 +18,7 @@ import AddressUpdatePage from './pages/AddressUpdatePage'
 import OrdersListPage from './pages/OrdersListPage'
 import ProductCreatePage from './pages/ProductCreatePage'
 import ProductUpdatePage from './pages/ProductUpdatePage'
+import SiteSettingsPage from './pages/SiteSettingsPage'
 import NotFound from './pages/NotFoundPage'
 import PasswordResetPage from './pages/PasswordResetPage'
 import PasswordResetConfirmPage from './pages/PasswordResetConfirmPage'
@@ -27,17 +29,43 @@ import CardPaymentPage from './pages/CardPaymentPage'
 // Import cart drawer
 import CartDrawer from './components/CartDrawer'
 import Footer from './components/Footer'
+import { defaultSiteSettings } from './utils/defaultSiteSettings'
+import { isFrontendOnlyMode } from './utils/appMode'
 
 const App = () => {
+  const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
+
+  useEffect(() => {
+    let isMounted = true
+
+    if (isFrontendOnlyMode) {
+      return undefined
+    }
+
+    axios.get('/api/site-settings/')
+      .then(({ data }) => {
+        if (isMounted) {
+          setSiteSettings((current) => ({ ...current, ...data }))
+        }
+      })
+      .catch(() => {
+        // Keep default branding when the API is unavailable.
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
     <div>
       <Router>
-        <NavBar />
+        <NavBar siteSettings={siteSettings} />
         <CartDrawer />
         <ToastContainer position="top-right" autoClose={3000} />
         <div className="main-content">
           <Switch>
-            <Route path="/" component={ProductListPage} exact />
+            <Route path="/" render={(props) => <ProductListPage {...props} siteSettings={siteSettings} />} exact />
             <Route path="/new-product/" component={ProductCreatePage} exact />
             <Route path="/product/:id/" component={ProductDetailsPage} exact />
             <Route path="/product-update/:id/" component={ProductUpdatePage} exact />
@@ -58,10 +86,11 @@ const App = () => {
             <Route path="/all-addresses/" component={AllAddressesOfUserPage} exact />
             <Route path="/all-addresses/:id/" component={AddressUpdatePage} exact />
             <Route path="/all-orders/" component={OrdersListPage} exact />
+            <Route path="/admin/site-settings/" component={SiteSettingsPage} exact />
             <Route path="*" component={NotFound} />
           </Switch>
         </div>
-        <Footer />
+        <Footer siteSettings={siteSettings} />
       </Router>
     </div >
   )

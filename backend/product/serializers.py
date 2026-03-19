@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Category, Cart, Wishlist, Review
+from .models import Product, Category, Cart, Wishlist, Review, SiteSettings
 from django.contrib.auth.models import User
 
 
@@ -12,6 +12,16 @@ class CategorySerializer(serializers.ModelSerializer):
     
     def get_product_count(self, obj):
         return obj.products.filter(stock=True).count()
+
+
+class SiteSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteSettings
+        fields = [
+            'site_name', 'hero_eyebrow', 'hero_title', 'hero_subtitle',
+            'support_email', 'support_phone', 'footer_address',
+            'hero_background_image', 'promo_background_image', 'updated_at'
+        ]
 
 
 class ReviewSerializer(serializers.ModelSerializer):

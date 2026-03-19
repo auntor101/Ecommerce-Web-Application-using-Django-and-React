@@ -12,6 +12,7 @@ urlpatterns = [
     # Category URLs
     path('categories/', views.CategoryListView.as_view(), name="categories-list"),
     path('category-create/', views.CategoryCreateView.as_view(), name="category-create"),
+    path('site-settings/', views.SiteSettingsView.as_view(), name='site-settings'),
     
     # Cart URLs
     path('cart/', views.CartView.as_view(), name="cart"),
