@@ -29,6 +29,18 @@ import axios from 'axios'
 import { isFrontendOnlyMode, frontendOnlyMessage } from '../utils/appMode'
 import { mockProducts, getMockProductById } from '../utils/mockProducts'
 
+const normalizeProductsList = (data) => {
+    if (Array.isArray(data)) {
+        return data
+    }
+
+    if (data && Array.isArray(data.results)) {
+        return data.results
+    }
+
+    throw new Error('Products API returned an unexpected response shape.')
+}
+
 const getApiErrorMessage = (error, fallbackMessage) => {
     if (!axios.defaults.baseURL && error.response?.status === 404) {
         return 'Backend API is not available for this frontend deployment. Set REACT_APP_API_URL in Vercel to your backend URL.'
@@ -56,13 +68,9 @@ export const getProductsList = () => async (dispatch) => {
         // call api
         const { data } = await axios.get("/api/products/")
 
-        if (!Array.isArray(data)) {
-            throw new Error('Products API returned an unexpected response shape.')
-        }
-
         dispatch({
             type: PRODUCTS_LIST_SUCCESS,
-            payload: data
+            payload: normalizeProductsList(data)
         })
     } catch (error) {
         dispatch({

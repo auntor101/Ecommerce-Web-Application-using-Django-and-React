@@ -2,13 +2,10 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
-import pymysql
+import dj_database_url
 
-# Load environment variables from .env if present
 load_dotenv()
-pymysql.install_as_MySQLdb()
 
-# Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 def env_bool(name, default=False):
@@ -26,6 +23,12 @@ IS_VERCEL = env_bool('VERCEL', False)
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-change-in-production')
 DEBUG = env_bool('DJANGO_DEBUG', True)
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', 'localhost,127.0.0.1,.vercel.app')
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000').rstrip('/')
+USE_CLOUDINARY = all([
+    os.getenv('CLOUDINARY_CLOUD_NAME'),
+    os.getenv('CLOUDINARY_API_KEY'),
+    os.getenv('CLOUDINARY_API_SECRET'),
+])
 
 # Application definition
 INSTALLED_APPS = [
@@ -35,16 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    # Third party
     'rest_framework',
     'corsheaders',
     'django_filters',
     'drf_spectacular',
-    
-] + ([] if DEBUG else []) + [
-    
-    # Local apps
+] + (['cloudinary', 'cloudinary_storage'] if USE_CLOUDINARY else []) + [
     'product',
     'payments',
     'account',
@@ -52,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,7 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-] + ([] if DEBUG else [])
+]
 
 ROOT_URLCONF = 'my_project.urls'
 
@@ -81,10 +80,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'my_project.wsgi.application'
 
-# Database - MySQL
 use_mysql = bool(os.getenv('MYSQL_HOST') or os.getenv('MYSQL_DATABASE'))
+database_url = os.getenv('DATABASE_URL')
 
-if use_mysql:
+if database_url:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=database_url,
+            conn_max_age=600,
+            ssl_require=not DEBUG,
+        )
+    }
+elif use_mysql:
+    import pymysql
+
+    pymysql.install_as_MySQLdb()
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -109,7 +120,6 @@ else:
         }
     }
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -117,14 +127,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Dhaka'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# JWT Settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -139,7 +147,6 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 }
 
-# REST Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -161,37 +168,55 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 
-# Media files
+WHITENOISE_USE_FINDERS = DEBUG
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Create media directories
-MEDIA_DIRS = ['products', 'users', 'documents']
-if not IS_VERCEL:
-    for dir_name in MEDIA_DIRS:
-        dir_path = MEDIA_ROOT / dir_name
-        dir_path.mkdir(parents=True, exist_ok=True)
+if USE_CLOUDINARY:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
+else:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
 
-# Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS
+default_frontend_origins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
+if FRONTEND_URL and FRONTEND_URL not in default_frontend_origins:
+    default_frontend_origins.append(FRONTEND_URL)
+
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOWED_ORIGINS = default_frontend_origins
 else:
     CORS_ALLOWED_ORIGINS = env_list(
         'CORS_ALLOWED_ORIGINS',
-        'http://localhost:3000,http://127.0.0.1:3000'
+        ','.join(default_frontend_origins)
     )
 
 CSRF_TRUSTED_ORIGINS = env_list(
     'CSRF_TRUSTED_ORIGINS',
-    'http://localhost:3000,http://127.0.0.1:3000'
+    ','.join(default_frontend_origins)
 )
 
 CORS_ALLOW_CREDENTIALS = True
@@ -207,7 +232,6 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# Security settings
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -219,12 +243,17 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+APPEND_SLASH = True
+
 # File upload settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 FILE_UPLOAD_PERMISSIONS = 0o644
 
-# Logging configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -268,7 +297,7 @@ LOGGING = {
     },
 }
 
-if not IS_VERCEL:
+if DEBUG:
     LOGGING['handlers']['file'] = {
         'level': 'INFO',
         'class': 'logging.handlers.RotatingFileHandler',
@@ -292,39 +321,14 @@ if not IS_VERCEL:
     LOGGING['loggers']['payments']['handlers'] = ['file', 'error_file']
     LOGGING['loggers']['account']['handlers'] = ['file', 'error_file']
 
-# Cache configuration (for production)
 if not DEBUG:
     CACHES = {
         'default': {
-            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-            'LOCATION': 'cache_table',
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'auntor-shopping-mall-cache',
         }
     }
 
-# Debug toolbar configuration (development only)
-if DEBUG:
-    INTERNAL_IPS = [
-        '127.0.0.1',
-        'localhost',
-    ]
-    
-    DEBUG_TOOLBAR_PANELS = [
-        'debug_toolbar.panels.history.HistoryPanel',
-        'debug_toolbar.panels.versions.VersionsPanel',
-        'debug_toolbar.panels.timer.TimerPanel',
-        'debug_toolbar.panels.settings.SettingsPanel',
-        'debug_toolbar.panels.headers.HeadersPanel',
-        'debug_toolbar.panels.request.RequestPanel',
-        'debug_toolbar.panels.sql.SQLPanel',
-        'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-        'debug_toolbar.panels.templates.TemplatesPanel',
-        'debug_toolbar.panels.cache.CachePanel',
-        'debug_toolbar.panels.signals.SignalsPanel',
-        'debug_toolbar.panels.redirects.RedirectsPanel',
-        'debug_toolbar.panels.profiling.ProfilingPanel',
-    ]
-
-# Email configuration (for production)
 if not DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
@@ -336,7 +340,6 @@ if not DEBUG:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Payment gateway credentials
 PAYMENT_GATEWAYS = {
     'BKASH': {
         'APP_KEY': os.getenv('BKASH_APP_KEY', ''),
@@ -344,19 +347,10 @@ PAYMENT_GATEWAYS = {
         'USERNAME': os.getenv('BKASH_USERNAME', ''),
         'PASSWORD': os.getenv('BKASH_PASSWORD', ''),
         'BASE_URL': os.getenv('BKASH_BASE_URL', 'https://tokenized.sandbox.bka.sh/v1.2.0-beta'),
-        'SANDBOX': DEBUG,  # Use sandbox in development
+        'SANDBOX': DEBUG,
     },
 }
 
-MAX_CART_ITEMS = 50
-MAX_WISHLIST_ITEMS = 100
-PRODUCT_IMAGE_MAX_SIZE = 5 * 1024 * 1024
-SUPPORTED_IMAGE_FORMATS = ['JPEG', 'JPG', 'PNG', 'WEBP']
-
-# Frontend URL for password reset links
-FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
-
-# DRF Spectacular Settings
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Auntor Shopping Mall API',
     'DESCRIPTION': 'API for the Auntor Shopping Mall E-commerce Platform',

@@ -190,13 +190,19 @@ class MockPaymentView(APIView):
         if order_id:
             try:
                 order = OrderModel.objects.get(id=order_id)
-                order.paid_status = paid_status
-                order.paid_at = datetime.now()
-                order.save()
             except OrderModel.DoesNotExist:
                 return Response({
                     'detail': 'Order not found.'
                 }, status=status.HTTP_404_NOT_FOUND)
+
+            if order.user != request.user and not request.user.is_staff:
+                return Response({
+                    'detail': 'Permission denied.'
+                }, status=status.HTTP_403_FORBIDDEN)
+
+            order.paid_status = paid_status
+            order.paid_at = datetime.now()
+            order.save()
         
         try:
             payment_method = PaymentMethod.objects.get(name=payment_method_name)

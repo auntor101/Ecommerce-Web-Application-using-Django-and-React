@@ -74,6 +74,8 @@ class UserAccountDetailsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, pk):
+        if request.user.id != pk and not request.user.is_staff:
+            return Response({"details": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
         try:
             user = User.objects.get(id=pk)
             serializer = UserSerializer(user, many=False)
