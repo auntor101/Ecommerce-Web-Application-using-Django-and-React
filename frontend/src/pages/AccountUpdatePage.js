@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Form, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { userDetails, userUpdateDetails, checkTokenValidation, logout } from '../actions/userActions'
-import Message from '../components/Message'
 import { Spinner } from 'react-bootstrap'
 import {useHistory} from 'react-router-dom'
 import { UPDATE_USER_DETAILS_RESET } from '../constants'
@@ -83,90 +81,115 @@ function AccountUpdatePage() {
         dispatch(userDetails(userInfo.id))
     }
 
-    const renderData = () => {
-        try {
-            return (
-                <div>
-                    <Row className='justify-content-md-center'>
-                        <Col xs={12} md={6}>
-                            <span
-                                className="d-flex justify-content-center"
-                                style={{ display: "flex", marginBottom: "15px", color: "#008080" }}>
-                                <em>Update User Details</em>
-                            </span>
-                            {loading && <Spinner animation="border" />}
-                            <Form onSubmit={onSubmit}>
+    try {
+        return (
+            <div className="page-wrapper fade-in">
+                <div className="container" style={{ paddingTop: '2.5rem', paddingBottom: '3rem', maxWidth: 580 }}>
+                    <div className="section-label" style={{ marginBottom: '0.5rem' }}>
+                        <div className="section-red-bar" />
+                        <span className="section-eyebrow">My Account</span>
+                    </div>
+                    <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px,3vw,32px)', color: 'var(--black)', marginBottom: '2rem' }}>
+                        Edit Your Profile
+                    </h1>
 
-                                <Form.Group controlId='username'>
-                                    <Form.Label>
-                                        Username
-                                    </Form.Label>
-                                    <Form.Control
-                                        autoFocus={true}
-                                        type="text"
-                                        defaultValue={userAccDetails.username}
-                                        placeholder="username"
-                                        onChange={(e) => setUsername(e.target.value)}
-                                    >
-                                    </Form.Control>
-                                </Form.Group>
+                    {loading && (
+                        <div style={{ textAlign: 'center', padding: '2rem' }}>
+                            <Spinner animation="border" style={{ color: 'var(--primary)' }} />
+                        </div>
+                    )}
 
-                                <Form.Group controlId='email'>
-                                    <Form.Label>
-                                        Email Address
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="email"
-                                        placeholder="enter email"
-                                        defaultValue={userAccDetails.email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    >
-                                    </Form.Control>
-                                </Form.Group>
+                    {userAccDetails && (
+                        <div className="content-card" style={{ padding: '2rem' }}>
+                            <form onSubmit={onSubmit}>
+                                <div className="row g-3" style={{ marginBottom: '1rem' }}>
+                                    <div className="col-12">
+                                        <div className="form-group-custom">
+                                            <label className="form-label-custom">Username</label>
+                                            <input
+                                                type="text"
+                                                autoFocus
+                                                defaultValue={userAccDetails.username}
+                                                placeholder="Username"
+                                                onChange={(e) => setUsername(e.target.value)}
+                                                className="form-input-custom"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-12">
+                                        <div className="form-group-custom">
+                                            <label className="form-label-custom">Email Address</label>
+                                            <input
+                                                type="email"
+                                                defaultValue={userAccDetails.email}
+                                                placeholder="Email address"
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                className="form-input-custom"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="form-group-custom">
+                                            <label className="form-label-custom">New Password</label>
+                                            <input
+                                                type="password"
+                                                placeholder="New password (optional)"
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                className="form-input-custom"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="form-group-custom">
+                                            <label className="form-label-custom">Confirm Password</label>
+                                            <input
+                                                type="password"
+                                                placeholder="Confirm new password"
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                                className="form-input-custom"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
 
-                                <Form.Group controlId='password'>
-                                    <Form.Label>
-                                        Reset-Password
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="enter new password"
-                                        onChange={(e) => setPassword(e.target.value)}
-                                    >
-                                    </Form.Control>
-                                </Form.Group>
-
-                                <Form.Group controlId='confirmPassword'>
-                                    <Form.Label>
-                                        Confirm Password
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="confirm new password"
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                    >
-                                    </Form.Control>
-                                </Form.Group>
-
-                                <Button type="submit" variant='success' className="btn-sm">Save Changes</Button>
-                                <Link to={`/account`}>
-                                    <button className="btn btn-primary btn-sm ml-2" type="button">
-                                        Cancel
+                                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                                    <button type="submit" className="btn-primary-red">
+                                        Save Changes
                                     </button>
-                                </Link>
-                            </Form>
-                        </Col>
-                    </Row>
+                                    <Link to="/account">
+                                        <button
+                                            type="button"
+                                            style={{
+                                                height: 44, padding: '0 1.5rem', background: 'transparent',
+                                                border: '1.5px solid var(--border)', borderRadius: 6,
+                                                fontWeight: 500, cursor: 'pointer', color: 'var(--text-primary)',
+                                                transition: 'all .2s'
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </Link>
+                                </div>
+                            </form>
+                        </div>
+                    )}
                 </div>
-            )
-        } catch (error) {
-            return <Message variant='danger'>Something went wrong, go back to <Link
-                onClick={logoutHandler} to={`/login`}
-            > Login</Link> page.</Message>
-        }
+            </div>
+        )
+    } catch (error) {
+        return (
+            <div className="page-wrapper fade-in">
+                <div className="container" style={{ paddingTop: '2rem' }}>
+                    <div className="content-card" style={{ padding: '2rem', textAlign: 'center' }}>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>Something went wrong.</p>
+                        <Link to="/login" onClick={logoutHandler} className="btn-primary-red" style={{ textDecoration: 'none' }}>
+                            Back to Login
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        )
     }
-
-    return renderData()
 }
 
 export default AccountUpdatePage

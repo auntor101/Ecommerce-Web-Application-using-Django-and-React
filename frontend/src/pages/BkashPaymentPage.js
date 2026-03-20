@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Button } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
 
 function BkashPaymentPage({ location }) {
@@ -12,7 +11,6 @@ function BkashPaymentPage({ location }) {
     const handlePayment = async (e) => {
         e.preventDefault()
         setLoading(true)
-        // Simulate payment processing
         setTimeout(() => {
             setLoading(false)
             alert('Payment successful!')
@@ -25,75 +23,50 @@ function BkashPaymentPage({ location }) {
     }
 
     return (
-        <div className="fade-in" style={{ 
-            minHeight: '100vh', 
-            background: 'linear-gradient(135deg, #E2136E, #FF6B9D)', 
-            padding: '2rem 0' 
-        }}>
-            <div className="container">
-                <div style={{
-                    background: 'rgba(255, 255, 255, 0.95)',
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: '24px',
-                    padding: '3rem',
-                    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)',
-                    maxWidth: '500px',
-                    margin: '0 auto'
-                }}>
+        <div className="page-wrapper fade-in">
+            <div className="container" style={{ paddingTop: '3rem', paddingBottom: '3rem' }}>
+                <div className="content-card" style={{ maxWidth: 500, margin: '0 auto', padding: '2.5rem' }}>
                     <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                         <div style={{
-                            width: '80px',
-                            height: '80px',
+                            width: 72,
+                            height: 72,
                             background: '#E2136E',
                             borderRadius: '50%',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            margin: '0 auto 1rem',
-                            boxShadow: '0 10px 30px rgba(226, 19, 110, 0.4)'
+                            margin: '0 auto 1rem'
                         }}>
-                            <i className="fas fa-mobile-alt" style={{ color: 'white', fontSize: '2rem' }}></i>
+                            <i className="fas fa-mobile-alt" style={{ color: '#fff', fontSize: '1.8rem' }}></i>
                         </div>
-                        <h2 style={{ fontWeight: '700', color: '#2d3748' }}>bKash Payment</h2>
-                        <p style={{ color: '#6b7280' }}>Enter your bKash details to complete payment</p>
+                        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--black)', marginBottom: '0.25rem' }}>
+                            bKash Payment
+                        </h2>
+                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                            Enter your bKash details to complete payment
+                        </p>
                     </div>
 
                     <form onSubmit={handlePayment}>
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ 
-                                fontWeight: '600', 
-                                color: '#2d3748', 
-                                marginBottom: '0.5rem', 
-                                display: 'block' 
-                            }}>
-                                <i className="fas fa-phone" style={{ marginRight: '8px', color: '#E2136E' }}></i>
+                        <div className="form-group-custom" style={{ marginBottom: '1.25rem' }}>
+                            <label className="form-label-custom">
+                                <i className="fas fa-phone" style={{ marginRight: 8, color: '#E2136E' }}></i>
                                 Mobile Number
                             </label>
                             <input
                                 type="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                placeholder="Mobile Number"
+                                placeholder="+880-XXXXX-XXXXX"
                                 required
-                                style={{
-                                    width: '100%',
-                                    padding: '14px 16px',
-                                    border: '2px solid #E2136E',
-                                    borderRadius: '12px',
-                                    fontSize: '1rem',
-                                    transition: 'all 0.3s ease'
-                                }}
+                                className="form-input-custom"
+                                style={{ borderColor: '#E2136E' }}
                             />
                         </div>
 
-                        <div style={{ marginBottom: '2rem' }}>
-                            <label style={{ 
-                                fontWeight: '600', 
-                                color: '#2d3748', 
-                                marginBottom: '0.5rem', 
-                                display: 'block' 
-                            }}>
-                                <i className="fas fa-lock" style={{ marginRight: '8px', color: '#E2136E' }}></i>
+                        <div className="form-group-custom" style={{ marginBottom: '1.5rem' }}>
+                            <label className="form-label-custom">
+                                <i className="fas fa-lock" style={{ marginRight: 8, color: '#E2136E' }}></i>
                                 PIN
                             </label>
                             <input
@@ -102,62 +75,52 @@ function BkashPaymentPage({ location }) {
                                 onChange={(e) => setPin(e.target.value)}
                                 placeholder="Enter your PIN"
                                 required
-                                style={{
-                                    width: '100%',
-                                    padding: '14px 16px',
-                                    border: '2px solid #E2136E',
-                                    borderRadius: '12px',
-                                    fontSize: '1rem',
-                                    transition: 'all 0.3s ease'
-                                }}
+                                className="form-input-custom"
+                                style={{ borderColor: '#E2136E' }}
                             />
                         </div>
 
                         <div style={{
-                            background: '#FFF0F6',
-                            border: '1px solid #E2136E',
-                            borderRadius: '12px',
-                            padding: '1rem',
-                            marginBottom: '2rem'
+                            background: 'rgba(226,19,110,0.06)',
+                            border: '1px solid rgba(226,19,110,0.25)',
+                            borderRadius: 8,
+                            padding: '1rem 1.25rem',
+                            marginBottom: '1.75rem'
                         }}>
-                            <h6 style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#2d3748' }}>
-                                <i className="fas fa-receipt" style={{ marginRight: '8px', color: '#E2136E' }}></i>
+                            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 6 }}>
+                                <i className="fas fa-receipt" style={{ marginRight: 6, color: '#E2136E' }}></i>
                                 Payment Summary
-                            </h6>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span>Amount:</span>
-                                <span style={{ fontWeight: '700', color: '#E2136E' }}>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ color: 'var(--text-primary)' }}>Amount</span>
+                                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#E2136E', fontSize: '1.2rem' }}>
                                     ৳{orderDetails?.amount || '0'}
                                 </span>
                             </div>
                         </div>
 
-                        <Button
+                        <button
                             type="submit"
                             disabled={loading}
                             style={{
                                 width: '100%',
-                                background: loading ? '#ccc' : '#E2136E',
+                                background: loading ? 'var(--text-secondary)' : '#E2136E',
+                                color: '#fff',
                                 border: 'none',
-                                borderRadius: '12px',
-                                padding: '16px',
-                                fontSize: '1.1rem',
-                                fontWeight: '600',
-                                cursor: loading ? 'not-allowed' : 'pointer'
+                                borderRadius: 6,
+                                padding: '13px 0',
+                                fontSize: '1rem',
+                                fontWeight: 600,
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                transition: 'all .2s ease'
                             }}
                         >
                             {loading ? (
-                                <>
-                                    <i className="fas fa-spinner fa-spin" style={{ marginRight: '8px' }}></i>
-                                    Processing...
-                                </>
+                                <><i className="fas fa-spinner fa-spin" style={{ marginRight: 8 }}></i>Processing...</>
                             ) : (
-                                <>
-                                    <i className="fas fa-credit-card" style={{ marginRight: '8px' }}></i>
-                                    Pay ৳{orderDetails?.amount || '0'}
-                                </>
+                                <><i className="fas fa-mobile-alt" style={{ marginRight: 8 }}></i>Pay via bKash</>
                             )}
-                        </Button>
+                        </button>
                     </form>
                 </div>
             </div>

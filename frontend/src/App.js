@@ -20,6 +20,10 @@ import ProductCreatePage from './pages/ProductCreatePage'
 import ProductUpdatePage from './pages/ProductUpdatePage'
 import SiteSettingsPage from './pages/SiteSettingsPage'
 import NotFound from './pages/NotFoundPage'
+import ContactPage from './pages/ContactPage'
+import CartPage from './pages/CartPage'
+import WishlistPage from './pages/WishlistPage'
+import AboutPage from './pages/AboutPage'
 import PasswordResetPage from './pages/PasswordResetPage'
 import PasswordResetConfirmPage from './pages/PasswordResetConfirmPage'
 // Import payment pages
@@ -80,6 +84,10 @@ const App = () => {
             <Route path="/register" component={Register} exact />
             <Route path="/password-reset" component={PasswordResetPage} exact />
             <Route path="/password-reset/:uid/:token" component={PasswordResetConfirmPage} exact />
+            <Route path="/contact" component={ContactPage} exact />
+            <Route path="/cart" component={CartPage} exact />
+            <Route path="/wishlist" component={WishlistPage} exact />
+            <Route path="/about" component={AboutPage} exact />
             <Route path="/account" component={AccountPage} exact />
             <Route path="/account/update/" component={AccountUpdatePage} exact />
             <Route path="/account/delete/" component={DeleteUserAccountPage} exact />

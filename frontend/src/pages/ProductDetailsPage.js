@@ -65,7 +65,7 @@ function ProductDetailsPage({ history, match }) {
             <div className="container" style={{ paddingTop: '2.5rem' }}>
                 {loading && (
                     <div style={{ textAlign: 'center', padding: '4rem' }}>
-                        <Spinner animation="border" style={{ color: 'var(--accent)' }} />
+                        <Spinner animation="border" style={{ color: 'var(--primary)' }} />
                     </div>
                 )}
                 {error && <Message variant='danger'>{error}</Message>}
@@ -146,7 +146,7 @@ function ProductDetailsPage({ history, match }) {
                                 <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
                                     {[['fa-shipping-fast', 'Free Delivery'], ['fa-shield-alt', 'Warranty'], ['fa-undo', 'Easy Returns']].map(([icon, label]) => (
                                         <div key={label} style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
-                                            <i className={`fas ${icon}`} style={{ color: 'var(--accent)', fontSize: '1.2rem', display: 'block', marginBottom: '0.35rem' }} />
+                                            <i className={`fas ${icon}`} style={{ color: 'var(--primary)', fontSize: '1.2rem', display: 'block', marginBottom: '0.35rem' }} />
                                             <small style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>{label}</small>
                                         </div>
                                     ))}

@@ -101,7 +101,7 @@ const CheckoutPage = ({ match }) => {
 
         {loading && (
           <div style={{ textAlign: 'center', padding: '4rem' }}>
-            <Spinner animation="border" style={{ color: 'var(--accent)' }} />
+            <Spinner animation="border" style={{ color: 'var(--primary)' }} />
           </div>
         )}
 
@@ -136,7 +136,7 @@ const CheckoutPage = ({ match }) => {
                       className={`payment-option ${paymentMethod === method.value ? 'selected' : ''}`}
                       onClick={() => setPaymentMethod(method.value)}
                     >
-                      <i className={`fas fa-${method.icon}`} style={{ color: 'var(--accent)', width: '18px' }} />
+                      <i className={`fas fa-${method.icon}`} style={{ color: 'var(--primary)', width: '18px' }} />
                       <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>{method.label}</span>
                     </div>
                   ))}
@@ -168,7 +168,7 @@ const CheckoutPage = ({ match }) => {
                 )}
                 {addressSelected && (
                   <p style={{ color: 'var(--success)', fontSize: '0.82rem', marginTop: '0.75rem', marginBottom: 0 }}>
-                    âœ“ Delivery address confirmed
+                    ✓ Delivery address confirmed
                   </p>
                 )}
               </div>
@@ -191,11 +191,11 @@ const CheckoutPage = ({ match }) => {
                     <div style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{product.name}</div>
                     <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Qty: 1</div>
                   </div>
-                  <span style={{ color: 'var(--accent)', fontWeight: 700 }}>&#2547;{Number(product.price).toLocaleString()}</span>
+                  <span style={{ color: 'var(--primary)', fontWeight: 700 }}>&#2547;{Number(product.price).toLocaleString()}</span>
                 </div>
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Total</span>
-                  <span style={{ color: 'var(--accent)', fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 700 }}>
+                  <span style={{ color: 'var(--primary)', fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 700 }}>
                     &#2547;{Number(product.price).toLocaleString()}
                   </span>
                 </div>

@@ -10,13 +10,22 @@ function Footer({ siteSettings }) {
                 <div className="footer-grid">
                     <div>
                         <div className="footer-brand">
-                            <i className="fas fa-leaf" style={{ marginRight: 6 }} />
-                            {siteSettings?.site_name || 'Auntor Shopping Mall'}
+                            <span className="brand-red">Exclusive</span> BD
                         </div>
                         <p className="footer-desc">
-                            Fresh groceries, household essentials, and quality products delivered
-                            across Bangladesh. Shop with confidence.
+                            Subscribe to get updates on our latest offers and products.
                         </p>
+                        <div className="footer-social">
+                            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                                <i className="fab fa-facebook-f" />
+                            </a>
+                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                                <i className="fab fa-instagram" />
+                            </a>
+                            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                                <i className="fab fa-twitter" />
+                            </a>
+                        </div>
                     </div>
 
                     <div>
@@ -24,7 +33,7 @@ function Footer({ siteSettings }) {
                         <Link to="/" className="footer-link">All Products</Link>
                         <Link to="/?searchTerm=grocery" className="footer-link">Groceries</Link>
                         <Link to="/?searchTerm=electronics" className="footer-link">Electronics</Link>
-                        <Link to="/?searchTerm=home" className="footer-link">Home &amp; Living</Link>
+                        <Link to="/?searchTerm=fashion" className="footer-link">Fashion</Link>
                     </div>
 
                     <div>
@@ -37,7 +46,7 @@ function Footer({ siteSettings }) {
 
                     <div>
                         <div className="footer-heading">Support</div>
-                        <span className="footer-link">{siteSettings?.support_email || 'help@auntor.com.bd'}</span>
+                        <span className="footer-link">{siteSettings?.support_email || 'support@exclusivebd.com'}</span>
                         <span className="footer-link">{siteSettings?.support_phone || '+880 1XXX-XXXXXX'}</span>
                         <span className="footer-link">{siteSettings?.footer_address || 'Dhaka, Bangladesh'}</span>
                     </div>
@@ -45,7 +54,7 @@ function Footer({ siteSettings }) {
 
                 <div className="footer-bottom">
                     <span className="footer-copy">
-                        &copy; {year} {siteSettings?.site_name || 'Auntor Shopping Mall'}. All rights reserved.
+                        &copy; {year} Exclusive BD. All rights reserved.
                     </span>
                     <div className="footer-locale">
                         <i className="fas fa-globe" />

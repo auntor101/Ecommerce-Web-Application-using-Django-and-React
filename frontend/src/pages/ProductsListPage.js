@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductsList } from '../actions/productActions'
 import Message from '../components/Message'
@@ -8,6 +8,141 @@ import { useHistory, Link } from "react-router-dom"
 import { CREATE_PRODUCT_RESET } from '../constants'
 import { isFrontendOnlyMode, frontendOnlyMessage } from '../utils/appMode'
 import { defaultSiteSettings } from '../utils/defaultSiteSettings'
+
+const HERO_SLIDES = [
+    {
+        eyebrow: 'New Arrivals 🎧',
+        title: 'Up to 40% Off on Electronics',
+        sub: 'Smartphones, laptops, headphones — premium tech at Bangladeshi prices.',
+        cta: 'Shop Electronics', link: '/?searchTerm=electronics',
+        bg: 'linear-gradient(120deg,#0d0d0d 0%,#1a1a2e 100%)',
+    },
+    {
+        eyebrow: 'Fresh Daily 🥦',
+        title: 'Farm-Fresh Groceries Delivered',
+        sub: 'Fresh vegetables, spices & daily essentials. Same-day Dhaka delivery.',
+        cta: 'Shop Groceries', link: '/?searchTerm=grocery',
+        bg: 'linear-gradient(120deg,#1b3a1b 0%,#2e7d32 100%)',
+    },
+    {
+        eyebrow: 'Eid Special ✨',
+        title: 'Festive Fashion Collection',
+        sub: 'Sarees, Salwar Kameez, Punjabi — celebrate in style with Exclusive BD.',
+        cta: 'Shop Fashion', link: '/?searchTerm=fashion',
+        bg: 'linear-gradient(120deg,#2c1654 0%,#6a1a6a 100%)',
+    },
+    {
+        eyebrow: 'Big Sale 🔥',
+        title: 'Exclusive Weekend Offers',
+        sub: 'Apply coupon EXCLUSIVE50 for ৳50 off your next order.',
+        cta: 'View Offers', link: '/',
+        bg: 'linear-gradient(120deg,#3d0c00 0%,#b03030 100%)',
+    },
+    {
+        eyebrow: 'New In 🏠',
+        title: 'Home & Living Essentials',
+        sub: 'Cookware, décor, storage — everything for a beautiful Bangladeshi home.',
+        cta: 'Shop Home', link: '/?searchTerm=home',
+        bg: 'linear-gradient(120deg,#1a1200 0%,#c8922a 100%)',
+    },
+]
+
+const SIDEBAR_CATEGORIES = [
+    "Women's Fashion", "Men's Fashion", "Electronics", "Groceries",
+    "Home & Living", "Medicine / Health", "Sports", "Baby & Kids",
+]
+
+function HeroCarousel() {
+    const [active, setActive] = useState(0)
+
+    const next = useCallback(() => setActive(a => (a + 1) % HERO_SLIDES.length), [])
+    const prev = useCallback(() => setActive(a => (a - 1 + HERO_SLIDES.length) % HERO_SLIDES.length), [])
+
+    useEffect(() => {
+        const id = setInterval(next, 5000)
+        return () => clearInterval(id)
+    }, [next])
+
+    return (
+        <div className="hero-layout">
+            {/* Sidebar */}
+            <nav className="hero-sidebar">
+                {SIDEBAR_CATEGORIES.map(cat => (
+                    <Link
+                        key={cat}
+                        to={`/?searchTerm=${cat.split(' ')[0].toLowerCase()}`}
+                        className="hero-sidebar-link"
+                    >
+                        {cat} <span>›</span>
+                    </Link>
+                ))}
+            </nav>
+
+            {/* Carousel */}
+            <div className="hero-carousel">
+                {HERO_SLIDES.map((slide, i) => (
+                    <div key={i} className={`hero-slide${i === active ? ' active' : ''}`}
+                        style={{ background: slide.bg }}>
+                        <div className="hero-slide-content">
+                            <div className="hero-slide-eyebrow">{slide.eyebrow}</div>
+                            <h2 className="hero-slide-title">{slide.title}</h2>
+                            <p className="hero-slide-sub">{slide.sub}</p>
+                            <Link to={slide.link} className="hero-cta">{slide.cta} →</Link>
+                        </div>
+                    </div>
+                ))}
+                {/* Arrows */}
+                <button className="hero-arrow hero-arrow-left" onClick={prev} aria-label="Previous slide">
+                    <i className="fas fa-chevron-left" style={{ fontSize: '0.8rem' }}></i>
+                </button>
+                <button className="hero-arrow hero-arrow-right" onClick={next} aria-label="Next slide">
+                    <i className="fas fa-chevron-right" style={{ fontSize: '0.8rem' }}></i>
+                </button>
+                {/* Dots */}
+                <div className="hero-dots">
+                    {HERO_SLIDES.map((_, i) => (
+                        <button key={i} className={`hero-dot${i === active ? ' active' : ''}`}
+                            onClick={() => setActive(i)} aria-label={`Slide ${i + 1}`} />
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function FlashSaleCountdown() {
+    const getEndOfDay = () => {
+        const now = new Date()
+        const end = new Date(now)
+        end.setHours(23, 59, 59, 999)
+        return end - now
+    }
+
+    const [timeLeft, setTimeLeft] = useState(getEndOfDay())
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTimeLeft(getEndOfDay())
+        }, 1000)
+        return () => clearInterval(timer)
+    }, [])
+
+    const hours = Math.floor(timeLeft / (1000 * 60 * 60))
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
+    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000)
+
+    const pad = (n) => String(n).padStart(2, '0')
+
+    return (
+        <div className="countdown-timer">
+            <div className="countdown-block">{pad(hours)}</div>
+            <span className="countdown-sep">:</span>
+            <div className="countdown-block">{pad(minutes)}</div>
+            <span className="countdown-sep">:</span>
+            <div className="countdown-block">{pad(seconds)}</div>
+        </div>
+    )
+}
 
 function ProductsListPage({ siteSettings = defaultSiteSettings }) {
     let history = useHistory()
@@ -28,52 +163,59 @@ function ProductsListPage({ siteSettings = defaultSiteSettings }) {
     )
 
     const isHome = !searchTerm
-    const heroStyle = siteSettings.hero_background_image
-        ? {
-            marginTop: '1.5rem',
-            backgroundImage: `linear-gradient(rgba(27, 67, 50, 0.78), rgba(27, 67, 50, 0.78)), url(${siteSettings.hero_background_image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-        }
-        : { marginTop: '1.5rem' }
 
     return (
         <div className="fade-in">
             <div className="container">
-                {/* Hero Section — only on homepage */}
+                {/* Hero Carousel — only on homepage */}
+                {isHome && <HeroCarousel />}
+
+                {/* Category Tiles */}
                 {isHome && (
-                    <div className="hero-section" style={heroStyle}>
-                        <div className="hero-eyebrow">{siteSettings.hero_eyebrow}</div>
-                        <h1 className="hero-title">
-                            {siteSettings.hero_title}
-                        </h1>
-                        <p className="hero-subtitle">
-                            {siteSettings.hero_subtitle}
-                        </p>
-                        <Link to="/" className="hero-cta">
-                            <i className="fas fa-shopping-basket" />
-                            Shop Now
-                        </Link>
+                    <div style={{ margin: '2.5rem 0' }}>
+                        <div className="section-label">
+                            <div className="section-red-bar" />
+                            <h2 className="section-title">Browse By Category</h2>
+                        </div>
+                        <div className="category-grid">
+                            {[
+                                ['fa-mobile-alt', 'Phones', 'electronics'],
+                                ['fa-laptop', 'Computers', 'electronics'],
+                                ['fa-tshirt', 'Fashion', 'fashion'],
+                                ['fa-apple-alt', 'Groceries', 'grocery'],
+                                ['fa-home', 'Home & Living', 'home'],
+                                ['fa-heartbeat', 'Health', 'health'],
+                            ].map(([icon, label, term]) => (
+                                <Link
+                                    key={term}
+                                    to={`/?searchTerm=${term}`}
+                                    className="category-tile"
+                                >
+                                    <div className="category-tile-icon">
+                                        <i className={`fas ${icon}`} />
+                                    </div>
+                                    <span className="category-tile-label">{label}</span>
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 )}
 
-                {isHome && siteSettings.promo_background_image && (
-                    <div
-                        className="content-card"
-                        style={{
-                            marginBottom: '2rem',
-                            border: 'none',
-                            color: '#fff',
-                            backgroundImage: `linear-gradient(rgba(45, 106, 79, 0.72), rgba(45, 106, 79, 0.72)), url(${siteSettings.promo_background_image})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                        }}
-                    >
-                        <div className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.75)' }}>Seasonal Banner</div>
-                        <h2 className="section-title" style={{ color: '#fff' }}>{siteSettings.site_name}</h2>
-                        <p style={{ margin: '0.75rem 0 0', maxWidth: '540px', color: 'rgba(255,255,255,0.88)' }}>
-                            This banner image is controlled from the admin site settings page.
-                        </p>
+                {/* Flash Sales Section */}
+                {isHome && !loading && filteredProducts.length > 0 && (
+                    <div style={{ margin: '2.5rem 0' }}>
+                        <div className="section-label">
+                            <div className="section-red-bar" />
+                            <h2 className="section-title">Today's Flash Sales</h2>
+                            <FlashSaleCountdown />
+                        </div>
+                        <Row>
+                            {filteredProducts.slice(0, 4).map((product) => (
+                                <Col key={product.id} sm={6} md={6} lg={3} className="mb-4 product-grid-item">
+                                    <Product product={product} />
+                                </Col>
+                            ))}
+                        </Row>
                     </div>
                 )}
 
@@ -81,16 +223,18 @@ function ProductsListPage({ siteSettings = defaultSiteSettings }) {
                 {isHome && (
                     <div className="trust-bar">
                         {[
-                            ['fa-shipping-fast', 'Free delivery on orders over ৳1,000'],
-                            ['fa-shield-alt', '100% Quality Guarantee'],
-                            ['fa-hand-holding-heart', 'Locally Sourced Products'],
-                            ['fa-headset', '24/7 Customer Support'],
-                        ].map(([icon, text]) => (
-                            <div key={text} className="trust-item">
+                            ['fa-shipping-fast', 'FREE AND FAST DELIVERY', 'Free delivery on orders over ৳1,000'],
+                            ['fa-headset', '24/7 CUSTOMER SERVICE', 'Friendly support around the clock'],
+                            ['fa-shield-alt', 'MONEY BACK GUARANTEE', 'We return money within 30 days'],
+                        ].map(([icon, title, text]) => (
+                            <div key={title} className="trust-item">
                                 <div className="trust-icon">
                                     <i className={`fas ${icon}`} />
                                 </div>
-                                <span className="trust-text">{text}</span>
+                                <div>
+                                    <strong className="trust-title">{title}</strong>
+                                    <span className="trust-text">{text}</span>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -129,13 +273,16 @@ function ProductsListPage({ siteSettings = defaultSiteSettings }) {
 
                 {!loading && (
                     <>
-                        {/* Section header for product grid */}
+                        {/* All Products Section */}
                         {isHome && (
-                            <div className="section-header">
-                                <h2 className="section-title">Our Products</h2>
-                                <span className="results-count">
-                                    <strong>{filteredProducts.length}</strong> {filteredProducts.length === 1 ? 'item' : 'items'}
-                                </span>
+                            <div style={{ margin: '2.5rem 0 1rem' }}>
+                                <div className="section-label">
+                                    <div className="section-red-bar" />
+                                    <h2 className="section-title">Explore Our Products</h2>
+                                    <span className="results-count">
+                                        <strong>{filteredProducts.length}</strong> {filteredProducts.length === 1 ? 'item' : 'items'}
+                                    </span>
+                                </div>
                             </div>
                         )}
 
@@ -163,25 +310,6 @@ function ProductsListPage({ siteSettings = defaultSiteSettings }) {
                             </Row>
                         )}
                     </>
-                )}
-
-                {/* How It Works — only on homepage */}
-                {isHome && !loading && (
-                    <div className="how-it-works">
-                        {[
-                            ['fa-search', 'Browse', 'Explore fresh groceries, electronics, and everyday essentials.'],
-                            ['fa-cart-plus', 'Add to Cart', 'Pick your favourites and add them to your bag with one click.'],
-                            ['fa-truck', 'We Deliver', 'Fast, reliable delivery straight to your doorstep across Bangladesh.'],
-                        ].map(([icon, title, desc]) => (
-                            <div key={title} className="how-step">
-                                <div className="how-step-icon">
-                                    <i className={`fas ${icon}`} />
-                                </div>
-                                <div className="how-step-title">{title}</div>
-                                <div className="how-step-desc">{desc}</div>
-                            </div>
-                        ))}
-                    </div>
                 )}
             </div>
         </div>

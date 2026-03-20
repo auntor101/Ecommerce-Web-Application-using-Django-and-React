@@ -6,7 +6,6 @@ import { logout } from '../actions/userActions'
 import { useHistory } from "react-router-dom"
 import SearchBarForProducts from './SearchBarForProducts'
 import CartIcon from './CartIcon'
-import ThemeToggle from './ThemeToggle'
 import { isFrontendOnlyMode } from '../utils/appMode'
 
 function NavBar({ siteSettings }) {
@@ -24,12 +23,16 @@ function NavBar({ siteSettings }) {
 
     return (
         <header className="slide-in">
+            {/* Announcement Bar */}
+            <div className="announcement-bar">
+                <span>Summer Sale — Up to 50% off! Free delivery on orders over ৳1,000. <strong>Shop Now →</strong></span>
+            </div>
+
             <Navbar expand="lg" collapseOnSelect>
                 <Container fluid style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.5rem' }}>
                     <LinkContainer to="/">
                         <Navbar.Brand>
-                            <i className="fas fa-leaf" style={{ fontSize: '1.1rem' }} />
-                            {siteSettings?.site_name || 'Auntor Shopping Mall'}
+                            <span className="brand-accent">Exclusive</span>BD
                         </Navbar.Brand>
                     </LinkContainer>
 
@@ -38,13 +41,16 @@ function NavBar({ siteSettings }) {
                     <Navbar.Collapse id="main-nav">
                         <Nav className="mr-auto align-items-lg-center">
                             <LinkContainer to="/">
-                                <Nav.Link className="nav-link-atelier">All Products</Nav.Link>
+                                <Nav.Link className="nav-link-atelier">Home</Nav.Link>
                             </LinkContainer>
                             <LinkContainer to="/?searchTerm=grocery">
                                 <Nav.Link className="nav-link-atelier">Groceries</Nav.Link>
                             </LinkContainer>
                             <LinkContainer to="/?searchTerm=electronics">
                                 <Nav.Link className="nav-link-atelier">Electronics</Nav.Link>
+                            </LinkContainer>
+                            <LinkContainer to="/contact">
+                                <Nav.Link className="nav-link-atelier">Contact</Nav.Link>
                             </LinkContainer>
                             {userInfo && userInfo.admin && (
                                 <LinkContainer to="/new-product/">
@@ -55,7 +61,6 @@ function NavBar({ siteSettings }) {
 
                         <div className="d-flex align-items-center" style={{ gap: '0.75rem' }}>
                             <SearchBarForProducts />
-                            <ThemeToggle />
                             <CartIcon />
                             {isFrontendOnlyMode && (
                                 <span className="preview-badge">Preview</span>
@@ -64,7 +69,7 @@ function NavBar({ siteSettings }) {
                                 <NavDropdown
                                     title={
                                         <span style={{
-                                            color: 'var(--text-secondary)',
+                                            color: 'rgba(255,255,255,0.85)',
                                             fontSize: '0.82rem',
                                             fontWeight: '500',
                                         }}>
@@ -100,7 +105,7 @@ function NavBar({ siteSettings }) {
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item
                                         onClick={logoutHandler}
-                                        style={{ color: 'var(--danger)' }}
+                                        style={{ color: 'var(--primary)' }}
                                     >
                                         <i className="fas fa-sign-out-alt me-2" />Sign Out
                                     </NavDropdown.Item>

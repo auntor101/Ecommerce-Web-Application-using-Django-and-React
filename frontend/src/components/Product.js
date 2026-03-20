@@ -1,8 +1,27 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { addToCart } from '../actions/cartActions'
 
 function Product({ product }) {
+    const dispatch = useDispatch()
     const fallbackImg = `https://picsum.photos/seed/${encodeURIComponent(product.name || product.id)}/600/450`
+
+    const rating = product.rating || 0
+    const stars = []
+    for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(rating)) stars.push('full')
+        else if (i - rating < 1) stars.push('half')
+        else stars.push('empty')
+    }
+
+    const handleAddToCart = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (product.stock) {
+            dispatch(addToCart(product, 1))
+        }
+    }
 
     return (
         <Link to={`/product/${product.id}`} className="product-card">
@@ -14,9 +33,25 @@ function Product({ product }) {
                     loading="lazy"
                     onError={e => { e.target.src = fallbackImg }}
                 />
-                <span className={`product-card-badge ${product.stock ? 'badge-in-stock' : 'badge-out-stock'}`}>
-                    {product.stock ? 'In Stock' : 'Sold Out'}
-                </span>
+                {!product.stock && (
+                    <span className="product-card-badge badge-out-stock">Sold Out</span>
+                )}
+                {product.discount_percent > 0 && (
+                    <span className="product-card-badge badge-discount">-{product.discount_percent}%</span>
+                )}
+                <button
+                    className="product-wishlist-btn"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation() }}
+                    title="Add to Wishlist"
+                >
+                    <i className="far fa-heart" />
+                </button>
+                <button
+                    className="product-card-add-btn"
+                    onClick={handleAddToCart}
+                >
+                    <i className="fas fa-shopping-cart" /> Add to Cart
+                </button>
             </div>
             <div className="product-card-body">
                 {product.category_name && (
@@ -27,8 +62,24 @@ function Product({ product }) {
                     <div className="product-card-price">
                         <span className="product-card-price-symbol">&#2547;</span>
                         {Number(product.price).toLocaleString()}
+                        {product.old_price && (
+                            <span className="product-card-price-old">
+                                &#2547;{Number(product.old_price).toLocaleString()}
+                            </span>
+                        )}
                     </div>
-                    <span className="product-card-cta">View <span>â†’</span></span>
+                    <div className="product-card-stars">
+                        {stars.map((type, i) => (
+                            <i key={i} className={
+                                type === 'full' ? 'fas fa-star' :
+                                type === 'half' ? 'fas fa-star-half-alt' :
+                                'far fa-star'
+                            } />
+                        ))}
+                        {product.reviews_count !== undefined && (
+                            <span className="product-card-reviews">({product.reviews_count})</span>
+                        )}
+                    </div>
                 </div>
             </div>
         </Link>
@@ -36,5 +87,3 @@ function Product({ product }) {
 }
 
 export default Product
-
-
