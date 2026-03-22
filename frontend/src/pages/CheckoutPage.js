@@ -86,32 +86,28 @@ const CheckoutPage = ({ match }) => {
     : 'https://picsum.photos/seed/checkout/80/80'
 
   return (
-    <div className="page-wrapper fade-in">
-      <div className="container" style={{ paddingTop: '2.5rem' }}>
-        {/* Page header */}
-        <div style={{ marginBottom: '2.5rem' }}>
-          <div className="section-eyebrow">Checkout</div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.4rem', color: 'var(--text-primary)', margin: 0 }}>
-            Secure Payment
-          </h1>
+    <div className="page-wrapper fade-in checkout-page">
+      <div className="container page-pad-y">
+        <div className="page-hero compact checkout-page-hero">
+          <div className="page-hero-eyebrow">Checkout</div>
+          <h1 className="page-hero-title">Secure Payment</h1>
         </div>
 
         {error && <Message variant='danger'>{error}</Message>}
         {paymentError && <Alert variant="danger">{paymentError}</Alert>}
 
         {loading && (
-          <div style={{ textAlign: 'center', padding: '4rem' }}>
-            <Spinner animation="border" style={{ color: 'var(--primary)' }} />
+          <div className="page-loading">
+            <Spinner animation="border" className="page-loading-spinner" />
           </div>
         )}
 
         {!loading && product && (
           <Row>
-            {/* Shipping */}
             <Col lg={7} className="mb-4">
-              <div className="content-card">
+              <div className="content-card checkout-block">
                 <div className="content-card-header">
-                  <h4 style={{ margin: 0, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                  <h4 className="checkout-block-title">
                     Shipping Address
                   </h4>
                 </div>
@@ -119,35 +115,34 @@ const CheckoutPage = ({ match }) => {
               </div>
             </Col>
 
-            {/* Payment */}
             <Col lg={5}>
-              <div className="content-card" style={{ marginBottom: '1.5rem' }}>
+              <div className="content-card checkout-block checkout-payment-card">
                 <div className="content-card-header">
-                  <h4 style={{ margin: 0, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                  <h4 className="checkout-block-title">
                     Payment
                   </h4>
                 </div>
 
                 <Form onSubmit={handlePayment}>
-                  <Form.Label style={{ marginBottom: '0.75rem' }}>Payment Method</Form.Label>
+                  <Form.Label className="checkout-label">Payment Method</Form.Label>
                   {paymentMethods.map(method => (
                     <div
                       key={method.value}
                       className={`payment-option ${paymentMethod === method.value ? 'selected' : ''}`}
                       onClick={() => setPaymentMethod(method.value)}
                     >
-                      <i className={`fas fa-${method.icon}`} style={{ color: 'var(--primary)', width: '18px' }} />
-                      <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>{method.label}</span>
+                      <i className={`fas fa-${method.icon} checkout-payment-icon`} />
+                      <span className="checkout-payment-name">{method.label}</span>
                     </div>
                   ))}
 
-                  <div style={{ margin: '1.5rem 0' }}>
+                  <div className="checkout-confirm-wrap">
                     <Form.Check
                       type="checkbox"
                       label="Confirm & authorise payment"
                       checked={paidStatus}
                       onChange={e => setPaidStatus(e.target.checked)}
-                      style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}
+                      className="checkout-confirm-check"
                     />
                   </div>
 
@@ -155,47 +150,46 @@ const CheckoutPage = ({ match }) => {
                     variant="primary"
                     type="submit"
                     disabled={!addressSelected || paidStatus}
-                    style={{ width: '100%', padding: '0.75rem' }}
+                    className="checkout-submit"
                   >
                   {paidStatus ? '\u2713 Payment Complete' : `Pay \u09f3${Number(product.price).toLocaleString()}`}
                   </Button>
                 </Form>
 
                 {showPaidAlert && (
-                  <Alert variant="success" style={{ marginTop: '1rem' }}>
+                  <Alert variant="success" className="checkout-status-alert">
                     {paymentMessage || "Payment processed successfully!"}
                   </Alert>
                 )}
                 {addressSelected && (
-                  <p style={{ color: 'var(--success)', fontSize: '0.82rem', marginTop: '0.75rem', marginBottom: 0 }}>
+                  <p className="checkout-address-ok">
                     ✓ Delivery address confirmed
                   </p>
                 )}
               </div>
 
-              {/* Order Summary */}
-              <div className="content-card">
+              <div className="content-card checkout-block checkout-summary-card">
                 <div className="content-card-header">
-                  <h5 style={{ margin: 0, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                  <h5 className="checkout-block-title small">
                     Order Summary
                   </h5>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <div className="checkout-order-item">
                   <img
                     src={product.image || fallbackImg}
                     onError={e => { e.target.src = fallbackImg }}
                     alt={product.name}
-                    style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 'var(--radius)' }}
+                    className="checkout-order-thumb"
                   />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{product.name}</div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Qty: 1</div>
+                  <div className="checkout-order-meta">
+                    <div className="checkout-order-name">{product.name}</div>
+                    <div className="checkout-order-qty">Qty: 1</div>
                   </div>
-                  <span style={{ color: 'var(--primary)', fontWeight: 700 }}>&#2547;{Number(product.price).toLocaleString()}</span>
+                  <span className="checkout-order-price">&#2547;{Number(product.price).toLocaleString()}</span>
                 </div>
-                <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Total</span>
-                  <span style={{ color: 'var(--primary)', fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 700 }}>
+                <div className="checkout-summary-total">
+                  <span>Total</span>
+                  <span>
                     &#2547;{Number(product.price).toLocaleString()}
                   </span>
                 </div>

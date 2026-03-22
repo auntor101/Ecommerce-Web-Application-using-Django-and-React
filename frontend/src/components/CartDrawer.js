@@ -20,10 +20,10 @@ function CartDrawer() {
             <div className="cart-drawer">
                 <div className="cart-drawer-header">
                     <h2 className="cart-drawer-title">
-                        <i className="fas fa-shopping-bag" style={{ color: 'var(--accent)' }} />
+                        <i className="fas fa-shopping-bag cart-drawer-title-icon" />
                         Cart
                         {totalItems > 0 && (
-                            <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+                            <span className="cart-drawer-count">
                                 ({totalItems} {totalItems === 1 ? 'item' : 'items'})
                             </span>
                         )}
@@ -36,8 +36,8 @@ function CartDrawer() {
                 <div className="cart-drawer-body">
                     {cartItems.length === 0 ? (
                         <div className="cart-empty">
-                            <i className="fas fa-shopping-bag" style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--text-muted)' }} />
-                            <p style={{ margin: 0, fontSize: '0.9rem' }}>Your cart is empty</p>
+                            <i className="fas fa-shopping-bag cart-empty-icon" />
+                            <p className="cart-empty-text">Your cart is empty</p>
                         </div>
                     ) : (
                         cartItems.map(item => {
@@ -50,22 +50,22 @@ function CartDrawer() {
                                         alt={item.name}
                                         className="cart-item-img"
                                     />
-                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div className="cart-item-meta">
                                         <div className="cart-item-name">{item.name}</div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.3rem' }}>
+                                        <div className="cart-item-controls">
                                             <button
                                                 className="cart-qty-btn"
                                                 onClick={() => dispatch(updateCartQuantity(item.id, item.quantity - 1))}
                                                 disabled={item.quantity <= 1}
                                             >-</button>
-                                            <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-primary)', minWidth: 18, textAlign: 'center' }}>
+                                            <span className="cart-item-qty">
                                                 {item.quantity}
                                             </span>
                                             <button
                                                 className="cart-qty-btn"
                                                 onClick={() => dispatch(updateCartQuantity(item.id, item.quantity + 1))}
                                             >+</button>
-                                            <span style={{ marginLeft: 'auto', color: 'var(--accent)', fontWeight: 600, fontSize: '0.9rem' }}>
+                                            <span className="cart-item-line-total">
                                                 &#2547;{(item.price * item.quantity).toLocaleString()}
                                             </span>
                                         </div>
@@ -84,9 +84,9 @@ function CartDrawer() {
 
                 {cartItems.length > 0 && (
                     <div className="cart-drawer-footer">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Total</span>
-                            <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent)' }}>
+                        <div className="cart-drawer-total-row">
+                            <span className="cart-drawer-total-label">Total</span>
+                            <span className="cart-drawer-total-amount">
                                 &#2547;{total.toLocaleString()}
                             </span>
                         </div>
@@ -95,7 +95,7 @@ function CartDrawer() {
                                 <i className="fas fa-credit-card" style={{ marginRight: 8 }} /> Proceed to Checkout
                             </button>
                         </Link>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textAlign: 'center', marginTop: '0.75rem', marginBottom: 0 }}>
+                        <p className="cart-drawer-note">
                             Select a product on the listing to buy
                         </p>
                     </div>

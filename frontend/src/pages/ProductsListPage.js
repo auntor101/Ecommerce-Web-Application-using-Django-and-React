@@ -15,7 +15,7 @@ const HERO_SLIDES = [
         title: 'Up to 40% Off on Electronics',
         sub: 'Smartphones, laptops, headphones — premium tech at Bangladeshi prices.',
         cta: 'Shop Electronics', link: '/?searchTerm=electronics',
-        bg: 'linear-gradient(120deg,#0d0d0d 0%,#1a1a2e 100%)',
+        bg: 'linear-gradient(120deg,#111217 0%,#2a2f37 100%)',
     },
     {
         eyebrow: 'Fresh Daily 🥦',
@@ -29,7 +29,7 @@ const HERO_SLIDES = [
         title: 'Festive Fashion Collection',
         sub: 'Sarees, Salwar Kameez, Punjabi — celebrate in style with Exclusive BD.',
         cta: 'Shop Fashion', link: '/?searchTerm=fashion',
-        bg: 'linear-gradient(120deg,#2c1654 0%,#6a1a6a 100%)',
+        bg: 'linear-gradient(120deg,#2b1710 0%,#7b3f00 100%)',
     },
     {
         eyebrow: 'Big Sale 🔥',
@@ -50,6 +50,31 @@ const HERO_SLIDES = [
 const SIDEBAR_CATEGORIES = [
     "Women's Fashion", "Men's Fashion", "Electronics", "Groceries",
     "Home & Living", "Medicine / Health", "Sports", "Baby & Kids",
+]
+
+const MARKET_STATS = [
+    ['24h Dispatch', 'Inside Dhaka city'],
+    ['1000+ Brands', 'Curated for quality'],
+    ['Secure Checkout', 'Cards and mobile wallet'],
+]
+
+const QUICK_COLLECTIONS = [
+    ['fa-bolt', 'Trending Now', 'electronics'],
+    ['fa-leaf', 'Fresh Picks', 'grocery'],
+    ['fa-gem', 'Premium Style', 'fashion'],
+]
+
+const HERO_SIDE_CARDS = [
+    {
+        title: 'Express Delivery',
+        text: 'Same-day handoff in selected Dhaka zones.',
+        icon: 'fa-shipping-fast',
+    },
+    {
+        title: 'Weekend Deal Pass',
+        text: 'Unlock extra markdowns every Friday.',
+        icon: 'fa-ticket-alt',
+    },
 ]
 
 function HeroCarousel() {
@@ -106,6 +131,27 @@ function HeroCarousel() {
                     ))}
                 </div>
             </div>
+
+            <aside className="hero-side-panel">
+                <div className="hero-side-promo">
+                    <p className="hero-side-eyebrow">Limited Access</p>
+                    <h3>Join the Members Circle</h3>
+                    <p>Early access to drops, private offers, and curated weekly picks.</p>
+                    <Link to="/register" className="hero-side-btn">Create Account</Link>
+                </div>
+
+                <div className="hero-side-list">
+                    {HERO_SIDE_CARDS.map(card => (
+                        <div key={card.title} className="hero-side-list-item">
+                            <i className={`fas ${card.icon}`} />
+                            <div>
+                                <h4>{card.title}</h4>
+                                <p>{card.text}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </aside>
         </div>
     )
 }
@@ -167,12 +213,41 @@ function ProductsListPage({ siteSettings = defaultSiteSettings }) {
     return (
         <div className="fade-in">
             <div className="container">
+                {isHome && (
+                    <section className="home-intro fade-up">
+                        <div className="home-intro-copy">
+                            <p className="home-intro-eyebrow">EXCLUSIVE BD MARKETPLACE</p>
+                            <h1 className="home-intro-title">Everyday essentials, premium picks, one seamless cart.</h1>
+                            <p className="home-intro-subtitle">
+                                Discover handpicked products across grocery, electronics, fashion, and home.
+                                Fast delivery, trusted sellers, and clean shopping flow.
+                            </p>
+                            <div className="home-intro-collections">
+                                {QUICK_COLLECTIONS.map(([icon, label, term]) => (
+                                    <Link key={term} to={`/?searchTerm=${term}`} className="collection-chip">
+                                        <i className={`fas ${icon}`} />
+                                        {label}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="home-intro-stats">
+                            {MARKET_STATS.map(([label, sub]) => (
+                                <div key={label} className="home-stat-card">
+                                    <h3>{label}</h3>
+                                    <p>{sub}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
                 {/* Hero Carousel — only on homepage */}
                 {isHome && <HeroCarousel />}
 
                 {/* Category Tiles */}
                 {isHome && (
-                    <div style={{ margin: '2.5rem 0' }}>
+                    <div className="home-block">
                         <div className="section-label">
                             <div className="section-red-bar" />
                             <h2 className="section-title">Browse By Category</h2>
@@ -203,7 +278,7 @@ function ProductsListPage({ siteSettings = defaultSiteSettings }) {
 
                 {/* Flash Sales Section */}
                 {isHome && !loading && filteredProducts.length > 0 && (
-                    <div style={{ margin: '2.5rem 0' }}>
+                    <div className="home-block">
                         <div className="section-label">
                             <div className="section-red-bar" />
                             <h2 className="section-title">Today's Flash Sales</h2>
@@ -251,21 +326,21 @@ function ProductsListPage({ siteSettings = defaultSiteSettings }) {
                 )}
 
                 {isFrontendOnlyMode && (
-                    <div style={{ marginBottom: '1.5rem' }}>
+                    <div className="message-wrap">
                         <Message variant='info'>{frontendOnlyMessage}</Message>
                     </div>
                 )}
 
                 {error && (
-                    <div style={{ marginBottom: '1.5rem' }}>
+                    <div className="message-wrap">
                         <Message variant='danger'>{error}</Message>
                     </div>
                 )}
 
                 {loading && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '3rem 0' }}>
-                        <Spinner animation="border" style={{ width: '1.4rem', height: '1.4rem' }} />
-                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                    <div className="products-loading">
+                        <Spinner animation="border" className="products-loading-spinner" />
+                        <span className="products-loading-text">
                             Loading products...
                         </span>
                     </div>
@@ -275,7 +350,7 @@ function ProductsListPage({ siteSettings = defaultSiteSettings }) {
                     <>
                         {/* All Products Section */}
                         {isHome && (
-                            <div style={{ margin: '2.5rem 0 1rem' }}>
+                            <div className="home-section-header">
                                 <div className="section-label">
                                     <div className="section-red-bar" />
                                     <h2 className="section-title">Explore Our Products</h2>
@@ -295,8 +370,8 @@ function ProductsListPage({ siteSettings = defaultSiteSettings }) {
                         )}
 
                         {filteredProducts.length === 0 ? (
-                            <div style={{ padding: '4rem 0', textAlign: 'center' }}>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>
+                            <div className="empty-products-state">
+                                <p>
                                     No products match your search.
                                 </p>
                             </div>

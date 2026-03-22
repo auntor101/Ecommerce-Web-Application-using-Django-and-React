@@ -37,36 +37,34 @@ function AccountPage() {
     const initial = (userAccDetails?.username || userInfo?.username || "?")[0].toUpperCase()
 
     return (
-        <div className="page-wrapper fade-in">
-            <div className="container" style={{ paddingTop: '3rem', maxWidth: 800 }}>
+        <div className="page-wrapper fade-in account-page">
+            <div className="container page-pad-y account-page-shell">
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '4rem' }}>
-                        <Spinner animation="border" style={{ color: 'var(--primary)' }} />
+                    <div className="page-loading">
+                        <Spinner animation="border" className="page-loading-spinner" />
                     </div>
                 ) : (
                     <>
-                        {/* Profile header */}
-                        <div className="content-card" style={{ textAlign: 'center', marginBottom: '2rem', padding: '3rem 2rem' }}>
+                        <div className="content-card account-profile-card">
                             <div className="account-avatar">{initial}</div>
-                            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'var(--text-primary)', margin: '0.5rem 0 0.25rem' }}>
+                            <h2 className="account-profile-name">
                                 {userAccDetails?.username || userInfo?.username}
                             </h2>
-                            <p style={{ color: 'var(--text-muted)', margin: 0 }}>
+                            <p className="account-profile-email">
                                 {userAccDetails?.email || userInfo?.email}
                             </p>
                             {userInfo?.admin && (
-                                <span className="product-badge" style={{ marginTop: '0.75rem', display: 'inline-block' }}>Admin</span>
+                                <span className="product-badge account-admin-badge">Admin</span>
                             )}
                         </div>
 
-                        {/* Details card */}
-                        <div className="content-card" style={{ marginBottom: '1.5rem' }}>
-                            <div className="content-card-header" style={{ marginBottom: '1.5rem' }}>
+                        <div className="content-card account-details-card">
+                            <div className="content-card-header account-details-head">
                                 <span className="section-eyebrow">Profile</span>
-                                <h3 style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)', margin: 0 }}>Account Details</h3>
+                                <h3>Account Details</h3>
                             </div>
-                            <Row style={{ rowGap: '1rem' }}>
+                            <Row className="account-details-grid">
                                 {[
                                     { label: 'Username', value: userAccDetails?.username || '—' },
                                     { label: 'Email', value: userAccDetails?.email || '—' },
@@ -74,46 +72,44 @@ function AccountPage() {
                                     { label: 'Member Since', value: userAccDetails?.date_joined ? new Date(userAccDetails.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : '—' },
                                 ].map(item => (
                                     <Col key={item.label} md={6}>
-                                        <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
-                                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.25rem' }}>{item.label}</div>
-                                            <div style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{item.value}</div>
+                                        <div className="account-detail-item">
+                                            <div className="account-detail-label">{item.label}</div>
+                                            <div className="account-detail-value">{item.value}</div>
                                         </div>
                                     </Col>
                                 ))}
                             </Row>
                         </div>
 
-                        {/* Actions card */}
-                        <div className="content-card">
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                                <Link to="/all-orders/" style={{ textDecoration: 'none' }}>
-                                    <button className="btn w-100" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '0.85rem', borderRadius: 'var(--radius-md)', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'border-color 0.2s' }}>
-                                        <i className="fas fa-shopping-bag" style={{ color: 'var(--primary)', width: 20 }} />
+                        <div className="content-card account-actions-card">
+                            <div className="account-action-list">
+                                <Link to="/all-orders/" className="account-action-link">
+                                    <button className="account-action-btn">
+                                        <i className="fas fa-shopping-bag" />
                                         My Orders
                                     </button>
                                 </Link>
                                 {userInfo?.admin && (
-                                    <Link to="/new-product/" style={{ textDecoration: 'none' }}>
-                                        <button className="btn w-100" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '0.85rem', borderRadius: 'var(--radius-md)', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                            <i className="fas fa-boxes" style={{ color: 'var(--primary)', width: 20 }} />
+                                    <Link to="/new-product/" className="account-action-link">
+                                        <button className="account-action-btn">
+                                            <i className="fas fa-boxes" />
                                             Add Product
                                         </button>
                                     </Link>
                                 )}
                                 {userInfo?.admin && (
-                                    <Link to="/admin/site-settings/" style={{ textDecoration: 'none' }}>
-                                        <button className="btn w-100" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '0.85rem', borderRadius: 'var(--radius-md)', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                            <i className="fas fa-image" style={{ color: 'var(--primary)', width: 20 }} />
+                                    <Link to="/admin/site-settings/" className="account-action-link">
+                                        <button className="account-action-btn">
+                                            <i className="fas fa-image" />
                                             Site Settings & Background Images
                                         </button>
                                     </Link>
                                 )}
                                 <button
                                     onClick={logoutHandler}
-                                    className="btn w-100"
-                                    style={{ background: 'transparent', border: '1px solid rgba(220,53,69,0.4)', color: '#dc3545', padding: '0.85rem', borderRadius: 'var(--radius-md)', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'all 0.2s' }}
+                                    className="account-action-btn danger"
                                 >
-                                    <i className="fas fa-sign-out-alt" style={{ width: 20 }} />
+                                    <i className="fas fa-sign-out-alt" />
                                     Sign Out
                                 </button>
                             </div>

@@ -6,6 +6,8 @@ import { addToCart } from '../actions/cartActions'
 function Product({ product }) {
     const dispatch = useDispatch()
     const fallbackImg = `https://picsum.photos/seed/${encodeURIComponent(product.name || product.id)}/600/450`
+    const inStock = Number(product.stock || 0) > 0
+    const hasDiscount = Number(product.discount_percent || 0) > 0
 
     const rating = product.rating || 0
     const stars = []
@@ -25,6 +27,14 @@ function Product({ product }) {
 
     return (
         <Link to={`/product/${product.id}`} className="product-card">
+            <div className="product-card-topline">
+                {product.category_name && (
+                    <div className="product-card-category">{product.category_name}</div>
+                )}
+                <span className={`product-card-stock ${inStock ? 'in-stock' : 'out-stock'}`}>
+                    {inStock ? 'In stock' : 'Sold out'}
+                </span>
+            </div>
             <div className="product-card-image-wrap">
                 <img
                     className="product-card-image"
@@ -33,10 +43,7 @@ function Product({ product }) {
                     loading="lazy"
                     onError={e => { e.target.src = fallbackImg }}
                 />
-                {!product.stock && (
-                    <span className="product-card-badge badge-out-stock">Sold Out</span>
-                )}
-                {product.discount_percent > 0 && (
+                {hasDiscount && (
                     <span className="product-card-badge badge-discount">-{product.discount_percent}%</span>
                 )}
                 <button
@@ -49,15 +56,25 @@ function Product({ product }) {
                 <button
                     className="product-card-add-btn"
                     onClick={handleAddToCart}
+                    disabled={!inStock}
                 >
-                    <i className="fas fa-shopping-cart" /> Add to Cart
+                    <i className="fas fa-shopping-cart" /> {inStock ? 'Add to Cart' : 'Unavailable'}
                 </button>
             </div>
             <div className="product-card-body">
-                {product.category_name && (
-                    <div className="product-card-category">{product.category_name}</div>
-                )}
                 <div className="product-card-title">{product.name}</div>
+                <div className="product-card-stars">
+                    {stars.map((type, i) => (
+                        <i key={i} className={
+                            type === 'full' ? 'fas fa-star' :
+                            type === 'half' ? 'fas fa-star-half-alt' :
+                            'far fa-star'
+                        } />
+                    ))}
+                    {product.reviews_count !== undefined && (
+                        <span className="product-card-reviews">({product.reviews_count})</span>
+                    )}
+                </div>
                 <div className="product-card-footer">
                     <div className="product-card-price">
                         <span className="product-card-price-symbol">&#2547;</span>
@@ -68,18 +85,7 @@ function Product({ product }) {
                             </span>
                         )}
                     </div>
-                    <div className="product-card-stars">
-                        {stars.map((type, i) => (
-                            <i key={i} className={
-                                type === 'full' ? 'fas fa-star' :
-                                type === 'half' ? 'fas fa-star-half-alt' :
-                                'far fa-star'
-                            } />
-                        ))}
-                        {product.reviews_count !== undefined && (
-                            <span className="product-card-reviews">({product.reviews_count})</span>
-                        )}
-                    </div>
+                    <span className="product-card-cta">View details <i className="fas fa-arrow-right" /></span>
                 </div>
             </div>
         </Link>

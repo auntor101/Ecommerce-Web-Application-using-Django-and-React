@@ -7,6 +7,17 @@ function Footer({ siteSettings }) {
     return (
         <footer className="site-footer">
             <div className="container">
+                <div className="footer-top-strip">
+                    <div className="footer-top-copy">
+                        <span className="footer-top-eyebrow">Stay in the Loop</span>
+                        <h3>Get launch alerts, weekend offers, and curated picks.</h3>
+                    </div>
+                    <form className="footer-subscribe" onSubmit={(e) => e.preventDefault()}>
+                        <input type="email" placeholder="Enter your email" aria-label="Email" />
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+
                 <div className="footer-grid">
                     <div>
                         <div className="footer-brand">
@@ -49,6 +60,11 @@ function Footer({ siteSettings }) {
                         <span className="footer-link">{siteSettings?.support_email || 'support@exclusivebd.com'}</span>
                         <span className="footer-link">{siteSettings?.support_phone || '+880 1XXX-XXXXXX'}</span>
                         <span className="footer-link">{siteSettings?.footer_address || 'Dhaka, Bangladesh'}</span>
+                        <div className="footer-payments">
+                            <span>Visa</span>
+                            <span>MasterCard</span>
+                            <span>bKash</span>
+                        </div>
                     </div>
                 </div>
 

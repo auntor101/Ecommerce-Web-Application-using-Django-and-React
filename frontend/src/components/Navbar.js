@@ -29,7 +29,7 @@ function NavBar({ siteSettings }) {
             </div>
 
             <Navbar expand="lg" collapseOnSelect>
-                <Container fluid style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.5rem' }}>
+                <Container fluid className="navbar-shell">
                     <LinkContainer to="/">
                         <Navbar.Brand>
                             <span className="brand-accent">Exclusive</span>BD
@@ -59,7 +59,7 @@ function NavBar({ siteSettings }) {
                             )}
                         </Nav>
 
-                        <div className="d-flex align-items-center" style={{ gap: '0.75rem' }}>
+                        <div className="nav-utility">
                             <SearchBarForProducts />
                             <CartIcon />
                             {isFrontendOnlyMode && (
@@ -68,11 +68,7 @@ function NavBar({ siteSettings }) {
                             {userInfo ? (
                                 <NavDropdown
                                     title={
-                                        <span style={{
-                                            color: 'rgba(255,255,255,0.85)',
-                                            fontSize: '0.82rem',
-                                            fontWeight: '500',
-                                        }}>
+                                        <span className="nav-user-chip">
                                             <i className="fas fa-user-circle" style={{ marginRight: 5 }} />
                                             {userInfo.username}
                                         </span>
@@ -103,15 +99,12 @@ function NavBar({ siteSettings }) {
                                         </LinkContainer>
                                     )}
                                     <NavDropdown.Divider />
-                                    <NavDropdown.Item
-                                        onClick={logoutHandler}
-                                        style={{ color: 'var(--primary)' }}
-                                    >
+                                    <NavDropdown.Item onClick={logoutHandler} className="nav-logout-item">
                                         <i className="fas fa-sign-out-alt me-2" />Sign Out
                                     </NavDropdown.Item>
                                 </NavDropdown>
                             ) : (
-                                <div className="d-flex align-items-center" style={{ gap: '0.5rem' }}>
+                                <div className="nav-auth-actions">
                                     <LinkContainer to="/login">
                                         <Nav.Link className="nav-link-atelier">Sign In</Nav.Link>
                                     </LinkContainer>

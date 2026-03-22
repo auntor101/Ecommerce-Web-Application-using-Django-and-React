@@ -62,7 +62,7 @@ const App = () => {
   }, [])
 
   return (
-    <div>
+    <div className="site-shell">
       <Router>
         <NavBar siteSettings={siteSettings} />
         <CartDrawer />

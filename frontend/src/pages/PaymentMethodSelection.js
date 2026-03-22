@@ -6,28 +6,27 @@ function PaymentMethodSelection() {
     const orderDetails = location.state?.orderDetails || { amount: 0 }
 
     return (
-        <div className="page-wrapper fade-in">
-            <div className="container" style={{ paddingTop: '2.5rem' }}>
-                <div className="section-label" style={{ marginBottom: '1rem' }}>
-                    <div className="section-red-bar" />
-                    <h1 className="section-title">Select Payment Method</h1>
+        <div className="page-wrapper fade-in checkout-page">
+            <div className="container page-pad-y">
+                <div className="page-hero compact checkout-page-hero">
+                    <div className="page-hero-eyebrow">Checkout</div>
+                    <h1 className="page-hero-title">Select Payment Method</h1>
                 </div>
 
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                <p className="checkout-help-text">
                     Choose how you want to pay for this order.
                 </p>
 
-                <div className="content-card" style={{ maxWidth: 620 }}>
+                <div className="content-card checkout-method-card">
                     <Link
                         to={{
                             pathname: '/payment/bkash',
                             state: { orderDetails },
                         }}
                         className="payment-option"
-                        style={{ textDecoration: 'none' }}
                     >
-                        <i className="fas fa-mobile-alt" style={{ color: 'var(--primary)', width: 18 }} />
-                        <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>bKash</span>
+                        <i className="fas fa-mobile-alt checkout-payment-icon" />
+                        <span className="checkout-payment-name">bKash</span>
                     </Link>
 
                     <Link
@@ -36,10 +35,9 @@ function PaymentMethodSelection() {
                             state: { orderDetails },
                         }}
                         className="payment-option"
-                        style={{ textDecoration: 'none' }}
                     >
-                        <i className="fas fa-credit-card" style={{ color: 'var(--primary)', width: 18 }} />
-                        <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Visa</span>
+                        <i className="fas fa-credit-card checkout-payment-icon" />
+                        <span className="checkout-payment-name">Visa</span>
                     </Link>
 
                     <Link
@@ -48,10 +46,9 @@ function PaymentMethodSelection() {
                             state: { orderDetails },
                         }}
                         className="payment-option"
-                        style={{ textDecoration: 'none' }}
                     >
-                        <i className="fas fa-credit-card" style={{ color: 'var(--primary)', width: 18 }} />
-                        <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>MasterCard</span>
+                        <i className="fas fa-credit-card checkout-payment-icon" />
+                        <span className="checkout-payment-name">MasterCard</span>
                     </Link>
                 </div>
             </div>
